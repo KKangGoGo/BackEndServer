@@ -17,12 +17,12 @@ import java.util.List;
 public class UpLoadController {
 
     @Autowired
-    @Qualifier("s3ImageSave")
+    @Qualifier("localImageSave")
     public SaveImage saveImage;
 
     @PostMapping("/test")
     @ResponseStatus(code = HttpStatus.OK)
-    public void uploadImage(@RequestParam("file") List<MultipartFile> files){
+    public void uploadImage(@RequestParam("images") List<MultipartFile> files){
         for(MultipartFile file:files){
             saveImage.save(file);
         }

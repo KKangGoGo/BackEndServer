@@ -43,5 +43,4 @@ public class S3Uploader {
         amazonS3Client.putObject(new PutObjectRequest(bucket,filePath,inputStream,metadata));
         return amazonS3Client.getUrl(bucket,filePath).toString();
     }
-
 }
