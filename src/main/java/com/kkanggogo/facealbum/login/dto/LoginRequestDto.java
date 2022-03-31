@@ -1,9 +1,14 @@
 package com.kkanggogo.facealbum.login.dto;
 
-import lombok.Data;
+import lombok.*;
 
-@Data
+
+@Builder
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class LoginRequestDto {
-    private String userName;
+    private String username;
     private String password;
 }

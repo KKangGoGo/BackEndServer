@@ -1,6 +1,10 @@
 package com.kkanggogo.facealbum.login.controller.api;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.kkanggogo.facealbum.login.config.auth.PrincipalDetails;
+import com.kkanggogo.facealbum.login.config.jwt.JwtProperties;
+import com.kkanggogo.facealbum.login.dto.LoginRequestDto;
 import com.kkanggogo.facealbum.login.dto.RequestUpdateUserInfoDto;
 import com.kkanggogo.facealbum.login.dto.ResponseDto;
 import com.kkanggogo.facealbum.login.dto.ResponseGenericDto;
@@ -8,17 +12,21 @@ import com.kkanggogo.facealbum.login.model.User;
 import com.kkanggogo.facealbum.login.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
 
 @RestController
 public class UserApiController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    AuthenticationManager authenticationManager;
 
     @PostMapping("api/signup")
     public ResponseDto<Integer> save(@RequestBody User user) {

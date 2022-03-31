@@ -54,12 +54,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         }
 
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(loginRequestDto.getUserName(), loginRequestDto.getPassword());
+                new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(), loginRequestDto.getPassword());
 
         //principaldetailsservice의 loadUserByUsername 실행하여 로그인 시도
         Authentication authentication =
                 authenticationManager.authenticate(authenticationToken);
-
         // authenticate() 함수가 호출 되면 인증 프로바이더가 유저 디테일 서비스의
         // loadUserByUsername(토큰의 첫번째 파라메터) 를 호출하고
         // UserDetails를 리턴(getPrincipal())받아서 토큰의 두번째 파라메터(credential)과
@@ -71,7 +70,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         // 결론은 인증 프로바이더에게 알려줄 필요가 없음.
         //principalDetailis에 정보가 있다는 것은 정상적으로 로그인 되었다느 뜻.
         PrincipalDetails principalDetailis = (PrincipalDetails) authentication.getPrincipal();
-        System.out.println("Authentication : "+principalDetailis.getUser().getUsername());
 
         //authentication를 세션에 저장(권한관리를 위해) 하기 위해 return한다.
         return authentication;
@@ -100,6 +98,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .sign(Algorithm.HMAC512(jwtProperties.secret)); //고윳값
 
 
+        System.out.println("로그인 성공 : "+jwtToken);
         //header에서 값 포함
         response.addHeader(jwtProperties.headerString, jwtProperties.tokenPrefix+jwtToken);
     }

@@ -40,4 +40,9 @@ public class UserService {
         persistanceUser.setPassword(encPassword);
         return persistanceUser;
     }
+
+    @Transactional
+    public User findUser(String username){
+        return userRepository.searchUsername(username);
+    }
 }
