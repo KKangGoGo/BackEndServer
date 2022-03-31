@@ -29,12 +29,15 @@ public class UserService {
         return user;
     }
 
+    // 영속성 컨텍스트에 변경내용이 등록되기 때문에, SQL문을 실행하지 않아도 transaction이 끝나면 자동으로 저장됨
     @Transactional
     public User updateUserInfo(RequestUpdateUserInfoDto requestUpdateUserInfoDto, int id) {
 
         User persistanceUser = userRepository.searchIdQuery(id).orElseThrow(() -> {
             return new IllegalArgumentException("회원찾기 실패");
         });
+
+        // 비밀번호 변경
         String rawPassword = requestUpdateUserInfoDto.getPassword();
         String encPassword = encoder.encode(rawPassword);
         persistanceUser.setPassword(encPassword);

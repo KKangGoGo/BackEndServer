@@ -1,14 +1,12 @@
 package com.kkanggogo.facealbum.login.dto;
 
+import lombok.*;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
+@Getter
+@Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class RequestUpdateUserInfoDto {
-    private String nickName;
     private String password;
 }

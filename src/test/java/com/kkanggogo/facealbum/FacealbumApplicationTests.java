@@ -1,11 +1,14 @@
 package com.kkanggogo.facealbum;
 
 
-//@SpringBootTest
-//class FacealbumApplicationTests {
-//
-//    @Test
-//    void contextLoads() {
-//    }
-//
-//}
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class FacealbumApplicationTests {
+
+    @Test
+    void contextLoads() {
+    }
+
+}

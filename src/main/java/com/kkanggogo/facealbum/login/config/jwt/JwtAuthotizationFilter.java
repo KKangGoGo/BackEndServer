@@ -24,7 +24,7 @@ public class JwtAuthotizationFilter extends BasicAuthenticationFilter {
 
     private UserRepository userRepository;
 
-    public JwtAuthotizationFilter(AuthenticationManager authenticationManager, UserRepository userRepository){
+    public JwtAuthotizationFilter(AuthenticationManager authenticationManager, UserRepository userRepository) {
         super(authenticationManager);
         this.userRepository = userRepository;
 
@@ -41,20 +41,20 @@ public class JwtAuthotizationFilter extends BasicAuthenticationFilter {
         String jwtHeader = request.getHeader(jwtProperties.headerString);
 
         //postman에서 header를 통해 전달받은 jwt토큰을 검증해서 정상적인 사용자인지 확인
-        if((jwtHeader == null) || (!jwtHeader.startsWith(jwtProperties.tokenPrefix))){
-            chain.doFilter(request,response);
+        if ((jwtHeader == null) || (!jwtHeader.startsWith(jwtProperties.tokenPrefix))) {
+            chain.doFilter(request, response);
             return;
         }
 
-        String jwtToken = request.getHeader(jwtProperties.headerString).replace(jwtProperties.tokenPrefix,"");
+        String jwtToken = request.getHeader(jwtProperties.headerString).replace(jwtProperties.tokenPrefix, "");
 
         // 토큰 검증 (이게 인증이기 때문에 AuthenticationManager도 필요 없음)
         // 내가 SecurityContext에 직접접근해서 세션을 만들때 자동으로 UserDetailsService에 있는 loadByUsername이 호출됨.
         String username = JWT.require(Algorithm.HMAC512(jwtProperties.secret)).build().verify(jwtToken).
                 getClaim("username").asString();
 
-        if(username!=null){
-            User user =userRepository.searchUsername(username);
+        if (username != null) {
+            User user = userRepository.searchUsername(username);
 
             //username가 null이 아니기 때문에 정상 유저임
             //jwt토큰 서명을 통해 만든 Authentication의 객체
@@ -66,6 +66,6 @@ public class JwtAuthotizationFilter extends BasicAuthenticationFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
         }
-        chain.doFilter(request,response);
+        chain.doFilter(request, response);
     }
 }

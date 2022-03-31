@@ -3,9 +3,9 @@ package com.kkanggogo.facealbum.login.dto;
 import lombok.*;
 
 
-@Builder
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginRequestDto {

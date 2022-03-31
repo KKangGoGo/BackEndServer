@@ -18,8 +18,6 @@ public class PrincipalDetailService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         System.out.printf("PrincipalDetailService의 loadUserByUsername");
         User user = userRepository.searchUsername(username);
-        System.out.printf("user: "+user);
-        System.out.printf("user서비스에서의 비번: "+user.getPassword());
         return new PrincipalDetails(user);
     }
 }
