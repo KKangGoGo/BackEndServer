@@ -1,9 +1,6 @@
 package com.kkanggogo.facealbum.login.config;
 
-import com.kkanggogo.facealbum.login.config.jwt.JwtAccessDeniedHandler;
-import com.kkanggogo.facealbum.login.config.jwt.JwtAuthenticationEntryPoint;
-import com.kkanggogo.facealbum.login.config.jwt.JwtAuthenticationFilter;
-import com.kkanggogo.facealbum.login.config.jwt.JwtAuthotizationFilter;
+import com.kkanggogo.facealbum.login.config.jwt.*;
 import com.kkanggogo.facealbum.login.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +19,7 @@ import org.springframework.web.filter.CorsFilter;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final CorsFilter corsFilter;
     private final UserRepository userRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -46,8 +44,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(corsFilter) //@CorsOrigin(인증x), 시큐리티필터에 등록 인증(o)
                 .formLogin().disable() //form태그로 정보를 넘겨받아 로그인을 하지 않는다. jwt기본
                 .httpBasic().disable()
-                .addFilter(new JwtAuthenticationFilter(authenticationManager()))
-                .addFilter(new JwtAuthotizationFilter(authenticationManager(), userRepository))
+                .addFilter(new JwtAuthenticationFilter(authenticationManager(),jwtTokenProvider))
+                .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository))
                 .authorizeRequests()
                 .antMatchers("/api/user/**")
                 .access("hasRole(RoleType.USER) or hasRole(RoleType.ADMIN)")

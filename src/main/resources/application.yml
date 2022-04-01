@@ -1,12 +1,12 @@
 cloud:
   aws:
     credentials:
-      access-key: AKIAYSEUI7K2QDRWPUCU
-      secret-key: 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
+      access-key: ${access-key}
+      secret-key: ${secret-key}
     s3:
-      bucket: com.kkanggogo.facealbum.testbukit
+      bucket: ${bucket}
     region:
-      static: ap-northeast-2
+      static: ${region}
     stack:
       auto: false
 

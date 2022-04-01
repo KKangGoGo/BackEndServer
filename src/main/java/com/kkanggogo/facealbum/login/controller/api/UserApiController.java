@@ -12,6 +12,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 public class UserApiController {
 
@@ -31,6 +33,12 @@ public class UserApiController {
             // ("[ERROR]회원가입 실패");
             return new ResponseDto<Integer>(HttpStatus.NO_CONTENT.value(), 0);
         }
+    }
+
+    @GetMapping("/api/test")
+    public String test(@AuthenticationPrincipal PrincipalDetails principalDetails){
+        return principalDetails.getUsername();
+
     }
 
     @PutMapping("/api/mypage/update")
