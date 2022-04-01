@@ -94,7 +94,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .withSubject("token") //아무거나 써도 됨.
                 .withExpiresAt(new Date(System.currentTimeMillis()+(jwtProperties.expirationTime)))
                 .withClaim("id", principalDetails.getUser().getId())
-                .withClaim("userName", principalDetails.getUser().getUsername())
+                .withClaim("username", principalDetails.getUser().getUsername())
                 .sign(Algorithm.HMAC512(jwtProperties.secret)); //고윳값
 
 

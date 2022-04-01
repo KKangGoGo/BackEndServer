@@ -33,7 +33,7 @@ public class UserService {
     @Transactional
     public User updateUserInfo(RequestUpdateUserInfoDto requestUpdateUserInfoDto, int id) {
 
-        User persistanceUser = userRepository.searchIdQuery(id).orElseThrow(() -> {
+        User persistanceUser = userRepository.searchId(id).orElseThrow(() -> {
             return new IllegalArgumentException("회원찾기 실패");
         });
 
