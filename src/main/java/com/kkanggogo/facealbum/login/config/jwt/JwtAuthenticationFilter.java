@@ -1,7 +1,5 @@
 package com.kkanggogo.facealbum.login.config.jwt;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kkanggogo.facealbum.login.config.auth.PrincipalDetails;
 import com.kkanggogo.facealbum.login.dto.LoginRequestDto;
@@ -17,7 +15,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
 
 
 //security에서 UsernamePasswordAuthenticationFilter가 있어서
@@ -38,6 +35,7 @@ import java.util.Date;
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
@@ -88,15 +86,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         JwtProperties jwtProperties = new JwtProperties();
 
-        //HMAC512
-        //token을 반들 때 id와 username포함
-        String jwtToken = JWT.create()
-                .withSubject("token") //아무거나 써도 됨.
-                .withExpiresAt(new Date(System.currentTimeMillis()+(jwtProperties.expirationTime)))
-                .withClaim("id", principalDetails.getUser().getId())
-                .withClaim("username", principalDetails.getUser().getUsername())
-                .sign(Algorithm.HMAC512(jwtProperties.secret)); //고윳값
-
+        String jwtToken = jwtTokenProvider.createToken(principalDetails);
 
         System.out.println("로그인 성공 : "+jwtToken);
         //header에서 값 포함
