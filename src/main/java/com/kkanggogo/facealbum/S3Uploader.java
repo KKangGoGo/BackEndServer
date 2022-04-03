@@ -3,6 +3,7 @@ package com.kkanggogo.facealbum;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.kkanggogo.facealbum.album.domein.Image;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,11 +37,12 @@ public class S3Uploader {
         return amazonS3Client.getUrl(bucket,filePath).toString();
     }
 
-    public String upload(byte[] bytes,String filePath){
+    public String upload(Image image){
         ObjectMetadata metadata=new ObjectMetadata();
         metadata.setContentType(MediaType.IMAGE_JPEG_VALUE);
-        InputStream inputStream=new ByteArrayInputStream(bytes);
-        amazonS3Client.putObject(new PutObjectRequest(bucket,filePath,inputStream,metadata));
-        return amazonS3Client.getUrl(bucket,filePath).toString();
+        InputStream inputStream=new ByteArrayInputStream(image.getImageByte());
+        metadata.setContentLength(image.getImageByte().length);
+        amazonS3Client.putObject(new PutObjectRequest(bucket,image.getImagePath(),inputStream,metadata));
+        return amazonS3Client.getUrl(bucket,image.getImagePath()).toString();
     }
 }
