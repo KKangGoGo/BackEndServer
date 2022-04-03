@@ -44,8 +44,8 @@ public class UserService {
         return persistanceUser;
     }
 
-    @Transactional
-    public User findUser(String username){
-        return userRepository.searchUsername(username);
-    }
+//    @Transactional
+//    public User findUser(String username){
+//        return userRepository.searchUsername(username);
+//    }
 }

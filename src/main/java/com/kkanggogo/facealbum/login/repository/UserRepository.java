@@ -10,6 +10,9 @@ public interface UserRepository extends JpaRepository<User,Long> {
     @Query(value = "SELECT * FROM User WHERE username= ?1", nativeQuery = true)
     User searchUsername(String username);
 
+    @Query(value = "SELECT * FROM User WHERE username= ?1", nativeQuery = true)
+    Optional<User> testSearchUsername(String username);
+
     @Query(value = "SELECT * FROM User WHERE userId= ?1", nativeQuery = true)
     Optional<User> searchId(int id);
 

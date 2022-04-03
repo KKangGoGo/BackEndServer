@@ -8,6 +8,7 @@ import com.kkanggogo.facealbum.login.model.User;
 import com.kkanggogo.facealbum.login.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -35,13 +36,7 @@ public class UserApiController {
         }
     }
 
-    @GetMapping("/api/test")
-    public String test(@AuthenticationPrincipal PrincipalDetails principalDetails){
-        return principalDetails.getUsername();
-
-    }
-
-    @PutMapping("/api/mypage/update")
+    @PutMapping("/api/user/mypage/update")
     public ResponseGenericDto<User> updateUser(@RequestBody RequestUpdateUserInfoDto requestUpdateUserInfoDto,
                                                @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
