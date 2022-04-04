@@ -3,6 +3,9 @@ package com.kkanggogo.facealbum.login.dto;
 
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 
 @Getter
 @Setter
@@ -10,7 +13,9 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ResponseGenericDto<T> {
-    //user정보 수정할때도 사용되므로 이름을 바꾸는걸 추천함.
+    @NotBlank
     T responseUser;
+
+    @NotBlank
     int nullCheck;
 }

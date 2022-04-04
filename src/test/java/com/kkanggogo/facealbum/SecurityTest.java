@@ -4,7 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kkanggogo.facealbum.login.config.auth.PrincipalDetails;
 import com.kkanggogo.facealbum.login.config.jwt.JwtProperties;
 import com.kkanggogo.facealbum.login.config.jwt.JwtProvider;
-import com.kkanggogo.facealbum.login.dto.LoginRequestDto;
+import com.kkanggogo.facealbum.login.dto.RequestLoginDto;
+import com.kkanggogo.facealbum.login.dto.RequestSignUpDto;
 import com.kkanggogo.facealbum.login.dto.RequestUpdateUserInfoDto;
 import com.kkanggogo.facealbum.login.dto.ResponseDto;
 import com.kkanggogo.facealbum.login.model.RoleType;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -24,6 +26,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.io.FileInputStream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -53,6 +57,8 @@ public class SecurityTest {
 
     private ObjectMapper mapper;
 
+    private RequestSignUpDto requestSignUpDto;
+
     // JUnit5
     @BeforeEach
     public void setUp() throws Exception {
@@ -67,7 +73,13 @@ public class SecurityTest {
                 .password("1234")
                 .email("ksb@gm")
                 .role(RoleType.USER)
-                .photo("s3_url")
+                .build();
+
+        requestSignUpDto = RequestSignUpDto
+                .builder()
+                .username(user.getUsername())
+                .password(user.getPassword())
+                .email(user.getEmail())
                 .build();
 
         mapper = new ObjectMapper();
@@ -77,20 +89,23 @@ public class SecurityTest {
     }
 
     public MvcResult executeSecurity(String url, String body) throws Exception {
+        MockMultipartFile image = new MockMultipartFile("files", "imagefile.jpeg", "image/jpeg", "<<jpeg data>>".getBytes());
+
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders
-                .post(url)
-                .contentType(MediaType.APPLICATION_JSON).content(body))
+                .multipart(url)
+                .file(image)
+                .param("signupInfo", body))
                 .andExpect(status().isOk())
                 .andReturn();
         return mvcResult;
     }
 
-    public MvcResult oneUserSignUp(User user) throws Exception {
+    public MvcResult oneUserSignUp(RequestSignUpDto requestSignUpDto) throws Exception {
         userRepository.deleteAll();
         assertThat(userRepository.getCount(), is(0));
 
         // Object -> Json
-        objectToJsonBody = mapper.writeValueAsString(user);
+        objectToJsonBody = mapper.writeValueAsString(requestSignUpDto);
         MvcResult mvcResult = executeSecurity("/api/signup", objectToJsonBody);
         assertThat(userRepository.getCount(), is(1));
 
@@ -116,7 +131,7 @@ public class SecurityTest {
     public void signUpTest() throws Exception {
 
         // given, when
-        MvcResult mvcResult = oneUserSignUp(user);
+        MvcResult mvcResult = oneUserSignUp(requestSignUpDto);
 
         // then
         String result = mvcResult.getResponse().getContentAsString();
@@ -127,9 +142,9 @@ public class SecurityTest {
     @DisplayName("로그인 테스트")
     public void loginTest() throws Exception {
         // given
-        oneUserSignUp(this.user);
+        oneUserSignUp(requestSignUpDto);
 
-        LoginRequestDto loginUser = LoginRequestDto
+        RequestLoginDto loginUser = RequestLoginDto
                 .builder()
                 .username(user.getUsername())
                 .password((user.getPassword()))
@@ -152,7 +167,7 @@ public class SecurityTest {
     @DisplayName("회원 비밀번호 수정 테스트")
     public void updateUserTest() throws Exception {
         // given
-        oneUserSignUp(this.user);
+        oneUserSignUp(requestSignUpDto);
 
         // 같은 유저의 정보를 security 내부 저장소에 저장 및 해당 유저의 토큰을 가져옴
         String accessToken = getAuthorizedUserToken(this.user);
