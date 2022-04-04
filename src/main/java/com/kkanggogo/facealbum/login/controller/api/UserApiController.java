@@ -37,7 +37,7 @@ public class UserApiController {
     }
 
     @PutMapping("/api/user/mypage/update")
-    public ResponseGenericDto<User> updateUser(@RequestBody RequestUpdateUserInfoDto requestUpdateUserInfoDto,
+    public ResponseDto<Integer> updateUser(@RequestBody RequestUpdateUserInfoDto requestUpdateUserInfoDto,
                                                @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         // ("[INFO]유저정보 update 시도");
@@ -45,10 +45,12 @@ public class UserApiController {
         User user = userService.updateUserInfo(requestUpdateUserInfoDto, principalDetails.getUser().getId());
         if (user != null) {
             // ("[INFO]유저정보 update 성공");
-            return new ResponseGenericDto<User>(user, 1);
+            // return new ResponseGenericDto<User>(user, 1);
+            return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
         } else {
             // ("[ERROR]유저정보 update 실패");
-            return new ResponseGenericDto<User>(null, 0);
+            //return new ResponseGenericDto<User>(null, 0);
+            return new ResponseDto<Integer>(HttpStatus.NO_CONTENT.value(), 0);
         }
     }
 }
