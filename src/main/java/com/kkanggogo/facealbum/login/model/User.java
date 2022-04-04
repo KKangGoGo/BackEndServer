@@ -36,6 +36,6 @@ public class User {
     @CreationTimestamp //시간이 자동 입력됨
     private Timestamp createDate;
 
-    @Column(nullable = false, length = 300)
+    @Column(nullable = true, length = 300)
     private String photo;
 }

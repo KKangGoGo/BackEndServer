@@ -2,7 +2,7 @@ package com.kkanggogo.facealbum.login.config.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kkanggogo.facealbum.login.config.auth.PrincipalDetails;
-import com.kkanggogo.facealbum.login.dto.LoginRequestDto;
+import com.kkanggogo.facealbum.login.dto.RequestLoginDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -44,9 +44,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         //json의 데이터를 mapping시켜 서버에서 사용할 수 있도록 만든다.
         ObjectMapper objectMapper = new ObjectMapper();
-        LoginRequestDto loginRequestDto = null;
+        RequestLoginDto loginRequestDto = null;
         try {
-            loginRequestDto = objectMapper.readValue(request.getInputStream(), LoginRequestDto.class);
+            loginRequestDto = objectMapper.readValue(request.getInputStream(), RequestLoginDto.class);
         } catch (IOException e) {
             e.printStackTrace();
         }

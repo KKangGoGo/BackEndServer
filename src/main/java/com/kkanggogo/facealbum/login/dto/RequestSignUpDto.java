@@ -1,0 +1,22 @@
+package com.kkanggogo.facealbum.login.dto;
+
+import lombok.*;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class RequestSignUpDto {
+    @NotBlank(message = "username은 필수 입니다.")
+    String username;
+
+    @NotBlank(message = "password은 필수 입니다.")
+    String password;
+
+    @NotBlank(message = "email은 필수 입니다.")
+    String email;
+}
