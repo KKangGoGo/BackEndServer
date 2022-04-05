@@ -1,7 +1,6 @@
 package com.kkanggogo.facealbum.login.config;
 
 import com.kkanggogo.facealbum.login.config.jwt.*;
-import com.kkanggogo.facealbum.login.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,9 +33,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        // security필터보다 MyFilter3를 우선 필터링
-        // http.addFilterBefore(new MyFilter3(), SecurityContextPersistenceFilter.class);
-
         http.csrf().disable();
         http.sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -44,9 +40,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(corsFilter) //@CorsOrigin(인증x), 시큐리티필터에 등록 인증(o)
                 .formLogin().disable() //form태그로 정보를 넘겨받아 로그인을 하지 않는다. jwt기본
                 .httpBasic().disable()
-                .addFilter(new JwtAuthenticationFilter(authenticationManager(), jwtProvider))
-                //.addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository))
-                .addFilterBefore(new JwtFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilter(jwtAuthenticationFilter())
+                .addFilterBefore(new JwtAuthorizationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers("/api/user/**")
                 .access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
@@ -58,5 +53,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling()
                 .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
                 .accessDeniedHandler(new JwtAccessDeniedHandler());
+    }
+
+    public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
+        JwtAuthenticationFilter jwtAuthenticationFilter =
+                new JwtAuthenticationFilter(authenticationManager(), jwtProvider);
+        jwtAuthenticationFilter.setFilterProcessesUrl("/api/login");
+        return jwtAuthenticationFilter;
+
     }
 }
