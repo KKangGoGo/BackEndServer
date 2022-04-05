@@ -23,8 +23,10 @@ function LoginPage(props) {
         e.preventDefault()
 
         try {
-            dispatch(loginUser(state))
-            navigate('/')
+            dispatch(loginUser(state)).then(res => {
+                console.log(res)
+                navigate('/')
+            })
         } catch (error) {
             console.log(error)
         }

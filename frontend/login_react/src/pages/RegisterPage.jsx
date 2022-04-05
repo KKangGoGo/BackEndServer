@@ -35,9 +35,10 @@ function RegisterPage(props) {
         }
 
         try {
-            dispatch(registerUser(state))
-
-            navigate('/login')
+            dispatch(registerUser(state)).then(res => {
+                console.log(res)
+                navigate('/login')
+            })
         } catch (error) {
             console.log(error)
         }

@@ -6,7 +6,7 @@ function userReducer(state = {}, action) {
         case types.LOGIN_USER:
             return {
                 ...state,
-                loginSuccess: action.payload,
+                Data: action.payload,
             }
 
         case types.LOGOUT_USER:
@@ -17,7 +17,7 @@ function userReducer(state = {}, action) {
         case types.REGISTER_USER:
             return {
                 ...state,
-                success: action.payload,
+                Data: action.payload,
             }
         default:
             return state
