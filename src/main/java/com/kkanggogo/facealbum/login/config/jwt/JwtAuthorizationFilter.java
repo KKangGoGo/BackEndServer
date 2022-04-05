@@ -20,11 +20,11 @@ import java.io.IOException;
 //BasicAuthenticationFilter라는 것이 있다.
 //만약 권한, 인증이 필요한 특정 주소를 요청 했을 때 무조건 위 필터를 타게 되어 있다.
 //권한, 인증이 필요 없으면 타지 않는다.
-public class JwtAuthotizationFilter extends BasicAuthenticationFilter {
+public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
     private UserRepository userRepository;
 
-    public JwtAuthotizationFilter(AuthenticationManager authenticationManager, UserRepository userRepository) {
+    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserRepository userRepository) {
         super(authenticationManager);
         this.userRepository = userRepository;
 

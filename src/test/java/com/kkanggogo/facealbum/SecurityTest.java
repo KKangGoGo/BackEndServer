@@ -1,9 +1,15 @@
 package com.kkanggogo.facealbum;
 
+import com.amazonaws.util.IOUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kkanggogo.facealbum.login.config.auth.PrincipalDetails;
 import com.kkanggogo.facealbum.login.config.jwt.JwtProperties;
-import com.kkanggogo.facealbum.login.dto.LoginRequestDto;
+import com.kkanggogo.facealbum.login.config.jwt.JwtProvider;
+import com.kkanggogo.facealbum.login.dto.RequestLoginDto;
+import com.kkanggogo.facealbum.login.dto.RequestSignUpDto;
+import com.kkanggogo.facealbum.login.dto.RequestUpdateUserInfoDto;
 import com.kkanggogo.facealbum.login.dto.ResponseDto;
+import com.kkanggogo.facealbum.login.model.RoleType;
 import com.kkanggogo.facealbum.login.model.User;
 import com.kkanggogo.facealbum.login.repository.UserRepository;
 import org.junit.jupiter.api.*;
@@ -11,16 +17,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.nio.charset.StandardCharsets;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -36,14 +49,20 @@ public class SecurityTest {
     @Autowired
     private BCryptPasswordEncoder encoder;
 
+    @Autowired
+    private JwtProvider jwtProvider;
+
     private MockMvc mvc;
 
     private User user;
 
-    private String objectToJsonBody, expected;
+    private String objectToJsonBody, expectResponseDto;
 
     private ObjectMapper mapper;
 
+    private RequestSignUpDto requestSignUpDto;
+
+    // JUnit5
     @BeforeEach
     public void setUp() throws Exception {
         mvc = MockMvcBuilders
@@ -56,16 +75,23 @@ public class SecurityTest {
                 .username("ksb")
                 .password("1234")
                 .email("ksb@gm")
-                .photo("s3_url")
+                .role(RoleType.USER)
+                .build();
+
+        requestSignUpDto = RequestSignUpDto
+                .builder()
+                .username(user.getUsername())
+                .password(user.getPassword())
+                .email(user.getEmail())
                 .build();
 
         mapper = new ObjectMapper();
 
         // {"status":200,"data":1}
-        expected = mapper.writeValueAsString(new ResponseDto<Integer>(HttpStatus.OK.value(), 1));
+        expectResponseDto = mapper.writeValueAsString(new ResponseDto<Integer>(HttpStatus.OK.value(), 1));
     }
 
-    public MvcResult executeSecurity(String url, String body) throws Exception {
+    public MvcResult executePost(String url, String body) throws Exception {
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders
                 .post(url)
                 .contentType(MediaType.APPLICATION_JSON).content(body))
@@ -74,52 +100,169 @@ public class SecurityTest {
         return mvcResult;
     }
 
-    public MvcResult oneUserSignUp(User user) throws Exception {
+    public MvcResult executeSignUp(RequestSignUpDto requestSignUpDto) throws Exception {
+        byte[] image = IOUtils.toByteArray(getClass()
+                .getClassLoader()
+                .getResourceAsStream("multi_image.jpg"));
+        MockMultipartFile photo = new MockMultipartFile("photo",
+                "multi_image.jpg",
+                MediaType.IMAGE_JPEG_VALUE,
+                image);
+
+        objectToJsonBody = mapper.writeValueAsString(requestSignUpDto);
+
+        MockMultipartFile signupInfoDto = new MockMultipartFile("signupInfo",
+                "signupInfo",
+                "application/json",
+                objectToJsonBody.getBytes(StandardCharsets.UTF_8));
+
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders
+                .multipart("/api/signup")
+                .file(photo)
+                .file(signupInfoDto))
+                .andReturn();
+        return mvcResult;
+    }
+
+    public MvcResult oneUserSignUp(RequestSignUpDto requestSignUpDto) throws Exception {
         userRepository.deleteAll();
         assertThat(userRepository.getCount(), is(0));
 
         // Object -> Json
-        objectToJsonBody = mapper.writeValueAsString(user);
-        MvcResult mvcResult = executeSecurity("/api/signup", objectToJsonBody);
+
+        MvcResult mvcResult = executeSignUp(requestSignUpDto);
         assertThat(userRepository.getCount(), is(1));
 
         return mvcResult;
+    }
+
+    public String getAuthorizedUserToken(User saveUser){
+        PrincipalDetails principalDetails = new PrincipalDetails(saveUser);
+
+        String testToken = jwtProvider.createToken(principalDetails);
+
+        // 사용자를 SecurityContestHolder에 강제 저장
+        if (testToken != null && jwtProvider.isTokenValid(testToken)) {
+            Authentication authentication = jwtProvider.getAuthentication(testToken);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        }
+
+        return testToken;
     }
 
     @Test
     @DisplayName("회원가입 테스트")
     public void signUpTest() throws Exception {
 
-        MvcResult mvcResult = oneUserSignUp(user);
+        // given, when
+        MvcResult mvcResult = oneUserSignUp(requestSignUpDto);
 
-        // 값 검증
+        // then
         String result = mvcResult.getResponse().getContentAsString();
-        assertThat(result, is(expected));
+        assertThat(result, is(expectResponseDto));
     }
 
     @Test
     @DisplayName("로그인 테스트")
     public void loginTest() throws Exception {
-        // 회원 가입
-        oneUserSignUp(this.user);
+        // given
+        oneUserSignUp(requestSignUpDto);
 
-        // 로그인 유저
-        LoginRequestDto loginUser = LoginRequestDto
+        RequestLoginDto loginUser = RequestLoginDto
                 .builder()
                 .username(user.getUsername())
                 .password((user.getPassword()))
                 .build();
         objectToJsonBody = mapper.writeValueAsString(loginUser);
 
-        // 회원 가입한 유저와 로그인 한 유저 정보 비교
-        MvcResult mvcResult = executeSecurity("/login", objectToJsonBody);
+        // when
+        MvcResult mvcResult = executePost("/login", objectToJsonBody);
 
-        // 값 검증
+        // then
         JwtProperties jwtProperties = new JwtProperties();
         boolean isGetToken = mvcResult
                 .getResponse()
                 .getHeader(jwtProperties.headerString)
                 .startsWith("Bearer"); // 응답 값에 Bearer로 시작하는 문자열이 있는지 확인
         assertThat(isGetToken, is(true));
+    }
+
+    @Test
+    @DisplayName("회원 비밀번호 수정 테스트")
+    public void updateUserTest() throws Exception {
+        // given
+        oneUserSignUp(requestSignUpDto);
+
+        // 같은 유저의 정보를 security 내부 저장소에 저장 및 해당 유저의 토큰을 가져옴
+        String accessToken = getAuthorizedUserToken(this.user);
+
+        // 현재 DTO에 password만 받아 수정 요청을 하고 있음
+        RequestUpdateUserInfoDto requestUpdateUserInfoDto = RequestUpdateUserInfoDto
+                .builder()
+                .password("12345")
+                .build();
+        objectToJsonBody = mapper.writeValueAsString(requestUpdateUserInfoDto);
+
+        // when
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders
+                .put("/api/user/mypage/update")
+                .header("access_token", accessToken)
+                .contentType(MediaType.APPLICATION_JSON).content(objectToJsonBody))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        // then
+        String updatedPassword = userRepository.searchUsername(this.user.getUsername()).getPassword();
+        String result = mvcResult.getResponse().getContentAsString();
+        assertThat(result, is(expectResponseDto));
+        assertThat(true, is(encoder.matches(requestUpdateUserInfoDto.getPassword(), updatedPassword)));
+    }
+
+    @Test
+    @DisplayName("사용할 수 없는 토큰 사용 테스트")
+    public void unavailableTokenUseTest() throws Exception {
+        // given
+        String expiredToken = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0b2tlbiIsInJvbGUiOiJVU0VSIiwiaWQiOjEwMCwiZXhwIjoxNjQ4OTk0OTE3LCJ1c2VybmFtZSI6ImtzYiJ9.aR0jz48QMnYrxFdarZ2RriloaPOyizCglol0uJY9XtTc4nilt2GkvdOiKaxsD_8gVLMMvFZBjFnUVzoEAOnzNA";
+        String wiredToken = "fldnvlkdnfkd";
+
+        RequestUpdateUserInfoDto requestUpdateUserInfoDto = RequestUpdateUserInfoDto
+                .builder()
+                .password("12345")
+                .build();
+        objectToJsonBody = mapper.writeValueAsString(requestUpdateUserInfoDto);
+
+        // when, then
+        //만료된 토큰
+        mvc.perform(MockMvcRequestBuilders
+                .put("/api/user/mypage/update")
+                .header("access_token", expiredToken)
+                .contentType(MediaType.APPLICATION_JSON).content(objectToJsonBody))
+                .andExpect(status().is4xxClientError()); //401
+        // 디코딩할 수 없는 토큰(이상한 토큰 값)
+        mvc.perform(MockMvcRequestBuilders
+                .put("/api/user/mypage/update")
+                .header("access_token", wiredToken)
+                .contentType(MediaType.APPLICATION_JSON).content(objectToJsonBody))
+                .andExpect(status().is4xxClientError()); //401
+    }
+
+    @Test
+    @DisplayName("조건에 맞지 않은 회원가입")
+    public void signUpMethodArgumentNotValidException() throws Exception {
+        // given
+        RequestSignUpDto invalidRequest = RequestSignUpDto
+                .builder()
+                .username("")
+                .password(" ")
+                .email(null)
+                .build();
+
+        // when
+        MvcResult mvcResult= executeSignUp(invalidRequest);
+
+        // then
+        assertThat(mvcResult.getResponse().getStatus(), is(HttpStatus.BAD_REQUEST.value())); // 400
+
+        // System.out.println(mvcResult.getResponse().getContentAsString());
     }
 }

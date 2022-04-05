@@ -1,9 +1,6 @@
 package com.kkanggogo.facealbum.login.config;
 
-import com.kkanggogo.facealbum.login.config.jwt.JwtAccessDeniedHandler;
-import com.kkanggogo.facealbum.login.config.jwt.JwtAuthenticationEntryPoint;
-import com.kkanggogo.facealbum.login.config.jwt.JwtAuthenticationFilter;
-import com.kkanggogo.facealbum.login.config.jwt.JwtAuthotizationFilter;
+import com.kkanggogo.facealbum.login.config.jwt.*;
 import com.kkanggogo.facealbum.login.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.CorsFilter;
 
 @Configuration
@@ -21,7 +19,7 @@ import org.springframework.web.filter.CorsFilter;
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final CorsFilter corsFilter;
-    private final UserRepository userRepository;
+    private final JwtProvider jwtProvider;
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -46,13 +44,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(corsFilter) //@CorsOrigin(인증x), 시큐리티필터에 등록 인증(o)
                 .formLogin().disable() //form태그로 정보를 넘겨받아 로그인을 하지 않는다. jwt기본
                 .httpBasic().disable()
-                .addFilter(new JwtAuthenticationFilter(authenticationManager()))
-                .addFilter(new JwtAuthotizationFilter(authenticationManager(), userRepository))
+                .addFilter(new JwtAuthenticationFilter(authenticationManager(), jwtProvider))
+                //.addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository))
+                .addFilterBefore(new JwtFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers("/api/user/**")
-                .access("hasRole(RoleType.USER) or hasRole(RoleType.ADMIN)")
+                .access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
                 .antMatchers("/api/admin/**")
-                .access("hasRole(RoleType.ADMIN)")
+                .access("hasRole('ROLE_ADMIN')")
                 .anyRequest().permitAll()
 
                 .and()

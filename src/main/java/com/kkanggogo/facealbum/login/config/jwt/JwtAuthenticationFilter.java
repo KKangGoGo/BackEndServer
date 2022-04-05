@@ -1,10 +1,8 @@
 package com.kkanggogo.facealbum.login.config.jwt;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kkanggogo.facealbum.login.config.auth.PrincipalDetails;
-import com.kkanggogo.facealbum.login.dto.LoginRequestDto;
+import com.kkanggogo.facealbum.login.dto.RequestLoginDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,7 +15,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
 
 
 //security에서 UsernamePasswordAuthenticationFilter가 있어서
@@ -38,6 +35,7 @@ import java.util.Date;
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
+    private final JwtProvider jwtTokenProvider;
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
@@ -46,9 +44,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         //json의 데이터를 mapping시켜 서버에서 사용할 수 있도록 만든다.
         ObjectMapper objectMapper = new ObjectMapper();
-        LoginRequestDto loginRequestDto = null;
+        RequestLoginDto loginRequestDto = null;
         try {
-            loginRequestDto = objectMapper.readValue(request.getInputStream(), LoginRequestDto.class);
+            loginRequestDto = objectMapper.readValue(request.getInputStream(), RequestLoginDto.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -88,15 +86,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         JwtProperties jwtProperties = new JwtProperties();
 
-        //HMAC512
-        //token을 반들 때 id와 username포함
-        String jwtToken = JWT.create()
-                .withSubject("token") //아무거나 써도 됨.
-                .withExpiresAt(new Date(System.currentTimeMillis()+(jwtProperties.expirationTime)))
-                .withClaim("id", principalDetails.getUser().getId())
-                .withClaim("userName", principalDetails.getUser().getUsername())
-                .sign(Algorithm.HMAC512(jwtProperties.secret)); //고윳값
-
+        String jwtToken = jwtTokenProvider.createToken(principalDetails);
 
         System.out.println("로그인 성공 : "+jwtToken);
         //header에서 값 포함

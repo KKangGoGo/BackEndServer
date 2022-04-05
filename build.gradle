@@ -37,12 +37,21 @@ dependencies {
     // mysql, jpa
     implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.22'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '2.4.2'
+    implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.7.3'
 
     // jwt, security
-    implementation group: 'org.springframework.security', name: 'spring-security-core', version: '5.4.2'
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.4.2'
+    implementation group: 'org.springframework.security', name: 'spring-security-core', version: '5.5.3'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.6.3'
     implementation group: 'com.auth0', name: 'java-jwt', version: '3.10.2'
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.2'
+
+    // valid
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+
+    // json
+    implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+    
 }
 
 tasks.named('test') {
