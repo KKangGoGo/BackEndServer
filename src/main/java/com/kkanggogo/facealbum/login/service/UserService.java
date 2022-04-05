@@ -23,12 +23,8 @@ public class UserService {
     @Transactional
     public User signUp(RequestSignUpDto requestSignUpDto, MultipartFile photo) {
         //회원 가입
-        String rawPassword = requestSignUpDto.getPassword(); //입력한 password
-        String encPassword = encoder.encode(rawPassword); //해싱한 password
-
-        System.out.println("-------");
-        System.out.println(requestSignUpDto.getUsername());
-        System.out.println("-------");
+        String rawPassword = requestSignUpDto.getPassword(); // 입력한 password
+        String encPassword = encoder.encode(rawPassword); // 해싱한 password
 
         User user = User
                 .builder()
