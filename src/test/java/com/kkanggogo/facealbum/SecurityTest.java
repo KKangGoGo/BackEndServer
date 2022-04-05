@@ -176,7 +176,7 @@ public class SecurityTest {
         objectToJsonBody = mapper.writeValueAsString(loginUser);
 
         // when
-        MvcResult mvcResult = executePost("/login", objectToJsonBody);
+        MvcResult mvcResult = executePost("/api/login", objectToJsonBody);
 
         // then
         JwtProperties jwtProperties = new JwtProperties();
