@@ -1,7 +1,7 @@
 package com.kkanggogo.facealbum.albumTest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kkanggogo.facealbum.album.domein.Album;
+import com.kkanggogo.facealbum.album.domain.Album;
 import com.kkanggogo.facealbum.album.service.AlbumService;
 import com.kkanggogo.facealbum.album.web.AlbumController;
 import com.kkanggogo.facealbum.album.web.dto.AlbumRequestDto;

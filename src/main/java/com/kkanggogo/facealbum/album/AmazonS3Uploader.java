@@ -3,7 +3,7 @@ package com.kkanggogo.facealbum.album;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.kkanggogo.facealbum.album.domein.Image;
+import com.kkanggogo.facealbum.album.domain.Image;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;

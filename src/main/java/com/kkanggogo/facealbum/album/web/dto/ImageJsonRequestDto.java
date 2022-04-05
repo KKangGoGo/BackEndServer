@@ -1,6 +1,6 @@
 package com.kkanggogo.facealbum.album.web.dto;
 
-import com.kkanggogo.facealbum.album.domein.Image;
+import com.kkanggogo.facealbum.album.domain.Image;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;

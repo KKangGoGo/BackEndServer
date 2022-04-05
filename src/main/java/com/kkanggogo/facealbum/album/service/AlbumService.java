@@ -1,7 +1,7 @@
 package com.kkanggogo.facealbum.album.service;
 
-import com.kkanggogo.facealbum.album.domein.Album;
-import com.kkanggogo.facealbum.album.domein.repository.AlbumRepository;
+import com.kkanggogo.facealbum.album.domain.Album;
+import com.kkanggogo.facealbum.album.domain.repository.AlbumRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

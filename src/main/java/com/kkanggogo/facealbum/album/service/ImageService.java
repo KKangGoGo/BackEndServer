@@ -1,20 +1,18 @@
 package com.kkanggogo.facealbum.album.service;
 
 import com.kkanggogo.facealbum.album.AmazonS3Uploader;
-import com.kkanggogo.facealbum.album.domein.Album;
-import com.kkanggogo.facealbum.album.domein.AlbumImageMappingTable;
-import com.kkanggogo.facealbum.album.domein.Image;
-import com.kkanggogo.facealbum.album.domein.repository.AlbumImageMapRepository;
-import com.kkanggogo.facealbum.album.domein.repository.ImageRepository;
+import com.kkanggogo.facealbum.album.domain.Album;
+import com.kkanggogo.facealbum.album.domain.AlbumImageMappingTable;
+import com.kkanggogo.facealbum.album.domain.Image;
+import com.kkanggogo.facealbum.album.domain.repository.AlbumImageMapRepository;
+import com.kkanggogo.facealbum.album.domain.repository.ImageRepository;
 import com.kkanggogo.facealbum.album.web.dto.ImageRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 

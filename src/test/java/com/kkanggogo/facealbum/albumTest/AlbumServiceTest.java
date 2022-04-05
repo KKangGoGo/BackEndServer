@@ -1,7 +1,7 @@
 package com.kkanggogo.facealbum.albumTest;
 
-import com.kkanggogo.facealbum.album.domein.Album;
-import com.kkanggogo.facealbum.album.domein.repository.AlbumRepository;
+import com.kkanggogo.facealbum.album.domain.Album;
+import com.kkanggogo.facealbum.album.domain.repository.AlbumRepository;
 import com.kkanggogo.facealbum.album.service.AlbumService;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;

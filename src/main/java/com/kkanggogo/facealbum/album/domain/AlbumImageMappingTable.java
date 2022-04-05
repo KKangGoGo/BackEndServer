@@ -1,4 +1,4 @@
-package com.kkanggogo.facealbum.album.domein;
+package com.kkanggogo.facealbum.album.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

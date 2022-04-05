@@ -1,4 +1,4 @@
-package com.kkanggogo.facealbum.album.domein;
+package com.kkanggogo.facealbum.album.domain;
 
 import com.kkanggogo.facealbum.album.web.dto.AlbumResponseDto;
 import lombok.Getter;
