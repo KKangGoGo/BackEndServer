@@ -10,20 +10,18 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@RestController
 @Slf4j
+@RestController
 @RequiredArgsConstructor
-public class UpLoadController {
+public class ImageController {
 
 
     private final ImageService imageService;
 
-
     @PostMapping("/test")
     @ResponseStatus(code = HttpStatus.ACCEPTED)
     public void uploadImage(@RequestParam("images") List<MultipartFile> files){
-        log.error("imagesname:{}",files.get(0).getOriginalFilename());
-        imageService.upload(files);
+        imageService.upload(ImageMultipartFileRequestDtoFactory.makeMultipartFileRequestDto(files));
     }
 
     @PostMapping("/jsontest")
@@ -31,5 +29,4 @@ public class UpLoadController {
     public void uploadImageForJson(@RequestBody ImageJsonRequestDto imageJsonRequestDto){
         imageService.upload(imageJsonRequestDto);
     }
-
 }

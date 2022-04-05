@@ -16,14 +16,14 @@ public class AlbumService {
     public Album makeAlbum(Long userId, String title){
         Album album=new Album();
         album.setTitle(title);
-        albumRepository.save(album);
-        return album;
+        Album save = albumRepository.save(album);
+        return save;
     }
 
     @Transactional
     public Album makeAlbum(Long userId){
         Album album=new Album();
-        albumRepository.save(album);
-        return album;
+        Album save=albumRepository.save(album);
+        return save;
     }
 }

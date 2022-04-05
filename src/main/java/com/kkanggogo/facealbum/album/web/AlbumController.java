@@ -5,6 +5,7 @@ import com.kkanggogo.facealbum.album.web.dto.AlbumRequestDto;
 import com.kkanggogo.facealbum.album.web.dto.AlbumResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,8 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Optional;
 
 @RestController
-@NoArgsConstructor
-@AllArgsConstructor
+//@RequiredArgsConstructor
 @Slf4j
 public class AlbumController {
 
