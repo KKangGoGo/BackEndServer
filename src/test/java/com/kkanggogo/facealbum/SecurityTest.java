@@ -1,5 +1,6 @@
 package com.kkanggogo.facealbum;
 
+import com.amazonaws.util.IOUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kkanggogo.facealbum.login.config.auth.PrincipalDetails;
 import com.kkanggogo.facealbum.login.config.jwt.JwtProperties;
@@ -25,12 +26,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.io.FileInputStream;
+import java.nio.charset.StandardCharsets;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -88,14 +91,35 @@ public class SecurityTest {
         expectResponseDto = mapper.writeValueAsString(new ResponseDto<Integer>(HttpStatus.OK.value(), 1));
     }
 
-    public MvcResult executeSecurity(String url, String body) throws Exception {
-        MockMultipartFile image = new MockMultipartFile("files", "imagefile.jpeg", "image/jpeg", "<<jpeg data>>".getBytes());
+    public MvcResult executePost(String url, String body) throws Exception {
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders
+                .post(url)
+                .contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isOk())
+                .andReturn();
+        return mvcResult;
+    }
+
+    public MvcResult executeSignUp(RequestSignUpDto requestSignUpDto) throws Exception {
+        byte[] image = IOUtils.toByteArray(getClass()
+                .getClassLoader()
+                .getResourceAsStream("multi_image.jpg"));
+        MockMultipartFile photo = new MockMultipartFile("photo",
+                "multi_image.jpg",
+                MediaType.IMAGE_JPEG_VALUE,
+                image);
+
+        objectToJsonBody = mapper.writeValueAsString(requestSignUpDto);
+
+        MockMultipartFile signupInfoDto = new MockMultipartFile("signupInfo",
+                "signupInfo",
+                "application/json",
+                objectToJsonBody.getBytes(StandardCharsets.UTF_8));
 
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders
-                .multipart(url)
-                .file(image)
-                .param("signupInfo", body))
-                .andExpect(status().isOk())
+                .multipart("/api/signup")
+                .file(photo)
+                .file(signupInfoDto))
                 .andReturn();
         return mvcResult;
     }
@@ -105,8 +129,8 @@ public class SecurityTest {
         assertThat(userRepository.getCount(), is(0));
 
         // Object -> Json
-        objectToJsonBody = mapper.writeValueAsString(requestSignUpDto);
-        MvcResult mvcResult = executeSecurity("/api/signup", objectToJsonBody);
+
+        MvcResult mvcResult = executeSignUp(requestSignUpDto);
         assertThat(userRepository.getCount(), is(1));
 
         return mvcResult;
@@ -152,7 +176,7 @@ public class SecurityTest {
         objectToJsonBody = mapper.writeValueAsString(loginUser);
 
         // when
-        MvcResult mvcResult = executeSecurity("/login", objectToJsonBody);
+        MvcResult mvcResult = executePost("/login", objectToJsonBody);
 
         // then
         JwtProperties jwtProperties = new JwtProperties();
@@ -220,5 +244,25 @@ public class SecurityTest {
                 .header("access_token", wiredToken)
                 .contentType(MediaType.APPLICATION_JSON).content(objectToJsonBody))
                 .andExpect(status().is4xxClientError()); //401
+    }
+
+    @Test
+    @DisplayName("조건에 맞지 않은 회원가입")
+    public void signUpMethodArgumentNotValidException() throws Exception {
+        // given
+        RequestSignUpDto invalidRequest = RequestSignUpDto
+                .builder()
+                .username("")
+                .password(" ")
+                .email(null)
+                .build();
+
+        // when
+        MvcResult mvcResult= executeSignUp(invalidRequest);
+
+        // then
+        assertThat(mvcResult.getResponse().getStatus(), is(HttpStatus.BAD_REQUEST.value())); // 400
+
+        // System.out.println(mvcResult.getResponse().getContentAsString());
     }
 }

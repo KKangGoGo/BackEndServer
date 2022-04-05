@@ -19,7 +19,6 @@ import org.springframework.web.filter.CorsFilter;
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final CorsFilter corsFilter;
-    private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
 
     @Bean

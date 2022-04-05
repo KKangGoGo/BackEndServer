@@ -25,9 +25,10 @@ public class UserApiController {
     @Autowired
     AuthenticationManager authenticationManager;
 
+    // 회원 가입
     @PostMapping("/api/signup")
-    public ResponseDto<Integer> signUp(@Valid @RequestPart(value = "signupInfo") RequestSignUpDto requestSignUpDto,
-                                       @Valid @RequestPart(value = "photo", required = false) MultipartFile photo) {
+    public ResponseDto<Integer> signUp(@Valid @RequestPart(value = "photo", required = false) MultipartFile photo,
+                                       @Valid @RequestPart(value = "signupInfo") RequestSignUpDto requestSignUpDto) {
         System.out.println("test---");
         User checkSignUp = userService.signUp(requestSignUpDto, photo);
         if (checkSignUp != null) {
@@ -39,12 +40,12 @@ public class UserApiController {
         }
     }
 
+    // 회원 정보 수정
     @PutMapping("/api/user/mypage/update")
     public ResponseDto<Integer> updateUser(@Valid @RequestBody RequestUpdateUserInfoDto requestUpdateUserInfoDto,
                                                @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         // ("[INFO]유저정보 update 시도");
-        // db변경
         User user = userService.updateUserInfo(requestUpdateUserInfoDto, principalDetails.getUser().getId());
         if (user != null) {
             // ("[INFO]유저정보 update 성공");

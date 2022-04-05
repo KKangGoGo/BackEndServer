@@ -1,6 +1,5 @@
 package com.kkanggogo.facealbum.login.config.jwt;
 
-
 import org.springframework.stereotype.Component;
 
 @Component
