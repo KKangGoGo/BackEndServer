@@ -1,18 +1,13 @@
 package com.kkanggogo.facealbum.login.config.jwt;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import org.json.simple.JSONObject;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.OutputStream;
 
 //401에러
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
@@ -31,7 +26,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
         // 500
         if(exception.equals(HttpStatus.INTERNAL_SERVER_ERROR.toString())){
-            setResponse(response, HttpStatus.UNAUTHORIZED, "토큰에서 사용자를 찾을 수 없습니다.");
+            setResponse(response, HttpStatus.INTERNAL_SERVER_ERROR, "토큰에서 사용자를 찾을 수 없습니다.");
         }
     }
     private void setResponse(HttpServletResponse response, HttpStatus errorCode, String errorMessage) throws IOException {

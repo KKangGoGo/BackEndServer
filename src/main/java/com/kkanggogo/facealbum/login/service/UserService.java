@@ -5,7 +5,6 @@ import com.kkanggogo.facealbum.login.dto.RequestUpdateUserInfoDto;
 import com.kkanggogo.facealbum.login.model.RoleType;
 import com.kkanggogo.facealbum.login.model.User;
 import com.kkanggogo.facealbum.login.repository.UserRepository;
-import org.junit.runner.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -57,9 +56,4 @@ public class UserService {
         persistanceUser.setPassword(encPassword);
         return persistanceUser;
     }
-
-//    @Transactional
-//    public User findUser(String username){
-//        return userRepository.searchUsername(username);
-//    }
 }

@@ -1,21 +1,11 @@
 package com.kkanggogo.facealbum.login.config.jwt;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
-import com.kkanggogo.facealbum.login.config.auth.PrincipalDetailService;
-import com.kkanggogo.facealbum.login.config.auth.PrincipalDetails;
-import com.kkanggogo.facealbum.login.model.User;
-import com.kkanggogo.facealbum.login.repository.UserRepository;
 import io.jsonwebtoken.MalformedJwtException;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -49,9 +39,6 @@ public class JwtFilter extends OncePerRequestFilter {
         } catch (JWTDecodeException e){
             System.out.println("ex : 디코딩할 수 없는 토큰");
             request.setAttribute("exception", HttpStatus.UNAUTHORIZED);
-        } catch (NullPointerException e){
-            System.out.println("ex : 사용자를 찾을 수 없음");
-            request.setAttribute("exception", HttpStatus.INTERNAL_SERVER_ERROR);
         }
         filterChain.doFilter(request, response);
     }
