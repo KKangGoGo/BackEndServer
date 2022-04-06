@@ -27,6 +27,12 @@ public class Image {
         UUID uuid=UUID.randomUUID();
         this.imagePath = String.format("%d/%s%s",userId,uuid,imagePath);
     }
+
+    public void makeS3Path(String userName, String imagePath) {
+        UUID uuid=UUID.randomUUID();
+        this.imagePath = String.format("%s/%s%s",userName,uuid,imagePath);
+    }
+
     public void changeStringToByte(String imageByteString){
         this.imageByte =Base64.getDecoder().decode(imageByteString);
     }

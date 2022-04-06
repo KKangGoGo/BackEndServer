@@ -15,15 +15,19 @@ public class ImageMultipartFileRequestDto implements ImageRequestDto {
     Integer fileCount;
 
 
-    @Override
-    public List<Image> toImageEntity(Long userId) {
+    public List<Image> toImageEntity(String userName) {
         List<Image> imageList=new ArrayList<>();
         for(int i=0;i<fileCount;i++){
             Image image=new Image();
-            image.makeS3Path(userId,originFileNames.get(i));
+            image.makeS3Path(userName,originFileNames.get(i));
             image.setImageByte(imageByteDates.get(i));
             imageList.add(image);
         }
         return imageList;
+    }
+
+    @Override
+    public List<Image> toImageEntity(Long userId) {
+        return null;
     }
 }

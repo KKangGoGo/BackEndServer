@@ -21,7 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ImageService {
 
-    private final AmazonS3Uploader amazonS3Uploader;
+    private final AmazonS3Uploader userAlbumAmazonS3Uploader;
     private final AlbumService albumService;
     private final ImageRepository imageRepository;
     private final AlbumImageMapRepository albumImageMapRepository;
@@ -35,7 +35,7 @@ public class ImageService {
         List<Image> images = imageRequestDto.toImageEntity(userId);
 
         for(Image image:images){
-            String amazonS3path = amazonS3Uploader.s3Upload(image);
+            String amazonS3path = userAlbumAmazonS3Uploader.s3Upload(image);
             image.setImagePath(amazonS3path);
             AlbumImageMappingTable albumImageMappingTable =new AlbumImageMappingTable(image,album);
             albumImageMappingTableList.add(albumImageMappingTable);
