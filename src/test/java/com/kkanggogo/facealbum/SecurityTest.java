@@ -26,14 +26,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.nio.charset.StandardCharsets;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -95,7 +93,6 @@ public class SecurityTest {
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders
                 .post(url)
                 .contentType(MediaType.APPLICATION_JSON).content(body))
-                .andExpect(status().isOk())
                 .andReturn();
         return mvcResult;
     }
@@ -129,7 +126,6 @@ public class SecurityTest {
         assertThat(userRepository.getCount(), is(0));
 
         // Object -> Json
-
         MvcResult mvcResult = executeSignUp(requestSignUpDto);
         assertThat(userRepository.getCount(), is(1));
 
@@ -264,5 +260,27 @@ public class SecurityTest {
         assertThat(mvcResult.getResponse().getStatus(), is(HttpStatus.BAD_REQUEST.value())); // 400
 
         // System.out.println(mvcResult.getResponse().getContentAsString());
+    }
+
+    @Test
+    @DisplayName("회원가입 되지 않은 아이디로 로그인 시도")
+    public void notSingUpLogin() throws Exception{
+        // given
+        userRepository.deleteAll();
+        assertThat(userRepository.getCount(), is(0));
+
+        RequestLoginDto loginUser = RequestLoginDto
+                .builder()
+                .username(user.getUsername())
+                .password((user.getPassword()))
+                .build();
+        objectToJsonBody = mapper.writeValueAsString(loginUser);
+
+        // when
+        MvcResult mvcResult = executePost("/api/login", objectToJsonBody);
+
+        // then
+        assertThat(userRepository.getCount(), is(0));
+        assertThat(mvcResult.getResponse().getStatus(), is(HttpStatus.UNAUTHORIZED.value())); // 401
     }
 }

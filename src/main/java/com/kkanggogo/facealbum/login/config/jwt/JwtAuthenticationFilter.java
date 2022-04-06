@@ -8,6 +8,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.authentication.AuthenticationEntryPointFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
@@ -42,7 +44,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             throws AuthenticationException {
         System.out.printf("JwtAuthentication: 로그인 실행됨 ");
 
-        //json의 데이터를 mapping시켜 서버에서 사용할 수 있도록 만든다.
+        // json의 데이터를 mapping시켜 서버에서 사용할 수 있도록 만든다.
         ObjectMapper objectMapper = new ObjectMapper();
         RequestLoginDto loginRequestDto = null;
         try {
@@ -66,10 +68,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         // Tip: 인증 프로바이더의 디폴트 서비스는 UserDetailsService 타입
         // Tip: 인증 프로바이더의 디폴트 암호화 방식은 BCryptPasswordEncoder
         // 결론은 인증 프로바이더에게 알려줄 필요가 없음.
-        //principalDetailis에 정보가 있다는 것은 정상적으로 로그인 되었다느 뜻.
-        PrincipalDetails principalDetailis = (PrincipalDetails) authentication.getPrincipal();
+        // principalDetailis에 정보가 있다는 것은 정상적으로 로그인 되었다느 뜻.
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
 
-        //authentication를 세션에 저장(권한관리를 위해) 하기 위해 return한다.
+        // authentication를 세션에 저장(권한관리를 위해) 하기 위해 return한다.
         return authentication;
     }
 
@@ -92,4 +94,5 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         //header에서 값 포함
         response.addHeader(jwtProperties.headerString, jwtProperties.tokenPrefix+jwtToken);
     }
+
 }

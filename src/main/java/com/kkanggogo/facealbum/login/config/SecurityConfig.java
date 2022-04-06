@@ -40,8 +40,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(corsFilter) //@CorsOrigin(인증x), 시큐리티필터에 등록 인증(o)
                 .formLogin().disable() //form태그로 정보를 넘겨받아 로그인을 하지 않는다. jwt기본
                 .httpBasic().disable()
-                .addFilter(jwtAuthenticationFilter())
                 .addFilterBefore(new JwtAuthorizationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilter(jwtAuthenticationFilter())
+                .logout().logoutUrl("/api/logout")
+                .and()
                 .authorizeRequests()
                 .antMatchers("/api/user/**")
                 .access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
