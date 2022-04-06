@@ -60,6 +60,8 @@ public class SecurityTest {
 
     private RequestSignUpDto requestSignUpDto;
 
+    private JwtProperties jwtProperties;
+
     // JUnit5
     @BeforeEach
     public void setUp() throws Exception {
@@ -84,6 +86,8 @@ public class SecurityTest {
                 .build();
 
         mapper = new ObjectMapper();
+
+        jwtProperties = new JwtProperties();
 
         // {"status":200,"data":1}
         expectResponseDto = mapper.writeValueAsString(new ResponseDto<Integer>(HttpStatus.OK.value(), 1));
@@ -175,12 +179,40 @@ public class SecurityTest {
         MvcResult mvcResult = executePost("/api/login", objectToJsonBody);
 
         // then
-        JwtProperties jwtProperties = new JwtProperties();
         boolean isGetToken = mvcResult
                 .getResponse()
                 .getHeader(jwtProperties.headerString)
                 .startsWith("Bearer"); // 응답 값에 Bearer로 시작하는 문자열이 있는지 확인
         assertThat(isGetToken, is(true));
+    }
+
+
+    @Test
+    @DisplayName("로그아웃 테스트")
+    public void logoutTest() throws Exception {
+        // given
+        oneUserSignUp(requestSignUpDto);
+
+        RequestLoginDto loginUser = RequestLoginDto
+                .builder()
+                .username(user.getUsername())
+                .password((user.getPassword()))
+                .build();
+        objectToJsonBody = mapper.writeValueAsString(loginUser);
+
+        // 로그인해서 토큰 받아오기
+        MvcResult mvcResult = executePost("/api/login", objectToJsonBody);
+        String getToken = mvcResult
+                .getResponse()
+                .getHeader(jwtProperties.headerString);
+
+        // when, then
+        mvc.perform(MockMvcRequestBuilders
+                .post("/api/logout")
+                .header("access_token", getToken)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
     }
 
     @Test
@@ -283,4 +315,5 @@ public class SecurityTest {
         assertThat(userRepository.getCount(), is(0));
         assertThat(mvcResult.getResponse().getStatus(), is(HttpStatus.UNAUTHORIZED.value())); // 401
     }
+
 }
