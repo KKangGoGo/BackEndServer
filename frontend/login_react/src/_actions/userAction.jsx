@@ -2,7 +2,10 @@ import axios from 'axios'
 import * as types from './types'
 
 export const loginUser = async dataToSubmit => {
-    const request = await axios.post('/api/users/login', dataToSubmit).then(res => res.data)
+    const request = await axios.post('/api/users/login', dataToSubmit).then(res => {
+        console.log(res)
+        return res.data
+    })
 
     return {
         type: types.LOGIN_USER,
@@ -18,7 +21,9 @@ export const logoutUser = async () => {
 }
 
 export const registerUser = async dataToSubmit => {
-    const request = await axios.post('/api/users/register', dataToSubmit).then(res => res.data)
+    const request = await axios.post('/api/users/register', dataToSubmit).then(res => {
+        return res.data
+    })
 
     return {
         type: types.REGISTER_USER,

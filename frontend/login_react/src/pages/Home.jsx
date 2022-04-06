@@ -1,4 +1,3 @@
-import axios from 'axios'
 import React, {useEffect} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {useNavigate, Link} from 'react-router-dom'
@@ -9,6 +8,7 @@ const Home = () => {
     const dispatch = useDispatch()
 
     const user = useSelector(state => state.user)
+    console.log(user)
 
     const logoutHandler = e => {
         try {
@@ -24,7 +24,7 @@ const Home = () => {
     return (
         <div>
             <h2>home</h2>
-            {user.Data ? (
+            {user.loginSuccess ? (
                 <button className="Btn" onClick={logoutHandler}>
                     LOGOUT
                 </button>

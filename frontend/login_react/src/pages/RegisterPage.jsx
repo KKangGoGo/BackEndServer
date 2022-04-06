@@ -9,11 +9,13 @@ function RegisterPage(props) {
         name: '',
         email: '',
         password: '',
+        image: '',
     })
 
-    const {name, email, password} = state
+    const {name, email, password, image} = state
 
     const [ConfirmPassword, setConfirmPassword] = useState('')
+    // const [fileImg, setFileImg] = useState('')
 
     const navigate = useNavigate()
     const dispatch = useDispatch()
@@ -25,6 +27,12 @@ function RegisterPage(props) {
 
     const onConfirmPasswordHandler = e => {
         setConfirmPassword(e.currentTarget.value)
+    }
+
+    const handleUpload = e => {
+        let {name, files} = e.target
+        let upload = URL.createObjectURL(files[0])
+        setState({...state, [name]: upload})
     }
 
     const onSubmitHandler = e => {
@@ -45,21 +53,30 @@ function RegisterPage(props) {
     }
 
     return (
-        <form onSubmit={onSubmitHandler} style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-            <label htmlFor="">Name</label>
-            <input type="text" placeholder="name" name="name" value={name} onChange={handleInputChange} />
+        <>
+            <form
+                onSubmit={onSubmitHandler}
+                style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}
+            >
+                <label htmlFor="">Name</label>
+                <input type="text" placeholder="name" name="name" value={name} onChange={handleInputChange} />
 
-            <label htmlFor="">Email</label>
-            <input type="text" placeholder="email" name="email" value={email} onChange={handleInputChange} />
+                <label htmlFor="">Email</label>
+                <input type="text" placeholder="email" name="email" value={email} onChange={handleInputChange} />
 
-            <label htmlFor="">Password</label>
-            <input type="password" placeholder="password" name="password" value={password} onChange={handleInputChange} />
+                <label htmlFor="">Password</label>
+                <input type="password" placeholder="password" name="password" value={password} onChange={handleInputChange} />
 
-            <label htmlFor="">ConfirmPassword</label>
-            <input type="password" placeholder="confirm-password" value={ConfirmPassword} onChange={onConfirmPasswordHandler} />
+                <label htmlFor="">ConfirmPassword</label>
+                <input type="password" placeholder="confirm-password" value={ConfirmPassword} onChange={onConfirmPasswordHandler} />
 
-            <button>sign up</button>
-        </form>
+                <label htmlFor="">Image</label>
+                <input type="file" name="image" placeholder="image/*" onChange={handleUpload} />
+
+                <button>sign up</button>
+            </form>
+            {image && <img src={image} alt="sample" width="100px" />}
+        </>
     )
 }
 
