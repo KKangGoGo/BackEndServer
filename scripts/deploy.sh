@@ -1,7 +1,7 @@
 #!/bin/bash
 
-REPOSITORY=/home/ec2-user/app
-PROJECT_NAME=BackEndSerever
+REPOSITORY=/home/ec2-user/app/deploy
+PROJECT_NAME=BackEndServer
 
 cd $REPOSITORY/$PROJECT_NAME/
 
