@@ -1,6 +1,6 @@
 #!/bin/bash
 
-REPOSITORY=/home/ec2-user/app/step2
+REPOSITORY=/home/ec2-user/app
 PROJECT_NAME=BackEndSerever
 
 cd $REPOSITORY/$PROJECT_NAME/
