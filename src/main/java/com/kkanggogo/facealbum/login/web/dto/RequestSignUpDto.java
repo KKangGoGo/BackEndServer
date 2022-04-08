@@ -1,4 +1,4 @@
-package com.kkanggogo.facealbum.login.dto;
+package com.kkanggogo.facealbum.login.web.dto;
 
 import lombok.*;
 

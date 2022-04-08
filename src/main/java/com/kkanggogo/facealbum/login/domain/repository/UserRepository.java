@@ -1,6 +1,6 @@
-package com.kkanggogo.facealbum.login.repository;
+package com.kkanggogo.facealbum.login.domain.repository;
 
-import com.kkanggogo.facealbum.login.model.User;
+import com.kkanggogo.facealbum.login.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
