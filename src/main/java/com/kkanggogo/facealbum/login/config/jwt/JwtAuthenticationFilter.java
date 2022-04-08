@@ -2,14 +2,12 @@ package com.kkanggogo.facealbum.login.config.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kkanggogo.facealbum.login.config.auth.PrincipalDetails;
-import com.kkanggogo.facealbum.login.dto.RequestLoginDto;
+import com.kkanggogo.facealbum.login.web.dto.RequestLoginDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.AuthenticationEntryPointFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;

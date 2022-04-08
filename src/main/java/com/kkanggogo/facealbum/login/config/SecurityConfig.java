@@ -48,7 +48,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/admin/**")
                 .access("hasRole('ROLE_ADMIN')")
                 .anyRequest().permitAll()
-                .and().logout().logoutUrl("/api/logout")
 
                 .and()
                 .exceptionHandling()
