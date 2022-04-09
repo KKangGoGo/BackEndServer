@@ -33,8 +33,8 @@ public class UserService {
         User user = getUser(requestSignUpDto);
 
         List<Image> image = photo.toImageEntity(requestSignUpDto.getUsername());
-        String profileS3Path = userProfileAmazonS3Uploader.s3Upload(image.get(0));
-        user.setPhoto(profileS3Path);
+        userProfileAmazonS3Uploader.s3Upload(image.get(0));
+        user.setPhoto(image.get(0).getImagePath());
 
         userRepository.save(user);
         return user;
@@ -64,7 +64,7 @@ public class UserService {
 
     // 영속성 컨텍스트에 변경내용이 등록되기 때문에, SQL문을 실행하지 않아도 transaction이 끝나면 자동으로 저장됨
     @Transactional
-    public User updateUserInfo(RequestUpdateUserInfoDto requestUpdateUserInfoDto, int id) {
+    public User updateUserInfo(RequestUpdateUserInfoDto requestUpdateUserInfoDto, Long id) {
 
         User persistanceUser = userRepository.searchId(id).orElseThrow(() -> {
             return new IllegalArgumentException("회원찾기 실패");

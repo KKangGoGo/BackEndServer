@@ -4,6 +4,7 @@ import com.kkanggogo.facealbum.album.domain.Image;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +16,7 @@ public class ImageMultipartFileRequestDto implements ImageRequestDto {
     Integer fileCount;
 
 
+    @Override
     public List<Image> toImageEntity(String userName) {
         List<Image> imageList=new ArrayList<>();
         for(int i=0;i<fileCount;i++){
@@ -24,10 +26,5 @@ public class ImageMultipartFileRequestDto implements ImageRequestDto {
             imageList.add(image);
         }
         return imageList;
-    }
-
-    @Override
-    public List<Image> toImageEntity(Long userId) {
-        return null;
     }
 }

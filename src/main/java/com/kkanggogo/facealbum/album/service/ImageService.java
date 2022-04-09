@@ -7,6 +7,7 @@ import com.kkanggogo.facealbum.album.domain.Image;
 import com.kkanggogo.facealbum.album.domain.repository.AlbumImageMapRepository;
 import com.kkanggogo.facealbum.album.domain.repository.ImageRepository;
 import com.kkanggogo.facealbum.album.web.dto.ImageRequestDto;
+import com.kkanggogo.facealbum.login.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -28,15 +29,13 @@ public class ImageService {
 
     @Async
     @Transactional
-    public void upload(ImageRequestDto imageRequestDto){
-        Long userId=1L;
+    public void upload(ImageRequestDto imageRequestDto, User user){
         List<AlbumImageMappingTable> albumImageMappingTableList =new ArrayList<>();
-        Album album = albumService.makeAlbum(userId);
-        List<Image> images = imageRequestDto.toImageEntity(userId);
+        Album album = albumService.makeAlbum(user);
+        List<Image> images = imageRequestDto.toImageEntity(user.getUsername());
 
         for(Image image:images){
             String amazonS3path = userAlbumAmazonS3Uploader.s3Upload(image);
-            image.setImagePath(amazonS3path);
             AlbumImageMappingTable albumImageMappingTable =new AlbumImageMappingTable(image,album);
             albumImageMappingTableList.add(albumImageMappingTable);
         }
