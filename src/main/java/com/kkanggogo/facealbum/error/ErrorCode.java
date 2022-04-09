@@ -1,11 +1,11 @@
 package com.kkanggogo.facealbum.error;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 public enum ErrorCode {
-    INVALID_PARAMETER(400, null, "Invalid Request Data");
+    INVALID_PARAMETER(400, null, "Invalid Request Data"),
+    PHOTO_NULL(500, null, "사진이 등록되지 않은 사용자 입니다.");
 
     private final String code;
     private final String message;

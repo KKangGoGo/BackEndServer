@@ -1,8 +1,10 @@
 package com.kkanggogo.facealbum.login.web.controller.api;
 
+import com.kkanggogo.facealbum.error.CustomPhotoNullException;
 import com.kkanggogo.facealbum.login.config.auth.PrincipalDetails;
 import com.kkanggogo.facealbum.login.web.dto.RequestSignUpDto;
 import com.kkanggogo.facealbum.login.web.dto.RequestUpdateUserInfoDto;
+import com.kkanggogo.facealbum.login.web.dto.ResponseAuthDto;
 import com.kkanggogo.facealbum.login.web.dto.ResponseDto;
 import com.kkanggogo.facealbum.login.domain.User;
 import com.kkanggogo.facealbum.login.service.UserService;
@@ -10,10 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Null;
 
 
 @RestController
@@ -56,4 +60,22 @@ public class UserApiController {
             return new ResponseDto<Integer>(HttpStatus.NO_CONTENT.value(), 0);
         }
     }
+
+    // 회원 정보
+    @GetMapping("/api/auth")
+    public ResponseAuthDto getAuth(@AuthenticationPrincipal PrincipalDetails principalDetails){
+        if(principalDetails != null){
+            ResponseAuthDto responseAuthDto = ResponseAuthDto
+                    .builder()
+                    .username(principalDetails.getUsername())
+                    .password(principalDetails.getPassword())
+                    .email(principalDetails.getUser().getEmail())
+                    .role(principalDetails.getUser().getRole())
+                    .build();
+            return responseAuthDto;
+
+        }
+        throw new UsernameNotFoundException("사용자를 찾을 수 없습니다.");
+    }
+
 }
