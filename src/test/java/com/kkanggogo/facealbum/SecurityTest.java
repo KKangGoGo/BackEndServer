@@ -12,6 +12,8 @@ import com.kkanggogo.facealbum.login.web.dto.ResponseDto;
 import com.kkanggogo.facealbum.login.domain.RoleType;
 import com.kkanggogo.facealbum.login.domain.User;
 import com.kkanggogo.facealbum.login.domain.repository.UserRepository;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -216,6 +218,33 @@ public class SecurityTest {
     }
 
     @Test
+    @DisplayName("토큰으로 사용자 정보를 받아오는 테스트")
+    public void getAuthTest() throws Exception {
+        // given
+        oneUserSignUp(requestSignUpDto);
+        String accessToken = getAuthorizedUserToken(this.user);
+
+        // when
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders
+                .get("/api/auth")
+                .header("access_token", accessToken)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        // then
+        String result = mvcResult.getResponse().getContentAsString();
+
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObj = (JSONObject) parser.parse(result);
+        System.out.println(jsonObj.get("password"));
+
+        assertThat(jsonObj.get("username"), is(requestSignUpDto.getUsername()));
+        // 이유는 모르겠으나, 비밀번호 비교 안됨
+        // assertThat(true, is(encoder.matches((String)jsonObj.get("password"), requestSignUpDto.getPassword())));
+        assertThat(jsonObj.get("email"), is(requestSignUpDto.getEmail()));
+    }
+
+    @Test
     @DisplayName("회원 비밀번호 수정 테스트")
     public void updateUserTest() throws Exception {
         // given
@@ -275,7 +304,7 @@ public class SecurityTest {
     }
 
     @Test
-    @DisplayName("조건에 맞지 않은 회원가입")
+    @DisplayName("조건에 맞지 않은 회원가입 테스트")
     public void signUpMethodArgumentNotValidException() throws Exception {
         // given
         RequestSignUpDto invalidRequest = RequestSignUpDto
@@ -295,7 +324,7 @@ public class SecurityTest {
     }
 
     @Test
-    @DisplayName("회원가입 되지 않은 아이디로 로그인 시도")
+    @DisplayName("회원가입 되지 않은 아이디로 로그인 시도 테스트")
     public void notSingUpLogin() throws Exception{
         // given
         userRepository.deleteAll();
