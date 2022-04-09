@@ -44,4 +44,5 @@ echo "> Jar Name: $JAR_NAME"
 
 nohup java -jar \
   -Dspring.config.location=classpath:/application.yml,/home/ec2-user/app/application-prod-db.yml,/home/ec2-user/app/application-prod-oauth.yml,/home/ec2-user/app/application-prod-cloud.yml/home/ec2-user/app/application-prod.yml \
-  -Dspring.profiles.active=prod $REPOSITORY/$JAR_NAME 2>&1
+  -Dspring.profiles.active=prod \
+  $REPOSITORY/$JAR_NAME 2>&1 &
