@@ -11,6 +11,7 @@ git pull
 
 echo "> 프로젝트 Build 시작"
 
+chmod +x ./gradlew
 ./gradlew build
 
 echo "> 프로젝트 디렉토리로 이동"
