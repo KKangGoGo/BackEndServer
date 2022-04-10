@@ -37,8 +37,7 @@ import java.nio.charset.StandardCharsets;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -105,7 +104,7 @@ public class SecurityTest {
 
         this.user.setPassword(encoder.encode(this.user.getPassword()));
         when(mockUserRepository.findByUsername(anyString())).thenReturn(this.user);
-        when(mockUserRepository.findById(anyInt())).thenReturn(java.util.Optional.ofNullable(this.user));
+        when(mockUserRepository.findById(anyLong())).thenReturn(java.util.Optional.ofNullable(this.user));
     }
 
     public MvcResult executePost(String url, String body) throws Exception {
