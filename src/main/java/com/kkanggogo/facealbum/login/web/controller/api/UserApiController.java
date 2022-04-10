@@ -44,7 +44,7 @@ public class UserApiController {
     }
 
     // 회원 정보 수정
-    @PutMapping("/api/user/mypage/update")
+    @PutMapping("/api/user/mypage")
     public ResponseDto<Integer> updateUser(@Valid @RequestBody RequestUpdateUserInfoDto requestUpdateUserInfoDto,
                                                @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
@@ -62,7 +62,7 @@ public class UserApiController {
     }
 
     // 회원 정보
-    @GetMapping("/api/auth")
+    @GetMapping("/api/user/auth")
     public ResponseAuthDto getAuth(@AuthenticationPrincipal PrincipalDetails principalDetails){
         if(principalDetails != null){
             ResponseAuthDto responseAuthDto = ResponseAuthDto

@@ -40,7 +40,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
-        System.out.printf("JwtAuthentication: 로그인 실행됨 ");
+        System.out.println("JwtAuthentication: 로그인 실행됨");
 
         // json의 데이터를 mapping시켜 서버에서 사용할 수 있도록 만든다.
         ObjectMapper objectMapper = new ObjectMapper();
@@ -81,7 +81,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             FilterChain chain,
                                             Authentication authResult)
                                             throws IOException, ServletException {
-
         PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
 
         JwtProperties jwtProperties = new JwtProperties();
