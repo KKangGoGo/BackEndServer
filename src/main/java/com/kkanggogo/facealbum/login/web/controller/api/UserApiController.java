@@ -1,11 +1,11 @@
-package com.kkanggogo.facealbum.login.controller.api;
+package com.kkanggogo.facealbum.login.web.controller.api;
 
 import com.kkanggogo.facealbum.album.web.ImageMultipartFileRequestDtoFactory;
 import com.kkanggogo.facealbum.login.config.auth.PrincipalDetails;
-import com.kkanggogo.facealbum.login.dto.RequestSignUpDto;
-import com.kkanggogo.facealbum.login.dto.RequestUpdateUserInfoDto;
-import com.kkanggogo.facealbum.login.dto.ResponseDto;
-import com.kkanggogo.facealbum.login.model.User;
+import com.kkanggogo.facealbum.login.web.dto.RequestSignUpDto;
+import com.kkanggogo.facealbum.login.web.dto.RequestUpdateUserInfoDto;
+import com.kkanggogo.facealbum.login.web.dto.ResponseDto;
+import com.kkanggogo.facealbum.login.domain.User;
 import com.kkanggogo.facealbum.login.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,8 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Supplier;
 
 
 @RestController

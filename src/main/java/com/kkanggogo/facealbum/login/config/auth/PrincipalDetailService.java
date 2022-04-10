@@ -1,7 +1,7 @@
 package com.kkanggogo.facealbum.login.config.auth;
 
-import com.kkanggogo.facealbum.login.model.User;
-import com.kkanggogo.facealbum.login.repository.UserRepository;
+import com.kkanggogo.facealbum.login.domain.User;
+import com.kkanggogo.facealbum.login.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

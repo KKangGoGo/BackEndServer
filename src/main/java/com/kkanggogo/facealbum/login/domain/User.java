@@ -1,4 +1,4 @@
-package com.kkanggogo.facealbum.login.model;
+package com.kkanggogo.facealbum.login.domain;
 
 import com.kkanggogo.facealbum.album.domain.Album;
 import lombok.*;

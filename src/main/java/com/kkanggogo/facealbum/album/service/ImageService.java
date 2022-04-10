@@ -7,7 +7,7 @@ import com.kkanggogo.facealbum.album.domain.Image;
 import com.kkanggogo.facealbum.album.domain.repository.AlbumImageMapRepository;
 import com.kkanggogo.facealbum.album.domain.repository.ImageRepository;
 import com.kkanggogo.facealbum.album.web.dto.ImageRequestDto;
-import com.kkanggogo.facealbum.login.model.User;
+import com.kkanggogo.facealbum.login.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;

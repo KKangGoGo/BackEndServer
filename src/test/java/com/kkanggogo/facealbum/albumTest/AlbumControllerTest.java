@@ -1,24 +1,18 @@
 package com.kkanggogo.facealbum.albumTest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kkanggogo.facealbum.SecurityTest;
 import com.kkanggogo.facealbum.album.domain.Album;
 import com.kkanggogo.facealbum.album.service.AlbumService;
-import com.kkanggogo.facealbum.album.web.AlbumController;
 import com.kkanggogo.facealbum.album.web.dto.AlbumRequestDto;
 import com.kkanggogo.facealbum.login.config.auth.PrincipalDetails;
 import com.kkanggogo.facealbum.login.config.jwt.JwtProvider;
-import com.kkanggogo.facealbum.login.dto.RequestLoginDto;
-import com.kkanggogo.facealbum.login.model.RoleType;
-import com.kkanggogo.facealbum.login.model.User;
-import com.kkanggogo.facealbum.login.repository.UserRepository;
+import com.kkanggogo.facealbum.login.domain.RoleType;
+import com.kkanggogo.facealbum.login.domain.User;
+import com.kkanggogo.facealbum.login.domain.repository.UserRepository;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -26,8 +20,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 

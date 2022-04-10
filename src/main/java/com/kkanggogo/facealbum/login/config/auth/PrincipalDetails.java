@@ -1,6 +1,6 @@
 package com.kkanggogo.facealbum.login.config.auth;
 
-import com.kkanggogo.facealbum.login.model.User;
+import com.kkanggogo.facealbum.login.domain.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

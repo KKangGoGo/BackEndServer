@@ -2,9 +2,8 @@ package com.kkanggogo.facealbum.album.service;
 
 import com.kkanggogo.facealbum.album.domain.Album;
 import com.kkanggogo.facealbum.album.domain.repository.AlbumRepository;
-import com.kkanggogo.facealbum.login.model.User;
-import com.kkanggogo.facealbum.login.repository.UserRepository;
-import com.kkanggogo.facealbum.login.service.UserService;
+import com.kkanggogo.facealbum.login.domain.User;
+import com.kkanggogo.facealbum.login.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

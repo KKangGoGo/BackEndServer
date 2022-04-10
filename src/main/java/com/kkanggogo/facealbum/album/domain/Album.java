@@ -1,7 +1,7 @@
 package com.kkanggogo.facealbum.album.domain;
 
 import com.kkanggogo.facealbum.album.web.dto.AlbumResponseDto;
-import com.kkanggogo.facealbum.login.model.User;
+import com.kkanggogo.facealbum.login.domain.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

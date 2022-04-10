@@ -3,8 +3,8 @@ package com.kkanggogo.facealbum.albumTest;
 import com.kkanggogo.facealbum.album.domain.Album;
 import com.kkanggogo.facealbum.album.domain.repository.AlbumRepository;
 import com.kkanggogo.facealbum.album.service.AlbumService;
-import com.kkanggogo.facealbum.login.model.User;
-import com.kkanggogo.facealbum.login.repository.UserRepository;
+import com.kkanggogo.facealbum.login.domain.User;
+import com.kkanggogo.facealbum.login.domain.repository.UserRepository;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,7 +13,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;

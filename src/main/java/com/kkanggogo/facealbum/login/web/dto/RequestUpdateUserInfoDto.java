@@ -1,19 +1,15 @@
-package com.kkanggogo.facealbum.login.dto;
+package com.kkanggogo.facealbum.login.web.dto;
 
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
-
 
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RequestLoginDto {
-
-    @NotBlank
-    private String username;
+public class RequestUpdateUserInfoDto {
 
     @NotBlank
     private String password;
