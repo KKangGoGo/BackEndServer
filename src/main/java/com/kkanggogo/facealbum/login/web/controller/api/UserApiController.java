@@ -41,14 +41,12 @@ public class UserApiController {
     @PostMapping("/api/signup")
 
     public ResponseEntity<ResponseDto<Integer>> signUp(@Valid @RequestPart(value = "photo", required = false) MultipartFile photo,
-                                                       @Valid @RequestPart(value = "signupInfo") RequestSignUpDto requestSignUpDto)
-    {
+                                                       @Valid @RequestPart(value = "signupInfo") RequestSignUpDto requestSignUpDto) {
 
         User checkSignUp;
-        if(photo==null){
-            checkSignUp=userService.signUp(requestSignUpDto);
-        }
-        else{
+        if (photo == null) {
+            checkSignUp = userService.signUp(requestSignUpDto);
+        } else {
             checkSignUp = userService.signUp(requestSignUpDto, ImageMultipartFileRequestDtoFactory
                     .makeMultipartFileRequestDto(List.of(photo)));
         }
@@ -59,6 +57,8 @@ public class UserApiController {
         } else {
             // ("[ERROR]회원가입 실패");
             return new ResponseEntity<>(new ResponseDto<>(HttpStatus.NO_CONTENT.value(), 0), HttpStatus.NO_CONTENT);
+        }
+    }
   
 
     // 회원 정보 수정
