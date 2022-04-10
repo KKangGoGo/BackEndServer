@@ -1,6 +1,7 @@
 package com.kkanggogo.facealbum.album.domain;
 
 import com.kkanggogo.facealbum.album.web.dto.AlbumResponseDto;
+import com.kkanggogo.facealbum.login.domain.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,8 +23,17 @@ public class Album {
 
     private String title;
 
-    @OneToMany(mappedBy = "album")
+    @ManyToOne
+    @JoinColumn(name = "userId")
+    private User user;
+
+    @OneToMany(mappedBy = "album",cascade = CascadeType.ALL)
     private List<AlbumImageMappingTable> albumImageMappingTableList =new ArrayList<>();
+
+    public void setUser(User user) {
+        this.user = user;
+        user.getAlbumList().add(this);
+    }
 
     @PrePersist
     public void title(){

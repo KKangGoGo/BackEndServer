@@ -5,6 +5,6 @@ import java.util.List;
 
 public interface ImageRequestDto {
 
-    public List<Image> toImageEntity(Long userId);
+    public List<Image> toImageEntity(String username);
 
 }

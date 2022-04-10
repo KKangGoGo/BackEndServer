@@ -2,9 +2,11 @@ package com.kkanggogo.facealbum.album.web;
 
 import com.kkanggogo.facealbum.album.service.ImageService;
 import com.kkanggogo.facealbum.album.web.dto.ImageJsonRequestDto;
+import com.kkanggogo.facealbum.login.config.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,15 +20,17 @@ public class ImageController {
 
     private final ImageService imageService;
 
-    @PostMapping("/test")
+    @PostMapping("/api/user/album-list")
     @ResponseStatus(code = HttpStatus.ACCEPTED)
-    public void uploadImage(@RequestParam("images") List<MultipartFile> files){
-        imageService.upload(ImageMultipartFileRequestDtoFactory.makeMultipartFileRequestDto(files));
+    public void uploadImage(@RequestParam("images") List<MultipartFile> files,
+                            @AuthenticationPrincipal PrincipalDetails principalDetails){
+        imageService.upload(ImageMultipartFileRequestDtoFactory.makeMultipartFileRequestDto(files),principalDetails.getUser());
     }
 
-    @PostMapping("/jsontest")
+    @PostMapping("api/imageupload/jsondata")
     @ResponseStatus(code = HttpStatus.ACCEPTED)
-    public void uploadImageForJson(@RequestBody ImageJsonRequestDto imageJsonRequestDto){
-        imageService.upload(imageJsonRequestDto);
+    public void uploadImageForJson(@RequestBody ImageJsonRequestDto imageJsonRequestDto,
+                                   @AuthenticationPrincipal PrincipalDetails principalDetails){
+        imageService.upload(imageJsonRequestDto,principalDetails.getUser());
     }
 }

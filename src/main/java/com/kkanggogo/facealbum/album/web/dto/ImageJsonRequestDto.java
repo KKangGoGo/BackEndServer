@@ -19,15 +19,19 @@ public class ImageJsonRequestDto implements ImageRequestDto {
 
     private Integer fileCount;
 
+
     @Override
-    public List<Image> toImageEntity(Long userId){
+    public List<Image> toImageEntity(String username) {
         List<Image> imageList=new ArrayList<>();
         for(int i=0;i<fileCount;i++){
             Image image=new Image();
-            image.makeS3Path(userId,originFileNames.get(i));
+            image.makeS3Path(username,originFileNames.get(i));
+            image.setMediaType(originFileNames.get(i));
             image.changeStringToByte(images.get(i));
             imageList.add(image);
         }
         return imageList;
     }
+
+
 }
