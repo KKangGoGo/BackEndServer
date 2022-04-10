@@ -42,8 +42,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic().disable()
                 .addFilterBefore(new JwtAuthorizationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
                 .addFilter(jwtAuthenticationFilter())
-                .logout().logoutUrl("/api/logout")
-                .and()
                 .authorizeRequests()
                 .antMatchers("/api/user/**")
                 .access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
