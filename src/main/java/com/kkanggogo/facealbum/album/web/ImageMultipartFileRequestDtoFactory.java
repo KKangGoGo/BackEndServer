@@ -15,7 +15,12 @@ public class ImageMultipartFileRequestDtoFactory {
         imageMultipartFileRequestDto.setFileCount(files.size());
         imageMultipartFileRequestDto.setOriginFileNames(getOriginFileNames(files));
         imageMultipartFileRequestDto.setImageByteDates(getImageByteDates(files));
+        imageMultipartFileRequestDto.setMediaType(getMediaType(files));
         return imageMultipartFileRequestDto;
+    }
+
+    private static List<String> getMediaType(List<MultipartFile> files) {
+        return files.stream().map(file -> file.getContentType()).collect(Collectors.toList());
     }
 
     private static List<byte[]> getImageByteDates(List<MultipartFile> files) {

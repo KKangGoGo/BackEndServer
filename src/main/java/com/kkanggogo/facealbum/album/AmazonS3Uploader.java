@@ -1,5 +1,6 @@
 package com.kkanggogo.facealbum.album;
 
+import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
@@ -21,10 +22,10 @@ public abstract class AmazonS3Uploader {
 
 
 
-    public String s3Upload(Image image) {
+    public String s3Upload(Image image) throws AmazonServiceException {
         String bucket= getBucket();
         ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentType(MediaType.IMAGE_JPEG_VALUE);
+        metadata.setContentType(image.getMediaType());
         InputStream inputStream = new ByteArrayInputStream(image.getImageByte());
         metadata.setContentLength(image.getImageByte().length);
         amazonS3Client.putObject(new PutObjectRequest(bucket, image.getImagePath(), inputStream, metadata));

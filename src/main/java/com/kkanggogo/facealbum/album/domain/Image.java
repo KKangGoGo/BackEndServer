@@ -3,6 +3,7 @@ package com.kkanggogo.facealbum.album.domain;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.http.MediaType;
 
 import javax.persistence.*;
 import java.util.Base64;
@@ -23,10 +24,9 @@ public class Image {
     @Transient
     private byte[] imageByte;
 
-    public void makeS3Path(Long userId, String imagePath) {
-        UUID uuid=UUID.randomUUID();
-        this.imagePath = String.format("%d/%s%s",userId,uuid,imagePath);
-    }
+    @Transient
+    private String mediaType;
+
 
     public void makeS3Path(String userName, String imagePath) {
         UUID uuid=UUID.randomUUID();

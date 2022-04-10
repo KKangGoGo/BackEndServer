@@ -26,9 +26,12 @@ public class ImageJsonRequestDto implements ImageRequestDto {
         for(int i=0;i<fileCount;i++){
             Image image=new Image();
             image.makeS3Path(username,originFileNames.get(i));
+            image.setMediaType(originFileNames.get(i));
             image.changeStringToByte(images.get(i));
             imageList.add(image);
         }
         return imageList;
     }
+
+
 }

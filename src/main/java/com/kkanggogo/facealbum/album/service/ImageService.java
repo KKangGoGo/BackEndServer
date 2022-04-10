@@ -35,12 +35,13 @@ public class ImageService {
         List<Image> images = imageRequestDto.toImageEntity(user.getUsername());
 
         for(Image image:images){
-            String amazonS3path = userAlbumAmazonS3Uploader.s3Upload(image);
+            userAlbumAmazonS3Uploader.s3Upload(image);
             AlbumImageMappingTable albumImageMappingTable =new AlbumImageMappingTable(image,album);
             albumImageMappingTableList.add(albumImageMappingTable);
         }
 
         imageRepository.saveAll(images);
         albumImageMapRepository.saveAll(albumImageMappingTableList);
+        log.debug("imageService 저장 실행");
     }
 }

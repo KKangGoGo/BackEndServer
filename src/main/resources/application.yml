@@ -37,3 +37,8 @@ spring:
   jackson:
     serialization:
       fail-on-empty-beans: false
+
+
+logging:
+  level:
+    root: debug

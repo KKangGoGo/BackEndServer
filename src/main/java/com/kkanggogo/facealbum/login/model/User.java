@@ -3,7 +3,6 @@ package com.kkanggogo.facealbum.login.model;
 import com.kkanggogo.facealbum.album.domain.Album;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -42,6 +41,6 @@ public class User {
     @Column(nullable = true, length = 300)
     private String photo;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<Album> albumList=new ArrayList<>();
 }

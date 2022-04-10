@@ -27,7 +27,7 @@ public class Album {
     @JoinColumn(name = "userId")
     private User user;
 
-    @OneToMany(mappedBy = "album")
+    @OneToMany(mappedBy = "album",cascade = CascadeType.ALL)
     private List<AlbumImageMappingTable> albumImageMappingTableList =new ArrayList<>();
 
     public void setUser(User user) {

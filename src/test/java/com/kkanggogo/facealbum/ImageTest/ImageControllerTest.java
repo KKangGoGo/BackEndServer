@@ -1,9 +1,16 @@
 package com.kkanggogo.facealbum.ImageTest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kkanggogo.facealbum.album.domain.Album;
+import com.kkanggogo.facealbum.album.service.AlbumService;
 import com.kkanggogo.facealbum.album.service.ImageService;
 import com.kkanggogo.facealbum.album.web.ImageController;
 import com.kkanggogo.facealbum.album.web.dto.ImageJsonRequestDto;
+import com.kkanggogo.facealbum.login.config.auth.PrincipalDetails;
+import com.kkanggogo.facealbum.login.config.jwt.JwtProvider;
+import com.kkanggogo.facealbum.login.model.RoleType;
+import com.kkanggogo.facealbum.login.model.User;
+import com.kkanggogo.facealbum.login.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -12,18 +19,27 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -31,18 +47,66 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @ExtendWith(MockitoExtension.class)
 public class ImageControllerTest {
+
+    @Autowired
+    private WebApplicationContext context;
+
+    @Autowired
+    private JwtProvider jwtProvider;
+
+    @MockBean
+    private UserRepository userRepository;
+
     private MockMvc mockMvc;
 
-    @InjectMocks
-    private ImageController imageController;
-
-    @Mock
+    @MockBean
     private ImageService imageService;
+
+
+    private User user;
+
+    private ObjectMapper objectMapper;
+
+    private String authorizedUserToken;
 
 
     @BeforeEach
     public void init() {
-        mockMvc = MockMvcBuilders.standaloneSetup(imageController).build();
+        mockMvc = MockMvcBuilders
+                .webAppContextSetup(this.context)
+                .apply(SecurityMockMvcConfigurers.springSecurity())
+                .build();
+
+        user = User
+                .builder()
+                .username("ksb1")
+                .password("1234")
+                .email("ksb@gm")
+                .role(RoleType.USER)
+                .build();
+
+        Album responseAlbum = new Album();
+        responseAlbum.title();
+        responseAlbum.setId(1L);
+
+        when(userRepository.searchUsername(anyString())).thenReturn(this.user);
+
+        authorizedUserToken =getAuthorizedUserToken(this.user);
+        objectMapper = new ObjectMapper();
+    }
+
+    public String getAuthorizedUserToken(User saveUser){
+        PrincipalDetails principalDetails = new PrincipalDetails(saveUser);
+
+        String testToken = jwtProvider.createToken(principalDetails);
+
+        // 사용자를 SecurityContestHolder에 강제 저장
+        if (testToken != null && jwtProvider.isTokenValid(testToken)) {
+            Authentication authentication = jwtProvider.getAuthentication(testToken);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        }
+
+        return testToken;
     }
 
 
@@ -50,13 +114,13 @@ public class ImageControllerTest {
     public void multipartFileImageUploadTest() throws Exception {
         //given
         String fileName="balda";
-        String contentType="jpg";
+        String contentType="image/jpeg";
         String path="./MockFile";
 
         MockMultipartFile mockMultipartFile = getMockMultipartFile(fileName,contentType,path);
         //when
-        mockMvc.perform(MockMvcRequestBuilders.multipart("/test")
-                .file(mockMultipartFile))
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/imageupload/multipart")
+                .file(mockMultipartFile).header("access_token",authorizedUserToken))
                 //then
                 .andExpect(status().is(202));
 
@@ -66,15 +130,15 @@ public class ImageControllerTest {
     public void multipartFileImageListUploadTest() throws Exception {
         //given
         String fileName="balda";
-        String contentType="jpg";
+        String contentType="image/jpeg";
         String path="./MockFile";
 
         MockMultipartFile mockMultipartFile = getMockMultipartFile(fileName,contentType,path);
         MockMultipartFile mockMultipartFile2 = getMockMultipartFile(fileName,contentType,path);
         //when
-        mockMvc.perform(MockMvcRequestBuilders.multipart("/test")
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/imageupload/multipart")
                 .file(mockMultipartFile)
-                .file(mockMultipartFile2))
+                .file(mockMultipartFile2).header("access_token",authorizedUserToken))
                 //then
                 .andExpect(status().is(202));
 
@@ -92,8 +156,8 @@ public class ImageControllerTest {
         ObjectMapper objectMapper=new ObjectMapper();
         String requestString = objectMapper.writeValueAsString(imageJsonRequestDto);
         //when
-        mockMvc.perform(MockMvcRequestBuilders.post("/jsontest")
-                .contentType(MediaType.APPLICATION_JSON).content(requestString))
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/imageupload/jsondata")
+                .contentType(MediaType.APPLICATION_JSON).content(requestString).header("access_token",authorizedUserToken))
                 //then
                 .andExpect(status().is(202));
 
@@ -115,15 +179,15 @@ public class ImageControllerTest {
         ObjectMapper objectMapper=new ObjectMapper();
         String requestString = objectMapper.writeValueAsString(imageJsonRequestDto);
         //when
-        mockMvc.perform(MockMvcRequestBuilders.post("/jsontest")
-                .contentType(MediaType.APPLICATION_JSON).content(requestString))
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/imageupload/jsondata")
+                .contentType(MediaType.APPLICATION_JSON).content(requestString).header("access_token",authorizedUserToken))
                 //then
                 .andExpect(status().is(202));
 
     }
 
     private MockMultipartFile getMockMultipartFile(String fileName,String contentType, String path) throws IOException {
-        FileInputStream fileInputStream = new FileInputStream(new File(path+"/"+fileName+"."+contentType));
+        FileInputStream fileInputStream = new FileInputStream(new File(path+"/"+fileName+"."+"jpg"));
         return new MockMultipartFile("images", fileName + "." + contentType, contentType, fileInputStream);
     }
 }

@@ -5,27 +5,20 @@ import com.kkanggogo.facealbum.album.domain.repository.AlbumRepository;
 import com.kkanggogo.facealbum.album.service.AlbumService;
 import com.kkanggogo.facealbum.login.model.User;
 import com.kkanggogo.facealbum.login.repository.UserRepository;
-import com.kkanggogo.facealbum.login.service.UserService;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.stubbing.Answer;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
@@ -92,17 +85,16 @@ public class AlbumServiceTest {
         assertThat(responseAlbum.getId(),is(album.getId()));
     }
 
-    @Test()
+    @Test
     public void  사용자_못찾음(){
         //given
         Optional<User> user = Optional.empty();
 
         when(userRepository.searchId(anyLong())).thenReturn(user);
 
-        assertThatThrownBy(
-                //when
-                () -> albumService.makeAlbum(requestUser,"aaaaaa"))
-                //then
-                .isInstanceOf(IllegalArgumentException.class);
+        IllegalArgumentException illegalArgumentException
+                = assertThrows(IllegalArgumentException.class, () -> albumService.makeAlbum(requestUser, "aaaaaa"));
+        assertThat(illegalArgumentException.getMessage(),is("사용자가 없습니다."));
     }
+
 }
