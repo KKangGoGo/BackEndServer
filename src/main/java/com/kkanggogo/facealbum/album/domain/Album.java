@@ -21,6 +21,7 @@ public class Album {
     @Column(name = "albumId")
     private Long id;
 
+
     private String title;
 
     @ManyToOne
@@ -38,7 +39,7 @@ public class Album {
     @PrePersist
     public void title(){
         if(this.title==null){
-            this.title= LocalDate.now().toString();
+            this.title= "제목없음";
         }
     }
 
