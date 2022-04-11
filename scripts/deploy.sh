@@ -38,11 +38,11 @@ fi
 
 echo "> 새 애플리케이션 배포"
 
-JAR_NAME=$(ls -tr $REPOSITORY/ | grep jar | tail -n 1)
+JAR_NAME=$(ls -tr $REPOSITORY/ | grep SNAPSHOT.jar | tail -n 1)
 
 echo "> Jar Name: $JAR_NAME"
 
+# plain.jar 말고 의존성이 모두 빌드된 .jar를 실행해야한다.
 nohup java -jar \
-  -Dspring.config.location=classpath:/application.yml,/home/ec2-user/app/application-prod-db.yml,/home/ec2-user/app/application-prod-oauth.yml,/home/ec2-user/app/application-prod-cloud.yml,classpath:/application-prod.yml \
   -Dspring.profiles.active=prod \
   $REPOSITORY/$JAR_NAME 2>&1 &
