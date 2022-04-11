@@ -115,7 +115,7 @@ public class ImageControllerTest {
 
         MockMultipartFile mockMultipartFile = getMockMultipartFile(fileName,contentType,path);
         //when
-        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/user/album-list")
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/user/album/images")
                 .file(mockMultipartFile).header("access_token",authorizedUserToken))
                 //then
                 .andExpect(status().is(202));
@@ -132,7 +132,7 @@ public class ImageControllerTest {
         MockMultipartFile mockMultipartFile = getMockMultipartFile(fileName,contentType,path);
         MockMultipartFile mockMultipartFile2 = getMockMultipartFile(fileName,contentType,path);
         //when
-        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/user/album-list")
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/user/album/images")
                 .file(mockMultipartFile)
                 .file(mockMultipartFile2).header("access_token",authorizedUserToken))
                 //then
