@@ -45,4 +45,5 @@ echo "> Jar Name: $JAR_NAME"
 # plain.jar 말고 의존성이 모두 빌드된 .jar를 실행해야한다.
 nohup java -jar \
   -Dspring.profiles.active=prod \
+  -Dspring.config.location=classpath:/application.yml,/home/ec2-user/app/application-prod-db.yml,/home/ec2-user/app/application-prod-oauth.yml,/home/ec2-user/app/application-prod-cloud.yml,classpath:/application-prod.yml \
   $REPOSITORY/$JAR_NAME 2>&1 &
