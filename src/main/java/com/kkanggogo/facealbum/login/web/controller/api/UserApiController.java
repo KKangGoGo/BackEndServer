@@ -33,6 +33,7 @@ public class UserApiController {
     @PostMapping("/api/signup")
     public ResponseDto<Integer> signUp(@Valid @RequestPart(value = "photo", required = false) MultipartFile photo,
                                        @Valid @RequestPart(value = "signupInfo") RequestSignUpDto requestSignUpDto) {
+        System.out.println("test");
         User checkSignUp = userService.signUp(requestSignUpDto, photo);
         if (checkSignUp != null) {
             // ("[INFO]회원가입 완료");
