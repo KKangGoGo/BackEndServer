@@ -20,7 +20,7 @@ public class ImageController {
 
     private final ImageService imageService;
 
-    @PostMapping("/api/user/album-list")
+    @PostMapping("/api/user/album/images")
     @ResponseStatus(code = HttpStatus.ACCEPTED)
     public void uploadImage(@RequestParam("images") List<MultipartFile> files,
                             @AuthenticationPrincipal PrincipalDetails principalDetails){
