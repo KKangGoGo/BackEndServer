@@ -82,6 +82,7 @@ public class SecurityTest {
 
         user = User
                 .builder()
+                .id(1L)
                 .username("ksb")
                 .password("1234")
                 .email("ksb@gm")
