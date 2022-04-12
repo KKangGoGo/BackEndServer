@@ -55,7 +55,7 @@ public class JwtProvider {
         String username = getUsername(token);
 
         if (username != null) {
-            User user = userRepository.findByUsername(username);
+            User user = userRepository.searchUsername(username);
 
             //username가 null이 아니기 때문에 정상 유저임
             //jwt토큰 서명을 통해 만든 Authentication의 객체

@@ -27,6 +27,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -43,6 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+@ActiveProfiles("local")
 public class SecurityTest {
 
     @Autowired
@@ -82,6 +84,7 @@ public class SecurityTest {
 
         user = User
                 .builder()
+                .id(1L)
                 .username("ksb")
                 .password("1234")
                 .email("ksb@gm")
@@ -103,8 +106,8 @@ public class SecurityTest {
         expectResponseDto = mapper.writeValueAsString(new ResponseDto<Integer>(HttpStatus.OK.value(), 1));
 
         this.user.setPassword(encoder.encode(this.user.getPassword()));
-        when(mockUserRepository.findByUsername(anyString())).thenReturn(this.user);
-        when(mockUserRepository.findById(anyLong())).thenReturn(java.util.Optional.ofNullable(this.user));
+        when(mockUserRepository.searchUsername(anyString())).thenReturn(this.user);
+        when(mockUserRepository.searchId(anyLong())).thenReturn(java.util.Optional.ofNullable(this.user));
     }
 
     public MvcResult executePost(String url, String body) throws Exception {
@@ -275,7 +278,7 @@ public class SecurityTest {
                 .andReturn();
 
         // then
-        String updatedPassword = mockUserRepository.findByUsername(this.user.getUsername()).getPassword();
+        String updatedPassword = mockUserRepository.searchUsername(this.user.getUsername()).getPassword();
         String result = mvcResult.getResponse().getContentAsString();
         assertThat(result, is(expectResponseDto));
         assertThat(true, is(encoder.matches(requestUpdateUserInfoDto.getPassword(), updatedPassword)));
