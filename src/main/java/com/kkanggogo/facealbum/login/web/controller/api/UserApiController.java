@@ -67,6 +67,8 @@ public class UserApiController {
                                                @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         // ("[INFO]유저정보 update 시도");
+        System.out.println("-----");
+        System.out.println("-----");
         User user = userService.updateUserInfo(requestUpdateUserInfoDto, principalDetails.getUser().getId());
         if (user != null) {
             // ("[INFO]유저정보 update 성공");
