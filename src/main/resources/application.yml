@@ -12,4 +12,8 @@ spring:
   config:
     activate:
       on-profile: "prod"
-
+---
+spring:
+  config:
+    activate:
+      on-profile: "local"
