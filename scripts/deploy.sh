@@ -24,7 +24,7 @@ cp $REPOSITORY/$PROJECT_NAME/build/libs/*.jar $REPOSITORY/
 
 echo "> 현재 구동 중인 애플리케이션 id 확인"
 
-CURRENT_PID=${pgrep -f ${PROJECT_NAME}.*.jar}
+CURRENT_PID=${pgrep -f ${PROJECT_NAME}.*SNAPSHOT.jar}
 
 echo "현재 구동 중인 애플리케이션 pid: $CURRENT_PID"
 
