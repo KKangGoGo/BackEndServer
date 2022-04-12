@@ -5,9 +5,9 @@ server:
 
 spring:
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/security?serverTimezone=Asia/Seoul
-    username: user
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://localhost:3306/kkanggogoalbum?serverTimezone=Asia/Seoul
+    username: root
     password: 1234
 
   jpa:
@@ -31,8 +31,13 @@ cloud:
       access-key: ${access-key}
       secret-key: ${secret-key}
     s3:
-      bucket: ${bucket}
+      profilebucket: ${profilebucket}
+      albumbucket: ${albumbucket}
     region:
       static: ${region}
     stack:
       auto: false
+
+logging:
+  level:
+    root: debug
