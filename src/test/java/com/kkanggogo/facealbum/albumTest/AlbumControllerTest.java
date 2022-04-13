@@ -9,7 +9,10 @@ import com.kkanggogo.facealbum.login.config.jwt.JwtProvider;
 import com.kkanggogo.facealbum.login.domain.RoleType;
 import com.kkanggogo.facealbum.login.domain.User;
 import com.kkanggogo.facealbum.login.domain.repository.UserRepository;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +22,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -36,7 +38,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @ExtendWith(MockitoExtension.class)
-@ActiveProfiles("local")
 public class AlbumControllerTest {
 
     @Autowired
@@ -110,7 +111,7 @@ public class AlbumControllerTest {
         String responseString = objectMapper.writeValueAsString(requestAlbum.toAlbumResponseDto());
 
         //when
-        securityMvc.perform(post("/api/album/makeAlbum")
+        securityMvc.perform(post("/api/user/album/create")
                 .header("access_token",authorizedUserToken)
                 .contentType(MediaType.APPLICATION_JSON))
 
@@ -134,7 +135,7 @@ public class AlbumControllerTest {
         when(albumService.makeAlbum(any(User.class), eq("aaaaa"))).thenReturn(requestAlbum);
 
         //when
-        securityMvc.perform(post("/api/album/makeAlbum")
+        securityMvc.perform(post("/api/user/album/create")
                 .header("access_token",authorizedUserToken)
                 .contentType(MediaType.APPLICATION_JSON).content(requestBodyString))
 
