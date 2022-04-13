@@ -1,6 +1,6 @@
 package com.kkanggogo.facealbum.album.web;
 
-import com.kkanggogo.facealbum.album.service.ImageService;
+import com.kkanggogo.facealbum.album.service.ImageUploadFacade;
 import com.kkanggogo.facealbum.album.web.dto.ImageJsonRequestDto;
 import com.kkanggogo.facealbum.login.config.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
@@ -17,20 +17,27 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ImageController {
 
-
-    private final ImageService imageService;
+    private final ImageUploadFacade imageUploadFacade;
 
     @PostMapping("/api/user/album/images")
     @ResponseStatus(code = HttpStatus.ACCEPTED)
     public void uploadImage(@RequestParam("images") List<MultipartFile> files,
                             @AuthenticationPrincipal PrincipalDetails principalDetails){
-        imageService.upload(ImageMultipartFileRequestDtoFactory.makeMultipartFileRequestDto(files),principalDetails.getUser());
+        imageUploadFacade.upload(ImageMultipartFileRequestDtoFactory.makeMultipartFileRequestDto(files), principalDetails);
+    }
+
+    @PostMapping("/api/user/album/images/{album-id}")
+    @ResponseStatus(code = HttpStatus.ACCEPTED)
+    public void uploadImage(@RequestParam("images") List<MultipartFile> files,
+                            @PathVariable("album-id") Long albumId,
+                            @AuthenticationPrincipal PrincipalDetails principalDetails){
+        imageUploadFacade.upload(ImageMultipartFileRequestDtoFactory.makeMultipartFileRequestDto(files), principalDetails,albumId);
     }
 
     @PostMapping("api/imageupload/jsondata")
     @ResponseStatus(code = HttpStatus.ACCEPTED)
     public void uploadImageForJson(@RequestBody ImageJsonRequestDto imageJsonRequestDto,
                                    @AuthenticationPrincipal PrincipalDetails principalDetails){
-        imageService.upload(imageJsonRequestDto,principalDetails.getUser());
+        imageUploadFacade.upload(imageJsonRequestDto,principalDetails);
     }
 }

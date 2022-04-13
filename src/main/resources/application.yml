@@ -4,8 +4,8 @@ cloud:
       access-key: ${access-key}
       secret-key: ${secret-key}
     s3:
-      profilebucket: ${profilebucket}
-      albumbucket: ${albumbucket}
+      profile-bucket: ${profile-bucket}
+      album-bucket: ${album-bucket}
     region:
       static: ${region}
     stack:
@@ -41,4 +41,4 @@ spring:
 
 logging:
   level:
-    root: debug
+    root: info

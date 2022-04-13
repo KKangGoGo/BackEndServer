@@ -12,6 +12,7 @@ import com.kkanggogo.facealbum.login.web.dto.ResponseAuthDto;
 import com.kkanggogo.facealbum.login.web.dto.ResponseDto;
 import com.kkanggogo.facealbum.login.domain.User;
 import com.kkanggogo.facealbum.login.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,7 @@ import javax.validation.constraints.Null;
 
 
 @RestController
+@Slf4j
 public class UserApiController {
 
     @Autowired
@@ -44,6 +46,7 @@ public class UserApiController {
                                                        @Valid @RequestPart(value = "signupInfo") RequestSignUpDto requestSignUpDto) {
 
         User checkSignUp;
+        log.debug("photos:{}",photo);
         if (photo == null) {
             checkSignUp = userService.signUp(requestSignUpDto);
         } else {

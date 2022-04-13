@@ -10,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -82,6 +83,15 @@ public class AlbumServiceTest {
         //then
         assertThat(responseAlbum.getTitle(),is(album.getTitle()));
         assertThat(responseAlbum.getId(),is(album.getId()));
+    }
+
+    @Transactional
+    @Test
+    public void  앨범_찾기(){
+        Long albumId=1L;
+        Album album = albumService.findAlbum(albumId,requestUser);
+        assertThat(album.getId(),is(responseAlbum.getId()));
+        assertThat(album.getTitle(),is(responseAlbum.getTitle()));
     }
 
     @Test

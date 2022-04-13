@@ -10,13 +10,8 @@ public interface UserRepository extends JpaRepository<User,Long> {
     @Query(value = "SELECT * FROM User WHERE username= ?1", nativeQuery = true)
     User searchUsername(String username);
 
-    User findByUsername(String username);
-
     @Query(value = "SELECT * FROM User WHERE userId= ?1", nativeQuery = true)
     Optional<User> searchId(Long id);
-
-    Optional<User> findById(Long id);
-
 
     @Query(value = "SELECT COUNT(id) FROM User")
     Integer getCount();

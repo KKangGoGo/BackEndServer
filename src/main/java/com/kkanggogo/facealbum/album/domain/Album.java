@@ -19,7 +19,6 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
 public class Album {
 
     @Id @GeneratedValue
@@ -33,13 +32,14 @@ public class Album {
     private User user;
 
     @OneToMany(mappedBy = "album",cascade = CascadeType.ALL)
+    @Column(updatable = false)
     private List<AlbumImageMappingTable> albumImageMappingTableList =new ArrayList<>();
 
-    @CreatedDate
-    private LocalDateTime createdDate;
+    public void addAlbumImageMappingTable(AlbumImageMappingTable albumImageMappingTable){
+        albumImageMappingTable.setAlbum(this);
+        this.albumImageMappingTableList.add(albumImageMappingTable);
 
-    @LastModifiedDate
-    private LocalDateTime modifiedDate;
+    }
 
     public void setUser(User user) {
         this.user = user;
