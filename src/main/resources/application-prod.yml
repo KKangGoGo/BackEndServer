@@ -1,0 +1,9 @@
+spring:
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+
+server:
+  port: 8080
+  servlet:
+    context-path: /
