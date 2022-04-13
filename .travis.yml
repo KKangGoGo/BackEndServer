@@ -4,7 +4,7 @@ jdk:
 
 branches:
   only:
-    - ci/cd
+    - ci
 
 #빌드 전 권한 추가
 before_install:
