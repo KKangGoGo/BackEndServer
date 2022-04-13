@@ -7,6 +7,6 @@ public class AlbumResponseDto {
 
     private Long albumId;
 
-    private String albumTitle;
+    private String title;
 
 }

@@ -5,18 +5,19 @@ import com.kkanggogo.facealbum.album.domain.repository.AlbumRepository;
 import com.kkanggogo.facealbum.album.service.AlbumService;
 import com.kkanggogo.facealbum.login.domain.User;
 import com.kkanggogo.facealbum.login.domain.repository.UserRepository;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThrows;
@@ -26,7 +27,6 @@ import static org.mockito.Mockito.when;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @ExtendWith(MockitoExtension.class)
-@ActiveProfiles("local")
 public class AlbumServiceTest {
 
     @InjectMocks
