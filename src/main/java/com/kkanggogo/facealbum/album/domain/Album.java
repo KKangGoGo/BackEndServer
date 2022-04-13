@@ -5,9 +5,13 @@ import com.kkanggogo.facealbum.login.domain.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +32,14 @@ public class Album {
     private User user;
 
     @OneToMany(mappedBy = "album",cascade = CascadeType.ALL)
+    @Column(updatable = false)
     private List<AlbumImageMappingTable> albumImageMappingTableList =new ArrayList<>();
+
+    public void addAlbumImageMappingTable(AlbumImageMappingTable albumImageMappingTable){
+        albumImageMappingTable.setAlbum(this);
+        this.albumImageMappingTableList.add(albumImageMappingTable);
+
+    }
 
     public void setUser(User user) {
         this.user = user;
@@ -38,7 +49,7 @@ public class Album {
     @PrePersist
     public void title(){
         if(this.title==null){
-            this.title= LocalDate.now().toString();
+            this.title= "제목없음";
         }
     }
 

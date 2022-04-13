@@ -45,8 +45,7 @@ public class ImageServiceTest {
 
     @Mock
     private AmazonS3Uploader userAlbumAmazonS3Uploader;
-    @Mock
-    private AlbumService albumService;
+
     @Mock
     private ImageRepository imageRepository;
     @Mock
@@ -55,6 +54,8 @@ public class ImageServiceTest {
     private ImageMultipartFileRequestDto imageMultipartFileRequestDto;
 
     private  User user;
+
+    private Album responseAlbum;
 
     @Test
     public void 이미지_업로드_성공_테스트() throws IOException {
@@ -72,7 +73,7 @@ public class ImageServiceTest {
         });
 
         //when
-        imageService.upload(imageMultipartFileRequestDto,user);
+        imageService.upload(imageMultipartFileRequestDto,user,responseAlbum);
 
         //then
     }
@@ -86,7 +87,13 @@ public class ImageServiceTest {
         //then
         assertThrows(AmazonServiceException.class,
                 //when
-                ()-> imageService.upload(imageMultipartFileRequestDto,user));
+                ()-> imageService.upload(imageMultipartFileRequestDto,user,responseAlbum));
+
+    }
+
+    @Test
+    public void 앨범_지정_업로드() throws IOException {
+        imageService.upload(imageMultipartFileRequestDto,user,responseAlbum);
 
     }
 
@@ -106,10 +113,9 @@ public class ImageServiceTest {
         MockMultipartFile mockMultipartFile = getMockMultipartFile(fileName, contentType, path);
         imageMultipartFileRequestDto = ImageMultipartFileRequestDtoFactory.makeMultipartFileRequestDto(Arrays.asList(mockMultipartFile));
 
-        Album responseAlbum = new Album();
+        responseAlbum = new Album();
         responseAlbum.title();
         responseAlbum.setId(1L);
-        when(albumService.makeAlbum(any(User.class))).thenReturn(responseAlbum);
     }
 
     private MockMultipartFile getMockMultipartFile(String fileName, String contentType, String path) throws IOException {

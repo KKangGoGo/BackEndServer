@@ -26,10 +26,10 @@ public class AlbumImageMappingTable {
     @JoinColumn(name = "albumId")
     private Album album;
 
-    public AlbumImageMappingTable(Image image, Album album) {
-        this.image = image;
-        this.album = album;
+    public void addAlbumAndImage(Album album,Image image){
         album.getAlbumImageMappingTableList().add(this);
+        this.image=image;
+        this.album=album;
     }
 
 }

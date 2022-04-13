@@ -2,6 +2,7 @@ package com.kkanggogo.facealbum.ImageTest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kkanggogo.facealbum.album.domain.Album;
+import com.kkanggogo.facealbum.album.service.AlbumService;
 import com.kkanggogo.facealbum.album.service.ImageService;
 import com.kkanggogo.facealbum.album.web.dto.ImageJsonRequestDto;
 import com.kkanggogo.facealbum.login.config.auth.PrincipalDetails;
@@ -32,9 +33,9 @@ import org.springframework.web.context.WebApplicationContext;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -58,12 +59,16 @@ public class ImageControllerTest {
     @MockBean
     private ImageService imageService;
 
+    @MockBean
+    private AlbumService albumService;
 
     private User user;
 
     private ObjectMapper objectMapper;
 
     private String authorizedUserToken;
+
+    private Album responseAlbum;
 
 
     @BeforeEach
@@ -75,17 +80,20 @@ public class ImageControllerTest {
 
         user = User
                 .builder()
+                .id(1L)
                 .username("ksb1")
                 .password("1234")
                 .email("ksb@gm")
                 .role(RoleType.USER)
+                .albumList(new ArrayList<>())
                 .build();
 
-        Album responseAlbum = new Album();
+        responseAlbum = new Album();
         responseAlbum.title();
         responseAlbum.setId(1L);
 
         when(userRepository.searchUsername(anyString())).thenReturn(this.user);
+        when(albumService.makeAlbum(any(User.class))).thenReturn(responseAlbum);
 
         authorizedUserToken =getAuthorizedUserToken(this.user);
         objectMapper = new ObjectMapper();
@@ -115,7 +123,7 @@ public class ImageControllerTest {
 
         MockMultipartFile mockMultipartFile = getMockMultipartFile(fileName,contentType,path);
         //when
-        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/user/album-list")
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/user/album/images")
                 .file(mockMultipartFile).header("access_token",authorizedUserToken))
                 //then
                 .andExpect(status().is(202));
@@ -132,9 +140,29 @@ public class ImageControllerTest {
         MockMultipartFile mockMultipartFile = getMockMultipartFile(fileName,contentType,path);
         MockMultipartFile mockMultipartFile2 = getMockMultipartFile(fileName,contentType,path);
         //when
-        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/user/album-list")
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/user/album/images")
                 .file(mockMultipartFile)
                 .file(mockMultipartFile2).header("access_token",authorizedUserToken))
+                //then
+                .andExpect(status().is(202));
+
+    }
+
+    @Test
+    public void albumDesignationMultipartFileImageListUploadTest() throws Exception {
+        //given
+        String fileName="balda";
+        String contentType="image/jpeg";
+        String path="./MockFile";
+
+        MockMultipartFile mockMultipartFile = getMockMultipartFile(fileName,contentType,path);
+        long albumId=responseAlbum.getId().longValue();
+
+        when(albumService.findAlbum(eq(albumId),eq(user))).thenReturn(responseAlbum);
+        //when
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/user/album/images/1")
+                .file(mockMultipartFile)
+                .header("access_token",authorizedUserToken))
                 //then
                 .andExpect(status().is(202));
 
