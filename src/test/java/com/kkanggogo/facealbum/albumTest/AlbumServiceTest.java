@@ -90,11 +90,60 @@ public class AlbumServiceTest {
     @Transactional
     @Test
     public void  앨범_찾기(){
+        //given
         Long albumId=1L;
+        foundUser.getAlbumList().add(responseAlbum);
+        Optional<User> user = Optional.of(foundUser);
+        when(albumRepository.findById(anyLong())).thenReturn(Optional.of(responseAlbum));
+        when(userRepository.findById(anyLong())).thenReturn(user);
+
+        //when
         Album album = albumService.findAlbum(albumId,requestUser);
+
+        //then
         assertThat(album.getId(),is(responseAlbum.getId()));
         assertThat(album.getTitle(),is(responseAlbum.getTitle()));
     }
+
+    @Transactional
+    @Test
+    public void  앨범_이름바꾸기(){
+        //given
+        Long albumId=1L;
+        String changeTileString="변경테스트";
+        foundUser.getAlbumList().add(responseAlbum);
+        Optional<User> user = Optional.of(foundUser);
+        when(albumRepository.findById(anyLong())).thenReturn(Optional.of(responseAlbum));
+        when(userRepository.findById(anyLong())).thenReturn(user);
+
+        //when
+        Album album = albumService.updateAlbumInfo(albumId,foundUser,changeTileString);
+
+        //then
+        assertThat(album.getId(),is(responseAlbum.getId()));
+        assertThat(album.getTitle(),is(changeTileString));
+    }
+
+    @Transactional
+    @Test
+    public void  다른사용자의_앨범접근(){
+        //given
+        Long albumId=1L;
+        String changeTileString="변경테스트";
+        Optional<User> user = Optional.of(foundUser);
+        when(albumRepository.findById(anyLong())).thenReturn(Optional.of(responseAlbum));
+        when(userRepository.findById(anyLong())).thenReturn(user);
+
+        //then
+        IllegalArgumentException illegalArgumentException
+                //then
+                = assertThrows(IllegalArgumentException.class,
+                //when
+                () ->  albumService.updateAlbumInfo(albumId,foundUser,changeTileString));
+        //then
+        assertThat(illegalArgumentException.getMessage(),is("사용자의 앨범이 아닙니다."));
+    }
+
 
     @Test
     public void  사용자_못찾음(){
@@ -104,7 +153,11 @@ public class AlbumServiceTest {
         when(userRepository.searchId(anyLong())).thenReturn(user);
 
         IllegalArgumentException illegalArgumentException
-                = assertThrows(IllegalArgumentException.class, () -> albumService.makeAlbum(requestUser, "aaaaaa"));
+                //then
+                = assertThrows(IllegalArgumentException.class,
+                //when
+                () ->albumService.makeAlbum(requestUser, "aaaaaa"));
+        //then
         assertThat(illegalArgumentException.getMessage(),is("사용자가 없습니다."));
     }
 
