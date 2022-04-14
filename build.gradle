@@ -55,6 +55,20 @@ dependencies {
     
 }
 
-tasks.named('test') {
+test {
+    useJUnitPlatform {
+        includeTags 'unit'
+        excludeTags 'integration'
+    }
+}
+
+task integrationTest(type: Test, group: 'verification') {
+    useJUnitPlatform {
+        includeTags 'integration'
+        excludeTags 'unit'
+    }
+}
+
+task wholeTest(type: Test, group: 'verification') {
     useJUnitPlatform()
 }

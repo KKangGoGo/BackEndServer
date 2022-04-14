@@ -9,10 +9,7 @@ import com.kkanggogo.facealbum.login.config.jwt.JwtProvider;
 import com.kkanggogo.facealbum.login.domain.RoleType;
 import com.kkanggogo.facealbum.login.domain.User;
 import com.kkanggogo.facealbum.login.domain.repository.UserRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayNameGeneration;
-import org.junit.jupiter.api.DisplayNameGenerator;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @ExtendWith(MockitoExtension.class)
+@Tag("unit")
 public class ImageControllerTest {
 
     @Autowired
