@@ -5,19 +5,17 @@ import com.kkanggogo.facealbum.album.domain.repository.AlbumRepository;
 import com.kkanggogo.facealbum.album.service.AlbumService;
 import com.kkanggogo.facealbum.login.domain.User;
 import com.kkanggogo.facealbum.login.domain.repository.UserRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayNameGeneration;
-import org.junit.jupiter.api.DisplayNameGenerator;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThrows;
@@ -27,6 +25,7 @@ import static org.mockito.Mockito.when;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @ExtendWith(MockitoExtension.class)
+@Tag("unit")
 public class AlbumServiceTest {
 
     @InjectMocks
@@ -87,64 +86,6 @@ public class AlbumServiceTest {
         assertThat(responseAlbum.getId(),is(album.getId()));
     }
 
-    @Transactional
-    @Test
-    public void  앨범_찾기(){
-        //given
-        Long albumId=1L;
-        foundUser.getAlbumList().add(responseAlbum);
-        Optional<User> user = Optional.of(foundUser);
-        when(albumRepository.findById(anyLong())).thenReturn(Optional.of(responseAlbum));
-        when(userRepository.findById(anyLong())).thenReturn(user);
-
-        //when
-        Album album = albumService.findAlbum(albumId,requestUser);
-
-        //then
-        assertThat(album.getId(),is(responseAlbum.getId()));
-        assertThat(album.getTitle(),is(responseAlbum.getTitle()));
-    }
-
-    @Transactional
-    @Test
-    public void  앨범_이름바꾸기(){
-        //given
-        Long albumId=1L;
-        String changeTileString="변경테스트";
-        foundUser.getAlbumList().add(responseAlbum);
-        Optional<User> user = Optional.of(foundUser);
-        when(albumRepository.findById(anyLong())).thenReturn(Optional.of(responseAlbum));
-        when(userRepository.findById(anyLong())).thenReturn(user);
-
-        //when
-        Album album = albumService.updateAlbumInfo(albumId,foundUser,changeTileString);
-
-        //then
-        assertThat(album.getId(),is(responseAlbum.getId()));
-        assertThat(album.getTitle(),is(changeTileString));
-    }
-
-    @Transactional
-    @Test
-    public void  다른사용자의_앨범접근(){
-        //given
-        Long albumId=1L;
-        String changeTileString="변경테스트";
-        Optional<User> user = Optional.of(foundUser);
-        when(albumRepository.findById(anyLong())).thenReturn(Optional.of(responseAlbum));
-        when(userRepository.findById(anyLong())).thenReturn(user);
-
-        //then
-        IllegalArgumentException illegalArgumentException
-                //then
-                = assertThrows(IllegalArgumentException.class,
-                //when
-                () ->  albumService.updateAlbumInfo(albumId,foundUser,changeTileString));
-        //then
-        assertThat(illegalArgumentException.getMessage(),is("사용자의 앨범이 아닙니다."));
-    }
-
-
     @Test
     public void  사용자_못찾음(){
         //given
@@ -153,11 +94,7 @@ public class AlbumServiceTest {
         when(userRepository.searchId(anyLong())).thenReturn(user);
 
         IllegalArgumentException illegalArgumentException
-                //then
-                = assertThrows(IllegalArgumentException.class,
-                //when
-                () ->albumService.makeAlbum(requestUser, "aaaaaa"));
-        //then
+                = assertThrows(IllegalArgumentException.class, () -> albumService.makeAlbum(requestUser, "aaaaaa"));
         assertThat(illegalArgumentException.getMessage(),is("사용자가 없습니다."));
     }
 
