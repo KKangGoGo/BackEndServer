@@ -63,10 +63,11 @@ public class UserApiController {
         }
     }
 
+    // 로그아웃
     @GetMapping("/api/logout")
     public ResponseDto<Integer> logout(HttpServletRequest request, HttpServletResponse response,
-                                       @AuthenticationPrincipal PrincipalDetails principalDetails){
-        if(principalDetails.getUser() != null) {
+                                       @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        if (principalDetails.getUser() != null) {
             new SecurityContextLogoutHandler().logout(
                     request,
                     response,
@@ -92,7 +93,6 @@ public class UserApiController {
             return new ResponseDto<Integer>(HttpStatus.NO_CONTENT.value(), 0);
         }
     }
-
 
     // 회원 정보
     @GetMapping("/api/user/auth")

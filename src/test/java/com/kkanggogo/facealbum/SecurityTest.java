@@ -142,7 +142,7 @@ public class SecurityTest {
         return mvcResult;
     }
 
-    public String getAuthorizedUserToken(User saveUser){
+    public String getAuthorizedUserToken(User saveUser) {
         PrincipalDetails principalDetails = new PrincipalDetails(saveUser);
 
         String testToken = jwtProvider.createToken(principalDetails);
@@ -211,8 +211,6 @@ public class SecurityTest {
         String result = mvcResult.getResponse().getContentAsString();
         assertThat(result, is(expectResponseDto));
     }
-
-
 
     @Test
     @DisplayName("토큰으로 사용자 정보를 받아오는 테스트")
@@ -312,7 +310,7 @@ public class SecurityTest {
                 .build();
 
         // when
-        MvcResult mvcResult= executeSignUp(invalidRequest);
+        MvcResult mvcResult = executeSignUp(invalidRequest);
 
         // then
         assertThat(mvcResult.getResponse().getStatus(), is(HttpStatus.BAD_REQUEST.value())); // 400
@@ -320,7 +318,7 @@ public class SecurityTest {
 
     @Test
     @DisplayName("회원가입 되지 않은 아이디로 로그인 시도 테스트")
-    public void notSingUpLogin() throws Exception{
+    public void notSingUpLogin() throws Exception {
         user.setUsername("unSignup");
         user.setPassword("unSignup");
         RequestLoginDto loginUser = RequestLoginDto
