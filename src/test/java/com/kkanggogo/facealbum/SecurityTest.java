@@ -21,11 +21,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -60,9 +59,6 @@ public class SecurityTest {
     @Autowired
     private JwtProvider jwtProvider;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
     private MockMvc mvc;
 
     private User user;
@@ -74,6 +70,12 @@ public class SecurityTest {
     private RequestSignUpDto requestSignUpDto;
 
     private JwtProperties jwtProperties;
+
+    private static final String SIGNUP_URL = "/api/signup";
+    private static final String LOGIN_URL = "/api/login";
+    private static final String USER_MODIFY_URL = "/api/user/mypage";
+    private static final String GET_AUTH_URL = "/api/user/auth";
+
 
     // JUnit5
     @BeforeEach
@@ -112,11 +114,10 @@ public class SecurityTest {
     }
 
     public MvcResult executePost(String url, String body) throws Exception {
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders
+        return mvc.perform(MockMvcRequestBuilders
                 .post(url)
                 .contentType(MediaType.APPLICATION_JSON).content(body))
                 .andReturn();
-        return mvcResult;
     }
 
     public MvcResult executeSignUp(RequestSignUpDto requestSignUpDto) throws Exception {
@@ -136,14 +137,14 @@ public class SecurityTest {
                 objectToJsonBody.getBytes(StandardCharsets.UTF_8));
 
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders
-                .multipart("/api/signup")
+                .multipart(SIGNUP_URL)
                 .file(photo)
                 .file(signupInfoDto))
                 .andReturn();
         return mvcResult;
     }
 
-    public String getAuthorizedUserToken(User saveUser){
+    public String getAuthorizedUserToken(User saveUser) {
         PrincipalDetails principalDetails = new PrincipalDetails(saveUser);
 
         String testToken = jwtProvider.createToken(principalDetails);
@@ -171,6 +172,7 @@ public class SecurityTest {
     /*
     @Test
     @DisplayName("로그인 테스트")
+    @WithMockUser(username = "ksb")
     public void loginTest() throws Exception {
         // given
         RequestLoginDto loginUser = RequestLoginDto
@@ -181,51 +183,36 @@ public class SecurityTest {
         objectToJsonBody = mapper.writeValueAsString(loginUser);
 
         // when
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders
-                .post("/api/login")
-                .contentType(MediaType.APPLICATION_JSON).content(objectToJsonBody))
-                .andReturn();
+        MvcResult mvcResult = executePost(LOGIN_URL, objectToJsonBody);
 
         // then
         boolean isGetToken = mvcResult
                 .getResponse()
                 .getHeader(jwtProperties.headerString)
-                .startsWith("Bearer"); // 응답 값에 Bearer로 시작하는 문자열이 있는지 확인
+                .startsWith(jwtProperties.tokenPrefix); // 응답 값에 Bearer로 시작하는 문자열이 있는지 확인
         assertThat(isGetToken, is(true));
     }
-    */
-    
+     */
 
-    /*
     @Test
     @DisplayName("로그아웃 테스트")
     public void logoutTest() throws Exception {
         // given
-        oneUserSignUp(requestSignUpDto);
+        executeSignUp(requestSignUpDto);
 
-        RequestLoginDto loginUser = RequestLoginDto
-                .builder()
-                .username(user.getUsername())
-                .password((user.getPassword()))
-                .build();
-        objectToJsonBody = mapper.writeValueAsString(loginUser);
+        String accessToken = getAuthorizedUserToken(this.user);
 
-        // 로그인해서 토큰 받아오기
-        MvcResult mvcResult = executePost("/api/login", objectToJsonBody);
-        String getToken = mvcResult
-                .getResponse()
-                .getHeader(jwtProperties.headerString);
-
-        // when, then
-        mvc.perform(MockMvcRequestBuilders
-                .post("/logout")
-                .header("access_token", getToken)
+        // when
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders
+                .get("/api/logout")
+                .header("access_token", accessToken)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
                 .andReturn();
-    }
-    */
 
+        // then
+        String result = mvcResult.getResponse().getContentAsString();
+        assertThat(result, is(expectResponseDto));
+    }
 
     @Test
     @DisplayName("토큰으로 사용자 정보를 받아오는 테스트")
@@ -236,8 +223,8 @@ public class SecurityTest {
 
         // when
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders
-                .get("/api/user/auth")
-                .header("access_token", accessToken)
+                .get(GET_AUTH_URL)
+                .header(jwtProperties.headerString, accessToken)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
 
@@ -272,8 +259,8 @@ public class SecurityTest {
 
         // when
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders
-                .put("/api/user/mypage")
-                .header("access_token", accessToken)
+                .put(USER_MODIFY_URL)
+                .header(jwtProperties.headerString, accessToken)
                 .contentType(MediaType.APPLICATION_JSON).content(objectToJsonBody))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -301,14 +288,14 @@ public class SecurityTest {
         // when, then
         //만료된 토큰
         mvc.perform(MockMvcRequestBuilders
-                .put("/api/user/mypage")
-                .header("access_token", expiredToken)
+                .put(USER_MODIFY_URL)
+                .header(jwtProperties.headerString, expiredToken)
                 .contentType(MediaType.APPLICATION_JSON).content(objectToJsonBody))
                 .andExpect(status().is4xxClientError()); //401
         // 디코딩할 수 없는 토큰(이상한 토큰 값)
         mvc.perform(MockMvcRequestBuilders
-                .put("/api/user/mypage")
-                .header("access_token", wiredToken)
+                .put(USER_MODIFY_URL)
+                .header(jwtProperties.headerString, wiredToken)
                 .contentType(MediaType.APPLICATION_JSON).content(objectToJsonBody))
                 .andExpect(status().is4xxClientError()); //401
     }
@@ -325,17 +312,17 @@ public class SecurityTest {
                 .build();
 
         // when
-        MvcResult mvcResult= executeSignUp(invalidRequest);
+        MvcResult mvcResult = executeSignUp(invalidRequest);
 
         // then
         assertThat(mvcResult.getResponse().getStatus(), is(HttpStatus.BAD_REQUEST.value())); // 400
-
-        // System.out.println(mvcResult.getResponse().getContentAsString());
     }
 
     @Test
     @DisplayName("회원가입 되지 않은 아이디로 로그인 시도 테스트")
-    public void notSingUpLogin() throws Exception{
+    public void notSingUpLogin() throws Exception {
+        user.setUsername("unSignup");
+        user.setPassword("unSignup");
         RequestLoginDto loginUser = RequestLoginDto
                 .builder()
                 .username(user.getUsername())
@@ -344,7 +331,7 @@ public class SecurityTest {
         objectToJsonBody = mapper.writeValueAsString(loginUser);
 
         // when
-        MvcResult mvcResult = executePost("/api/login", objectToJsonBody);
+        MvcResult mvcResult = executePost(LOGIN_URL, objectToJsonBody);
 
         // then
         assertThat(mvcResult.getResponse().getStatus(), is(HttpStatus.UNAUTHORIZED.value())); // 401
