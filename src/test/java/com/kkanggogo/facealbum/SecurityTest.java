@@ -167,7 +167,6 @@ public class SecurityTest {
         assertThat(result, is(expectResponseDto));
     }
 
-
     /*
     @Test
     @DisplayName("로그인 테스트")
@@ -193,37 +192,26 @@ public class SecurityTest {
     }
      */
 
-    
-
-    /*
     @Test
     @DisplayName("로그아웃 테스트")
     public void logoutTest() throws Exception {
         // given
-        oneUserSignUp(requestSignUpDto);
+        executeSignUp(requestSignUpDto);
 
-        RequestLoginDto loginUser = RequestLoginDto
-                .builder()
-                .username(user.getUsername())
-                .password((user.getPassword()))
-                .build();
-        objectToJsonBody = mapper.writeValueAsString(loginUser);
+        String accessToken = getAuthorizedUserToken(this.user);
 
-        // 로그인해서 토큰 받아오기
-        MvcResult mvcResult = executePost("/api/login", objectToJsonBody);
-        String getToken = mvcResult
-                .getResponse()
-                .getHeader(jwtProperties.headerString);
-
-        // when, then
-        mvc.perform(MockMvcRequestBuilders
-                .post("/logout")
-                .header("access_token", getToken)
+        // when
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders
+                .get("/api/logout")
+                .header("access_token", accessToken)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
                 .andReturn();
+
+        // then
+        String result = mvcResult.getResponse().getContentAsString();
+        assertThat(result, is(expectResponseDto));
     }
-    */
+
 
 
     @Test
