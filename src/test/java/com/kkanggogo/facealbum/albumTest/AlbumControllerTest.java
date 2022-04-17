@@ -36,6 +36,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @ExtendWith(MockitoExtension.class)
+@ActiveProfiles("local")
+@Tag("integration")
 public class AlbumControllerTest {
 
     @Autowired

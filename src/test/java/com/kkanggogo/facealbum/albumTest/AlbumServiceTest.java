@@ -25,6 +25,7 @@ import static org.mockito.Mockito.when;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @ExtendWith(MockitoExtension.class)
+@Tag("unit")
 public class AlbumServiceTest {
 
     @InjectMocks
