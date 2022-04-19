@@ -1,6 +1,6 @@
 #!/bin/bash
 
-REPOSITORY=/home/ec2-user/app/deploy
+REPOSITORY=/home/ec2-user/app/cd
 PROJECT_NAME=BackEndServer
 
 echo "> Build 파일 복사"
