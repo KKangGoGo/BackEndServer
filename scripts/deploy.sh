@@ -3,21 +3,6 @@
 REPOSITORY=/home/ec2-user/app/deploy
 PROJECT_NAME=BackEndServer
 
-cd $REPOSITORY/$PROJECT_NAME/
-
-echo "> Git Pull"
-
-git pull
-
-echo "> 프로젝트 Build 시작"
-
-chmod +x ./gradlew
-./gradlew build
-
-echo "> 프로젝트 디렉토리로 이동"
-
-cd $REPOSITORY
-
 echo "> Build 파일 복사"
 
 cp $REPOSITORY/$PROJECT_NAME/build/libs/*SNAPSHOT.jar $REPOSITORY/
@@ -41,6 +26,12 @@ echo "> 새 애플리케이션 배포"
 JAR_NAME=$(ls -tr $REPOSITORY/ | grep SNAPSHOT.jar | tail -n 1)
 
 echo "> Jar Name: $JAR_NAME"
+
+echo "> $JAR_NAME 에 실행권한 추가"
+
+chmod +x "$JAR_NAME"
+
+echo " $JAR_NAME 실행"
 
 # plain.jar 말고 의존성이 모두 빌드된 .jar를 실행해야한다.
 nohup java -jar \
