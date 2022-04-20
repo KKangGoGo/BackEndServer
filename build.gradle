@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.kkanggogo'
-version = '0.0.1-SNAPSHOT'
+version = new Date().format("yyyyMMddHHmmss") + '-0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
 configurations {
@@ -19,17 +19,56 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
+//    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+//    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+//    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    // https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client
+    implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.3'
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.6.RELEASE'
+    implementation 'org.projectlombok:lombok:1.18.16'
+    implementation 'org.projectlombok:lombok:1.18.16'
     compileOnly 'org.projectlombok:lombok'
-    runtimeOnly 'com.oracle.database.jdbc:ojdbc8'
+//    runtimeOnly 'com.oracle.database.jdbc:ojdbc8'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
+
+    // mysql, jpa
+    implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.22'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '2.4.2'
+    implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '3.0.3'
+    implementation 'org.mariadb.jdbc:mariadb-java-client:3.0.3'
+
+    // jwt, security
+    implementation group: 'org.springframework.security', name: 'spring-security-core', version: '5.5.3'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.6.3'
+    implementation group: 'com.auth0', name: 'java-jwt', version: '3.10.2'
+    implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.2'
+
+    // valid
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+
+    // json
+    implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+    
 }
 
-tasks.named('test') {
+test {
+    useJUnitPlatform {
+        includeTags 'unit'
+        excludeTags 'integration'
+    }
+}
+
+task integrationTest(type: Test, group: 'verification') {
+    useJUnitPlatform {
+        includeTags 'integration'
+        excludeTags 'unit'
+    }
+}
+
+task wholeTest(type: Test, group: 'verification') {
     useJUnitPlatform()
 }

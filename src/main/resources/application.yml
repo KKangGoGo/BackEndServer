@@ -1,0 +1,22 @@
+spring:
+  profiles:
+    group:
+      "prod": "prod-db,prod-cloud"
+      "prod1": "prod-db,prod-cloud"
+      "prod2": "prod-db,prod-cloud"
+    default: "local"
+---
+spring:
+  config:
+    activate:
+      on-profile: "dev"
+---
+spring:
+  config:
+    activate:
+      on-profile: "prod"
+---
+spring:
+  config:
+    activate:
+      on-profile: "local"
