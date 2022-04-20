@@ -111,8 +111,8 @@ public class AlbumControllerTest {
         String responseString = objectMapper.writeValueAsString(requestAlbum.toAlbumResponseDto());
 
         //when
-        securityMvc.perform(post("/api/album/makeAlbum")
-                .header("access_token", authorizedUserToken)
+        securityMvc.perform(post("/api/user/album/create")
+                .header("access_token",authorizedUserToken)
                 .contentType(MediaType.APPLICATION_JSON))
 
                 //then
@@ -135,7 +135,7 @@ public class AlbumControllerTest {
         when(albumService.makeAlbum(any(User.class), eq("aaaaa"))).thenReturn(requestAlbum);
 
         //when
-        securityMvc.perform(post("/api/album/makeAlbum")
+        securityMvc.perform(post("/api/user/album/create")
                 .header("access_token", authorizedUserToken)
                 .contentType(MediaType.APPLICATION_JSON).content(requestBodyString))
 
