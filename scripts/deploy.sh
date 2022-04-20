@@ -1,11 +1,11 @@
 #!/bin/bash
 
 REPOSITORY=/home/ec2-user/app/cd
-PROJECT_NAME=zip
+PROJECT_NAME=facealbum-springboot-server
 
 echo "> Build 파일 복사"
 
-cp $REPOSITORY/$PROJECT_NAME/build/libs/*SNAPSHOT.jar $REPOSITORY/
+cp $REPOSITORY/zip/*SNAPSHOT.jar $REPOSITORY/
 
 echo "> 현재 구동 중인 애플리케이션 id 확인"
 
