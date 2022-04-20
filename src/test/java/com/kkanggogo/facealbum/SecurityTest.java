@@ -24,7 +24,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -120,14 +119,18 @@ public class SecurityTest {
                 .andReturn();
     }
 
-    public MvcResult executeSignUp(RequestSignUpDto requestSignUpDto) throws Exception {
+    public MockMultipartFile makeMockFile() throws Exception {
         byte[] image = IOUtils.toByteArray(getClass()
                 .getClassLoader()
                 .getResourceAsStream("multi_image.jpg"));
-        MockMultipartFile photo = new MockMultipartFile("photo",
+        return new MockMultipartFile("photo",
                 "multi_image.jpg",
                 MediaType.IMAGE_JPEG_VALUE,
                 image);
+    }
+
+    public MvcResult executeSignUp(RequestSignUpDto requestSignUpDto) throws Exception {
+        MockMultipartFile photo = makeMockFile();
 
         objectToJsonBody = mapper.writeValueAsString(requestSignUpDto);
 
@@ -248,7 +251,7 @@ public class SecurityTest {
     }
 
     @Test
-    @DisplayName("회원 비밀번호 수정")
+    @DisplayName("회원 email, password 수정")
     public void updateUserTest() throws Exception {
         // given
         executeSignUp(requestSignUpDto);
@@ -260,6 +263,7 @@ public class SecurityTest {
         RequestUpdateUserInfoDto requestUpdateUserInfoDto = RequestUpdateUserInfoDto
                 .builder()
                 .password("12345")
+                .email("kkkkkkkkkkkk@gm")
                 .build();
         objectToJsonBody = mapper.writeValueAsString(requestUpdateUserInfoDto);
 

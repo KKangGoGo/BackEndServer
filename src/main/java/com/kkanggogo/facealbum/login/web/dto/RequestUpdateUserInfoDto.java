@@ -12,6 +12,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class RequestUpdateUserInfoDto {
 
-    @NotBlank
     private String password;
+
+    private String email;
 }

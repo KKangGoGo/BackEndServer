@@ -80,14 +80,14 @@ public class AlbumControllerTest {
                 .build();
 
         when(userRepository.searchUsername(anyString())).thenReturn(this.user);
-        authorizedUserToken =getAuthorizedUserToken(this.user);
+        authorizedUserToken = getAuthorizedUserToken(this.user);
         objectMapper = new ObjectMapper();
 
         requestAlbum = new Album();
         requestAlbum.setId(1L);
     }
 
-    public String getAuthorizedUserToken(User saveUser){
+    public String getAuthorizedUserToken(User saveUser) {
         PrincipalDetails principalDetails = new PrincipalDetails(saveUser);
 
         String testToken = jwtProvider.createToken(principalDetails);
@@ -112,7 +112,7 @@ public class AlbumControllerTest {
 
         //when
         securityMvc.perform(post("/api/album/makeAlbum")
-                .header("access_token",authorizedUserToken)
+                .header("access_token", authorizedUserToken)
                 .contentType(MediaType.APPLICATION_JSON))
 
                 //then
@@ -136,7 +136,7 @@ public class AlbumControllerTest {
 
         //when
         securityMvc.perform(post("/api/album/makeAlbum")
-                .header("access_token",authorizedUserToken)
+                .header("access_token", authorizedUserToken)
                 .contentType(MediaType.APPLICATION_JSON).content(requestBodyString))
 
                 //then
