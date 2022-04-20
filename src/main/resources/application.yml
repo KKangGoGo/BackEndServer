@@ -2,6 +2,8 @@ spring:
   profiles:
     group:
       "prod": "prod-db,prod-cloud"
+      "prod1": "prod-db,prod-cloud"
+      "prod2": "prod-db,prod-cloud"
     default: "local"
 ---
 spring:
