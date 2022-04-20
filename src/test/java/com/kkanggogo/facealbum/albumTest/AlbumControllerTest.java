@@ -25,10 +25,12 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -77,6 +79,7 @@ public class AlbumControllerTest {
                 .password("1234")
                 .email("ksb@gm")
                 .role(RoleType.USER)
+                .albumList(new ArrayList<>())
                 .build();
 
         when(userRepository.searchUsername(anyString())).thenReturn(this.user);
@@ -136,11 +139,39 @@ public class AlbumControllerTest {
 
         //when
         securityMvc.perform(post("/api/user/album/create")
-                .header("access_token", authorizedUserToken)
+                .header("access_token",authorizedUserToken)
                 .contentType(MediaType.APPLICATION_JSON).content(requestBodyString))
 
                 //then
                 .andExpect(status().isOk())
                 .andExpect(content().string(responseBodyString));
     }
+
+    @Test
+    void 앨범_수정() throws Exception {
+
+        //given
+        final AlbumRequestDto albumRequestDto = new AlbumRequestDto();
+        albumRequestDto.setTitle("aaaaa");
+
+        String requestBodyString = objectMapper.writeValueAsString(albumRequestDto);
+
+        requestAlbum.setTitle("aaaaa");
+        String responseBodyString = objectMapper.writeValueAsString(requestAlbum.toAlbumResponseDto());
+
+        Album album=new Album();
+        album.setTitle("aaaaa");
+        album.setId(1L);
+
+        when(albumService.updateAlbumInfo(anyLong(),any(User.class),anyString())).thenReturn(album);
+        //when
+        securityMvc.perform(put("/api/user/album/1").header("access_token",authorizedUserToken)
+                .contentType(MediaType.APPLICATION_JSON).content(requestBodyString))
+                //then
+                .andExpect(status().isOk())
+                .andExpect(content().string(responseBodyString));
+
+
+    }
+
 }

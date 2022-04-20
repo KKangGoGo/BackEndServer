@@ -4,6 +4,7 @@ package com.kkanggogo.facealbum.login.domain;
 import com.kkanggogo.facealbum.album.domain.Album;
 
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -21,6 +22,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Slf4j
 public class User {
 
     @Id //private key
@@ -51,4 +53,11 @@ public class User {
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<Album> albumList=new ArrayList<>();
 
+    public void isItUserAlbum(Album album) throws IllegalArgumentException{
+        boolean contains = albumList.contains(album);
+        log.debug("containsIsSame?:{}",contains);
+        if(!contains){
+            throw new IllegalArgumentException("사용자의 앨범이 아닙니다.");
+        }
+    }
 }
