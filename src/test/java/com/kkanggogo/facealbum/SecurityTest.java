@@ -24,7 +24,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -120,14 +119,18 @@ public class SecurityTest {
                 .andReturn();
     }
 
-    public MvcResult executeSignUp(RequestSignUpDto requestSignUpDto) throws Exception {
+    public MockMultipartFile makeMockFile() throws Exception {
         byte[] image = IOUtils.toByteArray(getClass()
                 .getClassLoader()
                 .getResourceAsStream("multi_image.jpg"));
-        MockMultipartFile photo = new MockMultipartFile("photo",
+        return new MockMultipartFile("photo",
                 "multi_image.jpg",
                 MediaType.IMAGE_JPEG_VALUE,
                 image);
+    }
+
+    public MvcResult executeSignUp(RequestSignUpDto requestSignUpDto) throws Exception {
+        MockMultipartFile photo = makeMockFile();
 
         objectToJsonBody = mapper.writeValueAsString(requestSignUpDto);
 
@@ -159,7 +162,7 @@ public class SecurityTest {
     }
 
     @Test
-    @DisplayName("회원가입 테스트")
+    @DisplayName("회원가입")
     public void signUpTest() throws Exception {
         // given, when
         MvcResult mvcResult = executeSignUp(requestSignUpDto);
@@ -169,18 +172,25 @@ public class SecurityTest {
         assertThat(result, is(expectResponseDto));
     }
 
-    /*
     @Test
-    @DisplayName("로그인 테스트")
-    @WithMockUser(username = "ksb")
+    @DisplayName("로그인")
     public void loginTest() throws Exception {
         // given
-        RequestLoginDto loginUser = RequestLoginDto
+        User tmpUser = User
                 .builder()
-                .username(user.getUsername())
-                .password(user.getPassword())
+                .id(this.user.getId())
+                .username(this.user.getUsername())
+                .password(encoder.encode(this.user.getPassword()))
+                .role(this.user.getRole())
+                .email(this.user.getEmail())
                 .build();
-        objectToJsonBody = mapper.writeValueAsString(loginUser);
+        RequestLoginDto loginUserDto = RequestLoginDto
+                .builder()
+                .username(this.user.getUsername())
+                .password(this.user.getPassword())
+                .build();
+        objectToJsonBody = mapper.writeValueAsString(loginUserDto);
+        when(mockUserRepository.searchUsername(anyString())).thenReturn(tmpUser);
 
         // when
         MvcResult mvcResult = executePost(LOGIN_URL, objectToJsonBody);
@@ -192,10 +202,9 @@ public class SecurityTest {
                 .startsWith(jwtProperties.tokenPrefix); // 응답 값에 Bearer로 시작하는 문자열이 있는지 확인
         assertThat(isGetToken, is(true));
     }
-     */
 
     @Test
-    @DisplayName("로그아웃 테스트")
+    @DisplayName("로그아웃")
     public void logoutTest() throws Exception {
         // given
         executeSignUp(requestSignUpDto);
@@ -215,7 +224,7 @@ public class SecurityTest {
     }
 
     @Test
-    @DisplayName("토큰으로 사용자 정보를 받아오는 테스트")
+    @DisplayName("토큰으로 사용자 정보를 받아오는")
     public void getAuthTest() throws Exception {
         // given
         executeSignUp(requestSignUpDto);
@@ -242,7 +251,7 @@ public class SecurityTest {
     }
 
     @Test
-    @DisplayName("회원 비밀번호 수정 테스트")
+    @DisplayName("회원 email, password 수정")
     public void updateUserTest() throws Exception {
         // given
         executeSignUp(requestSignUpDto);
@@ -254,6 +263,7 @@ public class SecurityTest {
         RequestUpdateUserInfoDto requestUpdateUserInfoDto = RequestUpdateUserInfoDto
                 .builder()
                 .password("12345")
+                .email("kkkkkkkkkkkk@gm")
                 .build();
         objectToJsonBody = mapper.writeValueAsString(requestUpdateUserInfoDto);
 
@@ -273,7 +283,7 @@ public class SecurityTest {
     }
 
     @Test
-    @DisplayName("사용할 수 없는 토큰 사용 테스트")
+    @DisplayName("사용할 수 없는 토큰 사용")
     public void unavailableTokenUseTest() throws Exception {
         // given
         String expiredToken = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0b2tlbiIsInJvbGUiOiJVU0VSIiwiaWQiOjEwMCwiZXhwIjoxNjQ4OTk0OTE3LCJ1c2VybmFtZSI6ImtzYiJ9.aR0jz48QMnYrxFdarZ2RriloaPOyizCglol0uJY9XtTc4nilt2GkvdOiKaxsD_8gVLMMvFZBjFnUVzoEAOnzNA";
@@ -301,7 +311,7 @@ public class SecurityTest {
     }
 
     @Test
-    @DisplayName("조건에 맞지 않은 회원가입 테스트")
+    @DisplayName("조건에 맞지 않은 회원가입")
     public void signUpMethodArgumentNotValidException() throws Exception {
         // given
         RequestSignUpDto invalidRequest = RequestSignUpDto
@@ -319,7 +329,7 @@ public class SecurityTest {
     }
 
     @Test
-    @DisplayName("회원가입 되지 않은 아이디로 로그인 시도 테스트")
+    @DisplayName("회원가입 되지 않은 아이디로 로그인 시도")
     public void notSingUpLogin() throws Exception {
         user.setUsername("unSignup");
         user.setPassword("unSignup");
@@ -336,5 +346,4 @@ public class SecurityTest {
         // then
         assertThat(mvcResult.getResponse().getStatus(), is(HttpStatus.UNAUTHORIZED.value())); // 401
     }
-
 }

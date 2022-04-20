@@ -83,14 +83,14 @@ public class AlbumControllerTest {
                 .build();
 
         when(userRepository.searchUsername(anyString())).thenReturn(this.user);
-        authorizedUserToken =getAuthorizedUserToken(this.user);
+        authorizedUserToken = getAuthorizedUserToken(this.user);
         objectMapper = new ObjectMapper();
 
         requestAlbum = new Album();
         requestAlbum.setId(1L);
     }
 
-    public String getAuthorizedUserToken(User saveUser){
+    public String getAuthorizedUserToken(User saveUser) {
         PrincipalDetails principalDetails = new PrincipalDetails(saveUser);
 
         String testToken = jwtProvider.createToken(principalDetails);

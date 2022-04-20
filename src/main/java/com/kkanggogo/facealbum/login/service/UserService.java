@@ -74,6 +74,10 @@ public class UserService {
         String rawPassword = requestUpdateUserInfoDto.getPassword();
         String encPassword = encoder.encode(rawPassword);
         persistanceUser.setPassword(encPassword);
+
+        // 이메일 변경
+        persistanceUser.setEmail(requestUpdateUserInfoDto.getEmail());
+
         return persistanceUser;
     }
 }

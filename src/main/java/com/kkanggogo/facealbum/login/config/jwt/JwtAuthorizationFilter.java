@@ -2,6 +2,7 @@ package com.kkanggogo.facealbum.login.config.jwt;
 
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.kkanggogo.facealbum.error.CustomExpectationFailed;
 import io.jsonwebtoken.MalformedJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -39,6 +40,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             request.setAttribute("exception", HttpStatus.UNAUTHORIZED);
         } catch (JWTDecodeException e){
             System.out.println("ex : 디코딩할 수 없는 토큰");
+            request.setAttribute("exception", HttpStatus.UNAUTHORIZED);
+        } catch (IllegalArgumentException e){
+            System.out.println("ex : 인자가 잘못된 토큰");
             request.setAttribute("exception", HttpStatus.UNAUTHORIZED);
         }
         filterChain.doFilter(request, response);

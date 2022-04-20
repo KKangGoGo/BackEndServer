@@ -1,6 +1,7 @@
 package com.kkanggogo.facealbum.login.web.controller.api;
 
 import com.kkanggogo.facealbum.album.web.ImageMultipartFileRequestDtoFactory;
+import com.kkanggogo.facealbum.error.CustomExpectationFailed;
 import com.kkanggogo.facealbum.error.CustomMethodArgumentNotValidException;
 import com.kkanggogo.facealbum.login.config.auth.PrincipalDetails;
 import com.kkanggogo.facealbum.login.web.dto.RequestSignUpDto;
@@ -109,8 +110,7 @@ public class UserApiController {
                     .role(principalDetails.getUser().getRole())
                     .build();
             return responseAuthDto;
-
         }
-        throw new UsernameNotFoundException("사용자를 찾을 수 없습니다.");
+        throw new CustomExpectationFailed();
     }
 }
