@@ -1,6 +1,6 @@
 #!/bin/bash
 
-REPOSITORY=/home/ec2-user/app/cd
+REPOSITORY=/home/ec2-user/app/main
 PROJECT_NAME=facealbum-springboot-server
 
 echo "> Build 파일 복사"
