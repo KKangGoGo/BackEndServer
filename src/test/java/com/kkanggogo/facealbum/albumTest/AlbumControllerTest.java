@@ -170,8 +170,5 @@ public class AlbumControllerTest {
                 //then
                 .andExpect(status().isOk())
                 .andExpect(content().string(responseBodyString));
-
-
     }
-
 }
