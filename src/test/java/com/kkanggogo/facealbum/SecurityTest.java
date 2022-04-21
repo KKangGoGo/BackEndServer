@@ -20,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,7 +29,9 @@ import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfig
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -224,7 +227,7 @@ public class SecurityTest {
     }
 
     @Test
-    @DisplayName("토큰으로 사용자 정보를 받아오는")
+    @DisplayName("토큰으로 사용자 정보 확인")
     public void getAuthTest() throws Exception {
         // given
         executeSignUp(requestSignUpDto);
@@ -251,35 +254,44 @@ public class SecurityTest {
     }
 
     @Test
-    @DisplayName("회원 email, password 수정")
+    @DisplayName("회원 정보 수정")
     public void updateUserTest() throws Exception {
         // given
         executeSignUp(requestSignUpDto);
-
-        // 회원가입된 유저의 정보를 security 내부 저장소에 저장 및 해당 유저의 토큰을 가져옴
         String accessToken = getAuthorizedUserToken(this.user);
-
-        // 현재 DTO에 password만 받아 수정 요청을 하고 있음
+        MockMultipartFile photo = makeMockFile();
         RequestUpdateUserInfoDto requestUpdateUserInfoDto = RequestUpdateUserInfoDto
                 .builder()
                 .password("12345")
                 .email("kkkkkkkkkkkk@gm")
                 .build();
         objectToJsonBody = mapper.writeValueAsString(requestUpdateUserInfoDto);
+        MockMultipartFile updateDto = new MockMultipartFile("updateInfo",
+                "updateInfo",
+                "application/json",
+                objectToJsonBody.getBytes(StandardCharsets.UTF_8));
+
+        MockMultipartHttpServletRequestBuilder builder =
+                MockMvcRequestBuilders.multipart(USER_MODIFY_URL); // 실행할 url
+        builder.with(new RequestPostProcessor() {
+            @Override
+            public MockHttpServletRequest postProcessRequest(MockHttpServletRequest request) {
+                request.setMethod("PUT");
+                return request;
+            }
+        });
 
         // when
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders
-                .put(USER_MODIFY_URL)
-                .header(jwtProperties.headerString, accessToken)
-                .contentType(MediaType.APPLICATION_JSON).content(objectToJsonBody))
-                .andExpect(status().isOk())
+        MvcResult mvcResult = mvc.perform(builder
+                // .multipart(USER_MODIFY_URL)
+                .file(photo)
+                .file(updateDto)
+                .header("access_token", accessToken))
                 .andReturn();
 
         // then
-        String updatedPassword = mockUserRepository.searchUsername(this.user.getUsername()).getPassword();
         String result = mvcResult.getResponse().getContentAsString();
         assertThat(result, is(expectResponseDto));
-        assertThat(true, is(encoder.matches(requestUpdateUserInfoDto.getPassword(), updatedPassword)));
     }
 
     @Test

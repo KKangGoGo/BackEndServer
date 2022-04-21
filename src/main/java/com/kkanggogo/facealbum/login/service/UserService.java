@@ -2,6 +2,7 @@ package com.kkanggogo.facealbum.login.service;
 
 import com.kkanggogo.facealbum.album.AmazonS3Uploader;
 import com.kkanggogo.facealbum.album.domain.Image;
+import com.kkanggogo.facealbum.album.web.ImageMultipartFileRequestDtoFactory;
 import com.kkanggogo.facealbum.album.web.dto.ImageMultipartFileRequestDto;
 
 import com.kkanggogo.facealbum.login.web.dto.RequestSignUpDto;
@@ -13,8 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -64,19 +67,30 @@ public class UserService {
 
     // 영속성 컨텍스트에 변경내용이 등록되기 때문에, SQL문을 실행하지 않아도 transaction이 끝나면 자동으로 저장됨
     @Transactional
-    public User updateUserInfo(RequestUpdateUserInfoDto requestUpdateUserInfoDto, Long id) {
+    public User updateUserInfo(MultipartFile multipartFile, RequestUpdateUserInfoDto requestUpdateUserInfoDto, User user) {
 
-        User persistanceUser = userRepository.searchId(id).orElseThrow(() -> {
+        User persistanceUser = userRepository.searchId(user.getId()).orElseThrow(() -> {
             return new IllegalArgumentException("회원찾기 실패");
         });
 
+        // 기존꺼 삭제해야 함
+        Optional.ofNullable(multipartFile).ifPresent(photo -> {
+            ImageMultipartFileRequestDto photoDto = ImageMultipartFileRequestDtoFactory.makeMultipartFileRequestDto(List.of(photo));
+            List<Image> lists = photoDto.toImageEntity(user.getUsername());
+            userProfileAmazonS3Uploader.s3Upload(lists.get(0));
+        });
+
         // 비밀번호 변경
-        String rawPassword = requestUpdateUserInfoDto.getPassword();
-        String encPassword = encoder.encode(rawPassword);
-        persistanceUser.setPassword(encPassword);
+        Optional.ofNullable(requestUpdateUserInfoDto.getPassword()).ifPresent(password -> {
+            String rawPassword = password;
+            String encPassword = encoder.encode(rawPassword);
+            persistanceUser.setPassword(encPassword);
+        });
 
         // 이메일 변경
-        persistanceUser.setEmail(requestUpdateUserInfoDto.getEmail());
+        Optional.ofNullable(requestUpdateUserInfoDto.getEmail()).ifPresent(email -> {
+            persistanceUser.setEmail(email);
+        });
 
         return persistanceUser;
     }

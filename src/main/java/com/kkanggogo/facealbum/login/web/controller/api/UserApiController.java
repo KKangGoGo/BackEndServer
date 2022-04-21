@@ -50,7 +50,7 @@ public class UserApiController {
     public ResponseEntity<ResponseDto<Integer>> signUp(@Valid @RequestPart(value = "photo", required = false) MultipartFile photo,
                                                        @Valid @RequestPart(value = "signupInfo") RequestSignUpDto requestSignUpDto) {
         User checkSignUp;
-        log.debug("photos:{}",photo);
+        log.debug("photos:{}", photo);
         if (photo == null) {
             checkSignUp = userService.signUp(requestSignUpDto);
         } else {
@@ -83,10 +83,12 @@ public class UserApiController {
 
     // 회원 정보 수정
     @PutMapping("/api/user/mypage")
-    public ResponseDto<Integer> updateUser(@Valid @RequestBody RequestUpdateUserInfoDto requestUpdateUserInfoDto,
+    public ResponseDto<Integer> updateUser(@RequestPart(value = "photo", required = false) MultipartFile photo,
+                                           @RequestPart(value = "updateInfo") RequestUpdateUserInfoDto requestUpdateUserInfoDto,
                                            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+
         // ("[INFO]유저정보 update 시도");
-        User user = userService.updateUserInfo(requestUpdateUserInfoDto, principalDetails.getUser().getId());
+        User user = userService.updateUserInfo(photo, requestUpdateUserInfoDto, principalDetails.getUser());
         if (user != null) {
             // ("[INFO]유저정보 update 성공");
             // return new ResponseGenericDto<User>(user, 1);
