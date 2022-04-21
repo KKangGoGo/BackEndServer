@@ -12,6 +12,9 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+    all {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
 }
 
 repositories {
@@ -49,10 +52,11 @@ dependencies {
     // valid
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-
     // json
     implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
-    
+
+    // log4j2
+    implementation 'org.springframework.boot:spring-boot-starter-log4j2'
 }
 
 test {

@@ -15,6 +15,8 @@ import com.kkanggogo.facealbum.login.web.dto.ResponseDto;
 import com.kkanggogo.facealbum.login.domain.User;
 import com.kkanggogo.facealbum.login.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,6 +47,8 @@ public class UserApiController {
     @Autowired
     AuthenticationManager authenticationManager;
 
+    Logger logger = LoggerFactory.getLogger(UserApiController.class);
+
     // 회원 가입
     @PostMapping("/api/signup")
     public ResponseEntity<ResponseDto<Integer>> signUp(@Valid @RequestPart(value = "photo", required = false) MultipartFile photo,
@@ -59,10 +63,11 @@ public class UserApiController {
         }
 
         if (checkSignUp != null) {
-            // ("[INFO]회원가입 완료");
+            logger.info("[INFO]회원가입 완료 : {}", checkSignUp.getId());
             return new ResponseEntity<>(new ResponseDto<>(HttpStatus.OK.value(), 1), HttpStatus.OK);
         } else {
-            // ("[ERROR]회원가입 실패");
+
+            logger.error("[ERROR]회원가입 실패", checkSignUp.getId());
             return new ResponseEntity<>(new ResponseDto<>(HttpStatus.NO_CONTENT.value(), 0), HttpStatus.NO_CONTENT);
         }
     }
@@ -72,6 +77,7 @@ public class UserApiController {
     public ResponseDto<Integer> logout(HttpServletRequest request, HttpServletResponse response,
                                        @AuthenticationPrincipal PrincipalDetails principalDetails) {
         if (principalDetails.getUser() != null) {
+            logger.info("[INFO]logout_user : {}", principalDetails.getUser().getId());
             new SecurityContextLogoutHandler().logout(
                     request,
                     response,
@@ -90,12 +96,10 @@ public class UserApiController {
         // ("[INFO]유저정보 update 시도");
         User user = userService.updateUserInfo(photo, requestUpdateUserInfoDto, principalDetails.getUser());
         if (user != null) {
-            // ("[INFO]유저정보 update 성공");
-            // return new ResponseGenericDto<User>(user, 1);
+            logger.info("[INFO]update_user : {}", principalDetails.getUser().getId());
             return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
         } else {
-            // ("[ERROR]유저정보 update 실패");
-            //return new ResponseGenericDto<User>(null, 0);
+            logger.error("[ERROR]유저정보 update 실패");
             return new ResponseDto<Integer>(HttpStatus.NO_CONTENT.value(), 0);
         }
     }
@@ -104,6 +108,7 @@ public class UserApiController {
     @GetMapping("/api/user/auth")
     public ResponseAuthDto getAuth(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         if (principalDetails != null) {
+            logger.info("getAuth : {}", principalDetails.getUser().getId());
             ResponseAuthDto responseAuthDto = ResponseAuthDto
                     .builder()
                     .username(principalDetails.getUsername())

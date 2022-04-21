@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <Configuration status="warn" packages="org.apache.logging.log4j.core,io.sentry.log4j2">
+    <Properties>
+        <Property name="FILE_LOG_PATTERN">%d{yyyy-MM-dd_HH:mm:ss.SSS} %level [%thread] [%logger:%line] ::: %msg%n</Property>
+     </Properties>
+    <Appenders>
+        <RollingFile name="LogToFile" fileName="logs/application.log"
+                     filePattern="logs/application.log.%d{yyyy-MM-dd-hh-mm}">
+            <PatternLayout pattern="${sys:FILE_LOG_PATTERN}" />
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+            </Policies>
+            <DefaultRolloverStrategy>
+                <Delete basePath="logs" maxDepth="1">
+                    <IfAccumulatedFileCount exceeds="3"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+<!--        <Logger name="org.springframework.web" level="info"/>-->
+<!--        <Logger name="org.springframework.security" level="info"/>-->
+<!--        <logger name="org.springframework.data.r2dbc" level="info"/>-->
+<!--        <Logger name="com.skp.iot" level="info"/>-->
+        <Root level="info">
+            <AppenderRef ref="LogToFile"/>
+        </Root>
+    </Loggers>
+ </Configuration>
