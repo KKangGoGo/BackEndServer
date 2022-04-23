@@ -1,5 +1,7 @@
 package com.kkanggogo.facealbum.login.web.controller.api;
 
+import com.kkanggogo.facealbum.album.ImageMultipartFileRequestDtoFactory;
+
 import com.kkanggogo.facealbum.album.web.ImageMultipartFileRequestDtoFactory;
 import com.kkanggogo.facealbum.error.CustomExpectationFailed;
 import com.kkanggogo.facealbum.error.CustomMethodArgumentNotValidException;
@@ -7,6 +9,7 @@ import com.kkanggogo.facealbum.login.config.auth.PrincipalDetails;
 import com.kkanggogo.facealbum.login.web.dto.RequestSignUpDto;
 import com.kkanggogo.facealbum.login.web.dto.RequestUpdateUserInfoDto;
 import com.kkanggogo.facealbum.error.CustomPhotoNullException;
+
 import com.kkanggogo.facealbum.login.config.auth.PrincipalDetails;
 import com.kkanggogo.facealbum.login.web.dto.RequestSignUpDto;
 import com.kkanggogo.facealbum.login.web.dto.RequestUpdateUserInfoDto;
@@ -20,9 +23,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +37,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
-import javax.validation.constraints.Null;
 
 
 @RestController

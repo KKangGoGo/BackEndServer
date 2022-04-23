@@ -38,7 +38,8 @@ public class ImageService {
         List<Image> images = imageRequestDto.toImageEntity(user.getUsername());
 
         for(Image image:images){
-            userAlbumAmazonS3Uploader.s3Upload(image);
+            String upload = userAlbumAmazonS3Uploader.s3Upload(image);
+            log.debug(upload);
             AlbumImageMappingTable albumImageMappingTable =new AlbumImageMappingTable();
             albumImageMappingTable.setImage(image);
             album.addAlbumImageMappingTable(albumImageMappingTable);

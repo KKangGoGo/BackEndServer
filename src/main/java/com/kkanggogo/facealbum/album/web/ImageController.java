@@ -1,5 +1,6 @@
 package com.kkanggogo.facealbum.album.web;
 
+import com.kkanggogo.facealbum.album.ImageMultipartFileRequestDtoFactory;
 import com.kkanggogo.facealbum.album.service.ImageUploadFacade;
 import com.kkanggogo.facealbum.album.web.dto.ImageJsonRequestDto;
 import com.kkanggogo.facealbum.login.config.auth.PrincipalDetails;

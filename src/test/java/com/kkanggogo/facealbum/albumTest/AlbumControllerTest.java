@@ -1,8 +1,13 @@
 package com.kkanggogo.facealbum.albumTest;
 
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kkanggogo.facealbum.album.domain.Album;
+import com.kkanggogo.facealbum.album.domain.AlbumImageMappingTable;
 import com.kkanggogo.facealbum.album.service.AlbumService;
+import com.kkanggogo.facealbum.album.web.dto.AlbumListEntityResponseDto;
+import com.kkanggogo.facealbum.album.web.dto.AlbumListResponseDto;
 import com.kkanggogo.facealbum.album.web.dto.AlbumRequestDto;
 import com.kkanggogo.facealbum.login.config.auth.PrincipalDetails;
 import com.kkanggogo.facealbum.login.config.jwt.JwtProvider;
@@ -29,6 +34,7 @@ import java.util.ArrayList;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -63,6 +69,9 @@ public class AlbumControllerTest {
     private Album requestAlbum;
 
     private String authorizedUserToken;
+
+    @Autowired
+    public AmazonS3Client amazonS3Client;
 
 
     @BeforeEach
@@ -148,6 +157,21 @@ public class AlbumControllerTest {
     }
 
     @Test
+    void 앨범리스트_받아오기() throws Exception {
+        AlbumListEntityResponseDto albumListEntityResponseDto=new AlbumListEntityResponseDto();
+        AlbumListResponseDto albumListResponseDto=new AlbumListResponseDto();
+        albumListResponseDto.add(albumListEntityResponseDto);
+
+        String responseBodyString = objectMapper.writeValueAsString(albumListResponseDto);
+
+        when(albumService.findUserAlbum(eq(user))).thenReturn(albumListResponseDto);
+
+        //when
+        securityMvc.perform(get("/api/user/album-list")
+                .header("access_token",authorizedUserToken)
+                .contentType(MediaType.APPLICATION_JSON))
+    }
+  
     void 앨범_수정() throws Exception {
 
         //given
@@ -167,6 +191,7 @@ public class AlbumControllerTest {
         //when
         securityMvc.perform(put("/api/user/album/1").header("access_token",authorizedUserToken)
                 .contentType(MediaType.APPLICATION_JSON).content(requestBodyString))
+
                 //then
                 .andExpect(status().isOk())
                 .andExpect(content().string(responseBodyString));
