@@ -1,34 +1,21 @@
 package com.kkanggogo.facealbum.login.web.controller.api;
 
 import com.kkanggogo.facealbum.album.ImageMultipartFileRequestDtoFactory;
-
-import com.kkanggogo.facealbum.album.web.ImageMultipartFileRequestDtoFactory;
 import com.kkanggogo.facealbum.error.CustomExpectationFailed;
-import com.kkanggogo.facealbum.error.CustomMethodArgumentNotValidException;
 import com.kkanggogo.facealbum.login.config.auth.PrincipalDetails;
-import com.kkanggogo.facealbum.login.web.dto.RequestSignUpDto;
-import com.kkanggogo.facealbum.login.web.dto.RequestUpdateUserInfoDto;
-import com.kkanggogo.facealbum.error.CustomPhotoNullException;
-
-import com.kkanggogo.facealbum.login.config.auth.PrincipalDetails;
+import com.kkanggogo.facealbum.login.domain.User;
+import com.kkanggogo.facealbum.login.service.UserService;
 import com.kkanggogo.facealbum.login.web.dto.RequestSignUpDto;
 import com.kkanggogo.facealbum.login.web.dto.RequestUpdateUserInfoDto;
 import com.kkanggogo.facealbum.login.web.dto.ResponseAuthDto;
 import com.kkanggogo.facealbum.login.web.dto.ResponseDto;
-import com.kkanggogo.facealbum.login.domain.User;
-import com.kkanggogo.facealbum.login.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;

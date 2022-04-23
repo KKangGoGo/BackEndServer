@@ -1,15 +1,14 @@
 package com.kkanggogo.facealbum.login.service;
 
 import com.kkanggogo.facealbum.album.AmazonS3Uploader;
+import com.kkanggogo.facealbum.album.ImageMultipartFileRequestDtoFactory;
 import com.kkanggogo.facealbum.album.domain.Image;
-import com.kkanggogo.facealbum.album.web.ImageMultipartFileRequestDtoFactory;
 import com.kkanggogo.facealbum.album.web.dto.ImageMultipartFileRequestDto;
-
-import com.kkanggogo.facealbum.login.web.dto.RequestSignUpDto;
-import com.kkanggogo.facealbum.login.web.dto.RequestUpdateUserInfoDto;
 import com.kkanggogo.facealbum.login.domain.RoleType;
 import com.kkanggogo.facealbum.login.domain.User;
 import com.kkanggogo.facealbum.login.domain.repository.UserRepository;
+import com.kkanggogo.facealbum.login.web.dto.RequestSignUpDto;
+import com.kkanggogo.facealbum.login.web.dto.RequestUpdateUserInfoDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
