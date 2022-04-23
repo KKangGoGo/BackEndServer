@@ -2,6 +2,7 @@ package com.kkanggogo.facealbum.album.web;
 
 import com.kkanggogo.facealbum.album.ImageMultipartFileRequestDtoFactory;
 import com.kkanggogo.facealbum.album.service.ImageUploadFacade;
+import com.kkanggogo.facealbum.album.web.dto.AlbumImagesResponseDto;
 import com.kkanggogo.facealbum.album.web.dto.ImageJsonRequestDto;
 import com.kkanggogo.facealbum.login.config.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,13 @@ import java.util.List;
 public class ImageController {
 
     private final ImageUploadFacade imageUploadFacade;
+
+    @GetMapping("/api/user/album/images")
+    public AlbumImagesResponseDto getAlbumImages(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @RequestParam Long albumId){
+        return imageUploadFacade.getAlbumImage(principalDetails.getUser(),albumId);
+    }
 
     @PostMapping("/api/user/album/images")
     @ResponseStatus(code = HttpStatus.ACCEPTED)

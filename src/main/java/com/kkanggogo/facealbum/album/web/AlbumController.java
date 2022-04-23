@@ -26,6 +26,11 @@ public class AlbumController {
     @Autowired
     private AlbumService albumService;
 
+    @GetMapping("/api/user/album-list")
+    public AlbumListResponseDto getAlbumList(@AuthenticationPrincipal PrincipalDetails principalDetails){
+        return albumService.findUserAlbum(principalDetails.getUser());
+    }
+
     @PostMapping("/api/user/album/create")
     public AlbumResponseDto makeAlbum(@RequestBody(required = false) Optional<AlbumRequestDto> albumRequestDto,
                                       @AuthenticationPrincipal PrincipalDetails principalDetails){
@@ -35,11 +40,6 @@ public class AlbumController {
         return albumService.makeAlbum(principalDetails.getUser()).toAlbumResponseDto();
     }
 
-    @GetMapping("/api/user/album-list")
-    public AlbumListResponseDto getAlbumList(@AuthenticationPrincipal PrincipalDetails principalDetails){
-        return albumService.findUserAlbum(principalDetails.getUser());
-    }
-  
     @PutMapping("/api/user/album/{album-id}")
     public AlbumResponseDto updateAlbum(@RequestBody AlbumRequestDto albumRequestDto, @PathVariable("album-id") Long albumId,
                                         @AuthenticationPrincipal PrincipalDetails principalDetails){

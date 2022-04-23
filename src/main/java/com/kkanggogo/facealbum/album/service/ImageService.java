@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -45,5 +46,9 @@ public class ImageService {
         imageRepository.saveAll(images);
         albumImageMapRepository.saveAll(albumImageMappingTableList);
         log.debug("imageService 저장 실행");
+    }
+
+    public List<String> getAlbumImagePaths(Album album) {
+        return album.getAlbumImageMappingTableList().stream().map(element -> String.format("%s%s",userAlbumAmazonS3Uploader.getPrefixPath(),element.getImage().getImagePath())).collect(Collectors.toList());
     }
 }
