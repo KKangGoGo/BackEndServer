@@ -14,10 +14,7 @@ import com.kkanggogo.facealbum.login.config.jwt.JwtProvider;
 import com.kkanggogo.facealbum.login.domain.RoleType;
 import com.kkanggogo.facealbum.login.domain.User;
 import com.kkanggogo.facealbum.login.domain.repository.UserRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayNameGeneration;
-import org.junit.jupiter.api.DisplayNameGenerator;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,16 +24,19 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -44,6 +44,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @ExtendWith(MockitoExtension.class)
+@ActiveProfiles("local")
+@Tag("integration")
 public class AlbumControllerTest {
 
     @Autowired
@@ -86,17 +88,18 @@ public class AlbumControllerTest {
                 .password("1234")
                 .email("ksb@gm")
                 .role(RoleType.USER)
+                .albumList(new ArrayList<>())
                 .build();
 
         when(userRepository.searchUsername(anyString())).thenReturn(this.user);
-        authorizedUserToken =getAuthorizedUserToken(this.user);
+        authorizedUserToken = getAuthorizedUserToken(this.user);
         objectMapper = new ObjectMapper();
 
         requestAlbum = new Album();
         requestAlbum.setId(1L);
     }
 
-    public String getAuthorizedUserToken(User saveUser){
+    public String getAuthorizedUserToken(User saveUser) {
         PrincipalDetails principalDetails = new PrincipalDetails(saveUser);
 
         String testToken = jwtProvider.createToken(principalDetails);
@@ -167,6 +170,27 @@ public class AlbumControllerTest {
         securityMvc.perform(get("/api/user/album-list")
                 .header("access_token",authorizedUserToken)
                 .contentType(MediaType.APPLICATION_JSON))
+    }
+  
+    void 앨범_수정() throws Exception {
+
+        //given
+        final AlbumRequestDto albumRequestDto = new AlbumRequestDto();
+        albumRequestDto.setTitle("aaaaa");
+
+        String requestBodyString = objectMapper.writeValueAsString(albumRequestDto);
+
+        requestAlbum.setTitle("aaaaa");
+        String responseBodyString = objectMapper.writeValueAsString(requestAlbum.toAlbumResponseDto());
+
+        Album album=new Album();
+        album.setTitle("aaaaa");
+        album.setId(1L);
+
+        when(albumService.updateAlbumInfo(anyLong(),any(User.class),anyString())).thenReturn(album);
+        //when
+        securityMvc.perform(put("/api/user/album/1").header("access_token",authorizedUserToken)
+                .contentType(MediaType.APPLICATION_JSON).content(requestBodyString))
 
                 //then
                 .andExpect(status().isOk())

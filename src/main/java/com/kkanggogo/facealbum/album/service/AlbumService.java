@@ -56,7 +56,7 @@ public class AlbumService {
         Optional<Album> album = albumRepository.findById(albumId);
         Optional<User> findUser = userRepository.findById(user.getId());
         album.orElseThrow(()->new IllegalArgumentException("앨범을 찾을 수 없습니다."));
-        findUser.orElseThrow(()->new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+        findUser.orElseThrow(()->new IllegalArgumentException("사용자가 없습니다."));
         User user1 = findUser.get();
         Album album1 = album.get();
         user1.isItUserAlbum(album1);
@@ -78,5 +78,11 @@ public class AlbumService {
         AlbumListResponseDto albumListResponseDto=new AlbumListResponseDto();
         albumListResponseDto.setAlbumlist(collect);
         return albumListResponseDto;
+    }
+
+    public Album updateAlbumInfo(Long albumId,User user,String title) {
+        Album album = findAlbum(albumId, user);
+        album.setTitle(title);
+        return album;
     }
 }
