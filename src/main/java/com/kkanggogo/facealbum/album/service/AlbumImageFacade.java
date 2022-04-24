@@ -11,13 +11,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ImageUploadFacade {
+public class AlbumImageFacade {
 
     private final AlbumService albumService;
     private final ImageService imageService;
@@ -37,6 +36,7 @@ public class ImageUploadFacade {
         imageService.upload(files, principalDetails.getUser(), album);
     }
 
+    @Transactional
     public AlbumImagesResponseDto getAlbumImage(User user, Long albumId) {
         Album album = albumService.findAlbum(albumId, user);
         album.getAlbumImageMappingTableList().size();

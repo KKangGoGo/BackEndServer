@@ -3,10 +3,9 @@ package com.kkanggogo.facealbum.ImageTest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kkanggogo.facealbum.album.domain.Album;
 import com.kkanggogo.facealbum.album.service.ImageService;
-import com.kkanggogo.facealbum.album.service.ImageUploadFacade;
+import com.kkanggogo.facealbum.album.service.AlbumImageFacade;
 import com.kkanggogo.facealbum.album.web.dto.AlbumImagesResponseDto;
 import com.kkanggogo.facealbum.album.web.dto.ImageJsonRequestDto;
-import com.kkanggogo.facealbum.album.web.dto.ImageRequestDto;
 import com.kkanggogo.facealbum.login.config.auth.PrincipalDetails;
 import com.kkanggogo.facealbum.login.config.jwt.JwtProvider;
 import com.kkanggogo.facealbum.login.domain.RoleType;
@@ -64,7 +63,7 @@ public class ImageControllerTest {
     private ImageService imageService;
 
     @MockBean
-    private ImageUploadFacade imageUploadFacade;
+    private AlbumImageFacade albumImageFacade;
 
 
     private User user;
@@ -198,7 +197,7 @@ public class ImageControllerTest {
         responseDto.getImages().add("https://s3.ap-northeast-2.amazonaws.com/com.kkanggogo.facealbum.testbukit/ksb/82647bf0-9061-4213-b623-e1bce614f0050.jpg");
         responseDto.getImages().add("https://s3.ap-northeast-2.amazonaws.com/com.kkanggogo.facealbum.testbukit/ksb/82647bf0-9061-4213-b623-e1bce614f0050.jpg");
         responseDto.getImages().add("https://s3.ap-northeast-2.amazonaws.com/com.kkanggogo.facealbum.testbukit/ksb/82647bf0-9061-4213-b623-e1bce614f0050.jpg");
-        when(imageUploadFacade.getAlbumImage(any(User.class),anyLong())).thenReturn(responseDto);
+        when(albumImageFacade.getAlbumImage(any(User.class),anyLong())).thenReturn(responseDto);
         String response = objectMapper.writeValueAsString(responseDto);
 
         //when
