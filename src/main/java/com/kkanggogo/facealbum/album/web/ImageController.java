@@ -1,7 +1,8 @@
 package com.kkanggogo.facealbum.album.web;
 
 import com.kkanggogo.facealbum.album.ImageMultipartFileRequestDtoFactory;
-import com.kkanggogo.facealbum.album.service.ImageUploadFacade;
+import com.kkanggogo.facealbum.album.service.AlbumImageFacade;
+import com.kkanggogo.facealbum.album.web.dto.AlbumImagesResponseDto;
 import com.kkanggogo.facealbum.album.web.dto.ImageJsonRequestDto;
 import com.kkanggogo.facealbum.login.config.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
@@ -18,13 +19,20 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ImageController {
 
-    private final ImageUploadFacade imageUploadFacade;
+    private final AlbumImageFacade albumImageFacade;
+
+    @GetMapping("/api/user/album/images")
+    public AlbumImagesResponseDto getAlbumImages(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @RequestParam Long albumId){
+        return albumImageFacade.getAlbumImage(principalDetails.getUser(),albumId);
+    }
 
     @PostMapping("/api/user/album/images")
     @ResponseStatus(code = HttpStatus.ACCEPTED)
     public void uploadImage(@RequestParam("images") List<MultipartFile> files,
                             @AuthenticationPrincipal PrincipalDetails principalDetails){
-        imageUploadFacade.upload(ImageMultipartFileRequestDtoFactory.makeMultipartFileRequestDto(files), principalDetails);
+        albumImageFacade.upload(ImageMultipartFileRequestDtoFactory.makeMultipartFileRequestDto(files), principalDetails);
     }
 
     @PostMapping("/api/user/album/images/{album-id}")
@@ -32,13 +40,13 @@ public class ImageController {
     public void uploadImage(@RequestParam("images") List<MultipartFile> files,
                             @PathVariable("album-id") Long albumId,
                             @AuthenticationPrincipal PrincipalDetails principalDetails){
-        imageUploadFacade.upload(ImageMultipartFileRequestDtoFactory.makeMultipartFileRequestDto(files), principalDetails,albumId);
+        albumImageFacade.upload(ImageMultipartFileRequestDtoFactory.makeMultipartFileRequestDto(files), principalDetails,albumId);
     }
 
     @PostMapping("api/imageupload/jsondata")
     @ResponseStatus(code = HttpStatus.ACCEPTED)
     public void uploadImageForJson(@RequestBody ImageJsonRequestDto imageJsonRequestDto,
                                    @AuthenticationPrincipal PrincipalDetails principalDetails){
-        imageUploadFacade.upload(imageJsonRequestDto,principalDetails);
+        albumImageFacade.upload(imageJsonRequestDto,principalDetails);
     }
 }

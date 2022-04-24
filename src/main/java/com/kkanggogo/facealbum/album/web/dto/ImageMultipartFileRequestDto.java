@@ -3,9 +3,7 @@ package com.kkanggogo.facealbum.album.web.dto;
 import com.kkanggogo.facealbum.album.domain.Image;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.http.MediaType;
 
-import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 

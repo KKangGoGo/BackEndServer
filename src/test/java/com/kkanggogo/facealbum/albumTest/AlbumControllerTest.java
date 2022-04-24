@@ -1,10 +1,8 @@
 package com.kkanggogo.facealbum.albumTest;
 
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kkanggogo.facealbum.album.domain.Album;
-import com.kkanggogo.facealbum.album.domain.AlbumImageMappingTable;
 import com.kkanggogo.facealbum.album.service.AlbumService;
 import com.kkanggogo.facealbum.album.web.dto.AlbumListEntityResponseDto;
 import com.kkanggogo.facealbum.album.web.dto.AlbumListResponseDto;
@@ -169,9 +167,10 @@ public class AlbumControllerTest {
         //when
         securityMvc.perform(get("/api/user/album-list")
                 .header("access_token",authorizedUserToken)
-                .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON));
     }
-  
+
+    @Test
     void 앨범_수정() throws Exception {
 
         //given
