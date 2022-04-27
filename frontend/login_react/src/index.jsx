@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import './index.css'
+import './reset.css'
 import App from './App'
 import {BrowserRouter} from 'react-router-dom'
 
@@ -10,6 +10,7 @@ import ReduxThunk from 'redux-thunk'
 import promiseMiddleware from 'redux-promise'
 import rootReducer from './_reducers/rootReducer'
 import {Provider} from 'react-redux'
+import axios from 'axios'
 
 const middlewares = [ReduxThunk]
 if (process.env.NODE_ENV === 'development') {
@@ -18,8 +19,10 @@ if (process.env.NODE_ENV === 'development') {
 
 // const store = createStore(rootReducer, applyMiddleware(...middlewares))
 const store = applyMiddleware(promiseMiddleware, ...middlewares)(createStore)
+axios.defaults.withCredentials = true
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
+
 root.render(
     <React.StrictMode>
         <BrowserRouter>
