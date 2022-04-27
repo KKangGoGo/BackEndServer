@@ -36,10 +36,6 @@ export const registerUser = async dataToSubmit => {
         return res.data
     })
 
-    // const request = await axios.post('/api/signup', dataToSubmit).then(res => {
-    //     return res.data
-    // })
-
     return {
         type: types.REGISTER_USER,
         payload: request,

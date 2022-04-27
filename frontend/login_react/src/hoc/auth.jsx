@@ -14,18 +14,19 @@ function auth(SpecificComponent, option, adminRoute = null) {
         const dispatch = useDispatch()
 
         useEffect(() => {
-            dispatch(authUser(token)).then(res => {
-                console.log(res)
-                if (!res) {
-                    if (option) {
-                        navigate('/loginRegister')
+            if (token) {
+                dispatch(authUser(token)).then(res => {
+                    if (res) {
+                        if (option === false) {
+                            navigate('/')
+                        }
                     }
-                } else {
-                    if (option === false) {
-                        navigate('/')
-                    }
+                })
+            } else {
+                if (option) {
+                    navigate('/loginRegister')
                 }
-            })
+            }
         }, [])
         return <SpecificComponent />
     }
