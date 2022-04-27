@@ -1,5 +1,5 @@
-import React, {useState} from 'react'
-import {useDispatch} from 'react-redux'
+import React, {useEffect, useState} from 'react'
+import {useDispatch, useSelector} from 'react-redux'
 import {registerUser} from '../_actions/userAction'
 import {useNavigate} from 'react-router-dom'
 
@@ -17,6 +17,17 @@ const Input = styled.input`
 `
 
 function RegisterPage(props) {
+    // const user = useSelector(state => state.user)
+    // useEffect(() => {
+    //     if (user) {
+    //         try {
+    //             localStorage.setItem('user', JSON.stringify(user))
+    //         } catch (error) {
+    //             console.log(error)
+    //         }
+    //     }
+    // }, [user])
+
     const [state, setState] = useState({
         username: '',
         password: '',
@@ -46,6 +57,16 @@ function RegisterPage(props) {
         let files = e.target.image.files
         formData.append('photo', files[0])
         formData.append('signupInfo', new Blob([JSON.stringify(state)], {type: 'application/json'}))
+
+        // FormData의 key 확인
+        console.log(formData)
+        for (let value of formData.keys()) {
+            console.log(value)
+        }
+        // FormData의 value 확인
+        for (let value of formData.values()) {
+            console.log(value)
+        }
 
         if (password !== ConfirmPassword) {
             return alert('비밀번호가 일치하지 않습니다.')

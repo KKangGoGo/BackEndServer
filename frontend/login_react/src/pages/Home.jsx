@@ -2,6 +2,9 @@ import React, {useEffect} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {useNavigate, Link} from 'react-router-dom'
 import {logoutUser} from '../_actions/userAction'
+import Auth from '../hoc/auth'
+
+import './styles/Home.module.css'
 
 const Home = () => {
     const navigate = useNavigate()
@@ -11,6 +14,7 @@ const Home = () => {
     console.log(user)
 
     const logoutHandler = e => {
+        localStorage.removeItem('login-token')
         try {
             dispatch(logoutUser).then(res => {
                 console.log(res)
@@ -24,19 +28,24 @@ const Home = () => {
     return (
         <div>
             <h2>home</h2>
-            {user.loginSuccess ? (
-                <button className="Btn" onClick={logoutHandler}>
-                    LOGOUT
-                </button>
+            {user.userData ? (
+                <>
+                    <div>{user.userData.username}</div>
+                    <div>{user.userData.email}</div>
+                    <button className="Btn" onClick={logoutHandler}>
+                        LOGOUT
+                    </button>
+                </>
             ) : (
                 <div>
-                    <Link to="/login">Sign In</Link>
-                    <br />
-                    <Link to="/register">Sign Up</Link>
+                    <Link to="/loginRegister">Sign In</Link>
+                    <button className="Btn" onClick={logoutHandler}>
+                        LOGOUT
+                    </button>
                 </div>
             )}
         </div>
     )
 }
 
-export default Home
+export default Auth(Home, null)
