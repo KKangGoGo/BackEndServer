@@ -55,7 +55,6 @@ public class User {
 
     public void isItUserAlbum(Album album) throws IllegalArgumentException{
         boolean contains = albumList.contains(album);
-        log.debug("containsIsSame?:{}",contains);
         if(!contains){
             throw new IllegalArgumentException("사용자의 앨범이 아닙니다.");
         }

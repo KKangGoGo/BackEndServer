@@ -71,7 +71,7 @@ public class AlbumService {
 
         List<AlbumListEntityResponseDto> collect =user.getAlbumList().stream().map(element->{
             AlbumListEntityResponseDto albumListEntityResponseDto = new AlbumListEntityResponseDto();
-            albumListEntityResponseDto.setAlbumListEntityResponseDto(element,userAlbumAmazonS3Uploader.getPrefixPath());
+            albumListEntityResponseDto.setAlbumListEntityResponseDto(element,userAlbumAmazonS3Uploader);
             return albumListEntityResponseDto;
         }).collect(Collectors.toList());
 
@@ -80,6 +80,7 @@ public class AlbumService {
         return albumListResponseDto;
     }
 
+    @Transactional
     public Album updateAlbumInfo(Long albumId,User user,String title) {
         Album album = findAlbum(albumId, user);
         album.setTitle(title);

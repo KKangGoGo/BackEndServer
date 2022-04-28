@@ -39,5 +39,7 @@ public abstract class AmazonS3Uploader {
 
     public abstract String getBucket();
 
-    public abstract String getPrefixPath();
+    public String getPrefixPath(String imagePath){
+        return String.format("http://s3.%s.amazonaws.com/%s/%s",getRegion(),getBucket(),imagePath);
+    }
 }

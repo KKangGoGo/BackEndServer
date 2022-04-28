@@ -49,6 +49,6 @@ public class ImageService {
     }
 
     public List<String> getAlbumImagePaths(Album album) {
-        return album.getAlbumImageMappingTableList().stream().map(element -> String.format("%s%s",userAlbumAmazonS3Uploader.getPrefixPath(),element.getImage().getImagePath())).collect(Collectors.toList());
+        return album.getAlbumImageMappingTableList().stream().map(element -> userAlbumAmazonS3Uploader.getPrefixPath(element.getImage().getImagePath())).collect(Collectors.toList());
     }
 }

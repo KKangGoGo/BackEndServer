@@ -13,9 +13,4 @@ public class UserAlbumAmazonS3Uploader extends AmazonS3Uploader{
     public String getBucket() {
         return bucket;
     }
-
-    @Override
-    public String getPrefixPath(){
-        return String.format("s3.%s.amazonaws.com/%s/",getRegion(),bucket);
-    }
 }

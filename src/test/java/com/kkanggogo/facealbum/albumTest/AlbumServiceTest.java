@@ -125,11 +125,11 @@ public class AlbumServiceTest {
         AlbumImageMappingTable albumImageMappingTable = new AlbumImageMappingTable();
         albumImageMappingTable.addAlbumAndImage(album,image);
 
+        when(amazonS3Uploader.getPrefixPath(anyString())).thenReturn("https://s3.ap-northeast-2.amazonaws.com/com.kkanggogo.facealbum.testbukit/ksb/82647bf0-9061-4213-b623-e1bce614f0050.jpg");
         AlbumListEntityResponseDto albumListEntityResponseDto=new AlbumListEntityResponseDto();
-        albumListEntityResponseDto.setAlbumListEntityResponseDto(album,"https://s3.ap-northeast-2.amazonaws.com/com.kkanggogo.facealbum.testbukit");
+        albumListEntityResponseDto.setAlbumListEntityResponseDto(album,amazonS3Uploader);
 
         when(userRepository.findById(eq(1L))).thenReturn(Optional.of(user));
-        when(amazonS3Uploader.getPrefixPath()).thenReturn("https://s3.ap-northeast-2.amazonaws.com/com.kkanggogo.facealbum.testbukit");
 
         //when
         AlbumListResponseDto userAlbum = albumService.findUserAlbum(user);

@@ -1,5 +1,9 @@
 package com.kkanggogo.facealbum.ImageTest;
 
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.kkanggogo.facealbum.album.AmazonS3Uploader;
+import com.kkanggogo.facealbum.album.UserAlbumAmazonS3Uploader;
+import com.kkanggogo.facealbum.album.config.AmazonS3Config;
 import com.kkanggogo.facealbum.album.domain.Album;
 import com.kkanggogo.facealbum.album.domain.AlbumImageMappingTable;
 import com.kkanggogo.facealbum.album.domain.Image;
@@ -9,22 +13,21 @@ import com.kkanggogo.facealbum.album.service.ImageService;
 import com.kkanggogo.facealbum.album.web.dto.AlbumImagesResponseDto;
 import com.kkanggogo.facealbum.album.web.dto.AlbumListEntityResponseDto;
 import com.kkanggogo.facealbum.login.domain.User;
-import org.junit.jupiter.api.DisplayNameGeneration;
-import org.junit.jupiter.api.DisplayNameGenerator;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -40,6 +43,14 @@ public class AlbumImageFacadeTest {
 
     @Mock
     private ImageService imageService;
+
+    @Mock
+    private static AmazonS3Uploader amazonS3Uploader;
+
+    @BeforeEach
+    public void init(){
+        when(amazonS3Uploader.getPrefixPath(anyString())).thenReturn("https://s3.ap-northeast-2.amazonaws.com/com.kkanggogo.facealbum.testbukit/ksb/82647bf0-9061-4213-b623-e1bce614f0050.jpg");
+    }
 
     @Test
     public void 앨범이미지가져오기(){
@@ -60,9 +71,9 @@ public class AlbumImageFacadeTest {
         albumImageMappingTable.addAlbumAndImage(album,image);
 
         AlbumListEntityResponseDto albumListEntityResponseDto=new AlbumListEntityResponseDto();
-        albumListEntityResponseDto.setAlbumListEntityResponseDto(album,"https://s3.ap-northeast-2.amazonaws.com/com.kkanggogo.facealbum.testbukit");
+        albumListEntityResponseDto.setAlbumListEntityResponseDto(album,amazonS3Uploader);
 
-        List<String> collect = album.getAlbumImageMappingTableList().stream().map(element -> String.format("%s%s", "https://s3.ap-northeast-2.amazonaws.com/com.kkanggogo.facealbum.testbukit/", element.getImage().getImagePath())).collect(Collectors.toList());
+        List<String> collect = album.getAlbumImageMappingTableList().stream().map(element -> String.format("%s%s", "https://s3.ap-northeast-2.amazonaws.com/com.kkanggogo.facealbum.testbukit", element.getImage().getImagePath())).collect(Collectors.toList());
 
         AlbumImagesResponseDto albumImagesResponseDto=new AlbumImagesResponseDto();
         albumImagesResponseDto.setImages(collect);

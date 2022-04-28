@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -95,12 +96,15 @@ public class UserApiController {
     @GetMapping("/api/user/auth")
     public ResponseAuthDto getAuth(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         if (principalDetails != null) {
+            String userPhoto = principalDetails.getUser().getPhoto();
+            String photo=userPhoto!=null?userService.getImageFullPath(userPhoto):null;
             ResponseAuthDto responseAuthDto = ResponseAuthDto
                     .builder()
                     .username(principalDetails.getUsername())
                     .password(principalDetails.getPassword())
                     .email(principalDetails.getUser().getEmail())
                     .role(principalDetails.getUser().getRole())
+                    .photo(photo)
                     .build();
             return responseAuthDto;
         }

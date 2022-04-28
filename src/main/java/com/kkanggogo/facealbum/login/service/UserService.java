@@ -93,4 +93,8 @@ public class UserService {
 
         return persistanceUser;
     }
+
+    public String getImageFullPath(String path){
+        return userProfileAmazonS3Uploader.getPrefixPath(path);
+    }
 }
