@@ -80,16 +80,22 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             HttpServletResponse response,
                                             FilterChain chain,
                                             Authentication authResult)
-                                            throws IOException, ServletException {
+            throws IOException, ServletException {
         PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
 
         JwtProperties jwtProperties = new JwtProperties();
 
-        String jwtToken = jwtTokenProvider.createToken(principalDetails);
+        String accessToken = jwtTokenProvider.createAccessToken(principalDetails);
+        String refreshToken = jwtTokenProvider.createRefreshToken(principalDetails);
 
-        System.out.println("로그인 성공 : "+jwtToken);
+        System.out.println("----------");
+        System.out.println("access_token : " + accessToken);
+        System.out.println("refresh_token : " + refreshToken);
+        System.out.println("----------");
+
         //header에서 값 포함
-        response.addHeader(jwtProperties.headerString, jwtProperties.tokenPrefix+jwtToken);
+        response.addHeader(jwtProperties.accessTokenHeader, jwtProperties.tokenPrefix + accessToken);
+        response.addHeader(jwtProperties.refreshTokenHeader, jwtProperties.tokenPrefix + refreshToken);
     }
 
 }

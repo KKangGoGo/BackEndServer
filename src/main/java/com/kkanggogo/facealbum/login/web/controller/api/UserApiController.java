@@ -24,7 +24,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
-import javax.validation.constraints.Null;
 
 
 @RestController
@@ -59,6 +58,11 @@ public class UserApiController {
         }
     }
 
+    @GetMapping("/exception")
+    public ResponseDto<Integer> exception(){
+        throw new CustomExpectationFailed();
+    }
+
     // 로그아웃
     @GetMapping("/api/logout")
     public ResponseDto<Integer> logout(HttpServletRequest request, HttpServletResponse response,
@@ -78,7 +82,6 @@ public class UserApiController {
     public ResponseDto<Integer> updateUser(@RequestPart(value = "photo", required = false) MultipartFile photo,
                                            @RequestPart(value = "updateInfo") RequestUpdateUserInfoDto requestUpdateUserInfoDto,
                                            @AuthenticationPrincipal PrincipalDetails principalDetails) {
-
         // ("[INFO]유저정보 update 시도");
         User user = userService.updateUserInfo(photo, requestUpdateUserInfoDto, principalDetails.getUser());
         if (user != null) {
@@ -94,7 +97,7 @@ public class UserApiController {
 
     // 회원 정보
     @GetMapping("/api/user/auth")
-    public ResponseAuthDto getAuth(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public ResponseAuthDto getAuth(HttpServletRequest request, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         if (principalDetails != null) {
             ResponseAuthDto responseAuthDto = ResponseAuthDto
                     .builder()
@@ -105,6 +108,11 @@ public class UserApiController {
                     .build();
             if (principalDetails.getUser().getPhoto() != null) {
                 responseAuthDto.setPhoto(principalDetails.getUser().getPhoto());
+            }
+            if((request.getAttribute("re_access_token")!=null) &&
+                    (request.getAttribute("re_refresh_token")!=null)){
+                responseAuthDto.setReAccessToken((String)request.getAttribute("re_access_token"));
+                responseAuthDto.setReRefreshToken((String)request.getAttribute("re_refresh_token"));
             }
             return responseAuthDto;
         }

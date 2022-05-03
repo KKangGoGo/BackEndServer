@@ -153,7 +153,7 @@ public class SecurityTest {
     public String getAuthorizedUserToken(User saveUser) {
         PrincipalDetails principalDetails = new PrincipalDetails(saveUser);
 
-        String testToken = jwtProvider.createToken(principalDetails);
+        String testToken = jwtProvider.createAccessToken(principalDetails);
 
         // 사용자를 SecurityContestHolder에 강제 저장
         if (testToken != null && jwtProvider.isTokenValid(testToken)) {
@@ -201,7 +201,7 @@ public class SecurityTest {
         // then
         boolean isGetToken = mvcResult
                 .getResponse()
-                .getHeader(jwtProperties.headerString)
+                .getHeader(jwtProperties.accessTokenHeader)
                 .startsWith(jwtProperties.tokenPrefix); // 응답 값에 Bearer로 시작하는 문자열이 있는지 확인
         assertThat(isGetToken, is(true));
     }
@@ -213,11 +213,13 @@ public class SecurityTest {
         executeSignUp(requestSignUpDto);
 
         String accessToken = getAuthorizedUserToken(this.user);
+        String refreshToken = getAuthorizedUserToken(this.user);
 
         // when
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders
                 .get("/api/logout")
-                .header("access_token", accessToken)
+                .header(jwtProperties.accessTokenHeader, accessToken)
+                .header(jwtProperties.refreshTokenHeader, refreshToken)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
 
@@ -232,11 +234,13 @@ public class SecurityTest {
         // given
         executeSignUp(requestSignUpDto);
         String accessToken = getAuthorizedUserToken(this.user);
+        String refreshToken = getAuthorizedUserToken(this.user);
 
         // when
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders
                 .get(GET_AUTH_URL)
-                .header(jwtProperties.headerString, accessToken)
+                .header(jwtProperties.accessTokenHeader, accessToken)
+                .header(jwtProperties.refreshTokenHeader, refreshToken)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
 
@@ -259,6 +263,7 @@ public class SecurityTest {
         // given
         executeSignUp(requestSignUpDto);
         String accessToken = getAuthorizedUserToken(this.user);
+        String refreshToken = getAuthorizedUserToken(this.user);
         MockMultipartFile photo = makeMockFile();
         RequestUpdateUserInfoDto requestUpdateUserInfoDto = RequestUpdateUserInfoDto
                 .builder()
@@ -286,7 +291,8 @@ public class SecurityTest {
                 // .multipart(USER_MODIFY_URL)
                 .file(photo)
                 .file(updateDto)
-                .header("access_token", accessToken))
+                .header(jwtProperties.accessTokenHeader, accessToken)
+                .header(jwtProperties.refreshTokenHeader, refreshToken))
                 .andReturn();
 
         // then
@@ -311,13 +317,13 @@ public class SecurityTest {
         //만료된 토큰
         mvc.perform(MockMvcRequestBuilders
                 .put(USER_MODIFY_URL)
-                .header(jwtProperties.headerString, expiredToken)
+                .header(jwtProperties.accessTokenHeader, expiredToken)
                 .contentType(MediaType.APPLICATION_JSON).content(objectToJsonBody))
                 .andExpect(status().is4xxClientError()); //401
         // 디코딩할 수 없는 토큰(이상한 토큰 값)
         mvc.perform(MockMvcRequestBuilders
                 .put(USER_MODIFY_URL)
-                .header(jwtProperties.headerString, wiredToken)
+                .header(jwtProperties.accessTokenHeader, wiredToken)
                 .contentType(MediaType.APPLICATION_JSON).content(objectToJsonBody))
                 .andExpect(status().is4xxClientError()); //401
     }

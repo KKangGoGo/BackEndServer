@@ -5,6 +5,7 @@ import com.kkanggogo.facealbum.album.domain.Album;
 import com.kkanggogo.facealbum.album.service.AlbumService;
 import com.kkanggogo.facealbum.album.web.dto.AlbumRequestDto;
 import com.kkanggogo.facealbum.login.config.auth.PrincipalDetails;
+import com.kkanggogo.facealbum.login.config.jwt.JwtProperties;
 import com.kkanggogo.facealbum.login.config.jwt.JwtProvider;
 import com.kkanggogo.facealbum.login.domain.RoleType;
 import com.kkanggogo.facealbum.login.domain.User;
@@ -51,6 +52,9 @@ public class AlbumControllerTest {
     @Autowired
     private JwtProvider jwtProvider;
 
+    @Autowired
+    private JwtProperties jwtProperties;
+
     @MockBean
     private UserRepository userRepository;
 
@@ -93,7 +97,7 @@ public class AlbumControllerTest {
     public String getAuthorizedUserToken(User saveUser) {
         PrincipalDetails principalDetails = new PrincipalDetails(saveUser);
 
-        String testToken = jwtProvider.createToken(principalDetails);
+        String testToken = jwtProvider.createAccessToken(principalDetails);
 
         // 사용자를 SecurityContestHolder에 강제 저장
         if (testToken != null && jwtProvider.isTokenValid(testToken)) {
