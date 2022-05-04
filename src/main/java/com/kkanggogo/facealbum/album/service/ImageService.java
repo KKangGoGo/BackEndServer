@@ -28,15 +28,13 @@ public class ImageService {
     private final AlbumImageMapRepository albumImageMapRepository;
 
 
-    @Async
     @Transactional
     public void upload(ImageRequestDto imageRequestDto, User user,Album album){
         List<AlbumImageMappingTable> albumImageMappingTableList =new ArrayList<>();
         List<Image> images = imageRequestDto.toImageEntity(user.getUsername());
 
         for(Image image:images){
-            String upload = userAlbumAmazonS3Uploader.s3Upload(image);
-            log.debug(upload);
+            userAlbumAmazonS3Uploader.s3Upload(image);
             AlbumImageMappingTable albumImageMappingTable =new AlbumImageMappingTable();
             albumImageMappingTable.setImage(image);
             album.addAlbumImageMappingTable(albumImageMappingTable);
