@@ -16,13 +16,17 @@ export const loginUser = async dataToSubmit => {
     }
 }
 
-export const logoutUser = async () => {
-    await axios.get('/api/users/logout').then(res => {
-        localStorage.removeItem('login-token')
+export const logoutUser = async token => {
+    const request = await axios({
+        method: 'get',
+        url: '/api/logout',
+        headers: {'Content-Type': 'application/json', access_token: token},
+    }).then(res => {
         return res.data
     })
     return {
         type: types.LOGOUT_USER,
+        payload: request,
     }
 }
 

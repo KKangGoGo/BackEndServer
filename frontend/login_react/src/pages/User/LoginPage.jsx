@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import {useDispatch} from 'react-redux'
-import {loginUser} from '../_actions/userAction'
+import {loginUser} from '../../_actions/userAction'
 import {useNavigate} from 'react-router-dom'
 
 import styled from 'styled-components'
@@ -38,7 +38,7 @@ function LoginPage(props) {
         try {
             dispatch(loginUser(state)).then(res => {
                 console.log(res)
-                navigate('/')
+                navigate('/user/main')
             })
         } catch (error) {
             console.log(error)

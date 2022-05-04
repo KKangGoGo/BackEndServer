@@ -1,0 +1,14 @@
+.container {
+    display: grid;
+    grid-template-areas: 'left_side right_side';
+    grid-template-columns: 0.25fr 0.75fr;
+    min-height: 100vh;
+}
+
+.container .leftSide {
+    grid-area: left_side;
+}
+
+.container .rightSide {
+    grid-area: right_side;
+}

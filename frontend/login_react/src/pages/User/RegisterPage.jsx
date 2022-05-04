@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from 'react'
-import {useDispatch, useSelector} from 'react-redux'
-import {registerUser} from '../_actions/userAction'
+import React, {useState} from 'react'
+import {useDispatch} from 'react-redux'
+import {registerUser} from '../../_actions/userAction'
 import {useNavigate} from 'react-router-dom'
 
 import styled from 'styled-components'
@@ -17,17 +17,6 @@ const Input = styled.input`
 `
 
 function RegisterPage(props) {
-    // const user = useSelector(state => state.user)
-    // useEffect(() => {
-    //     if (user) {
-    //         try {
-    //             localStorage.setItem('user', JSON.stringify(user))
-    //         } catch (error) {
-    //             console.log(error)
-    //         }
-    //     }
-    // }, [user])
-
     const [state, setState] = useState({
         username: '',
         password: '',

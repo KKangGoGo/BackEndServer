@@ -2,7 +2,7 @@ import React, {useEffect} from 'react'
 
 import {useDispatch} from 'react-redux'
 import {useNavigate} from 'react-router-dom'
-import {authUser} from '../_actions/userAction.jsx'
+import {authUser} from '../../_actions/userAction.jsx'
 
 function auth(SpecificComponent, option, adminRoute = null) {
     // null 아무나 출입 가능 페이지

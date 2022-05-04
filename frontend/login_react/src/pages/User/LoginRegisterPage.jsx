@@ -1,9 +1,8 @@
-import React, {useEffect, useState} from 'react'
-import {useSelector} from 'react-redux'
+import React, {useState} from 'react'
 import styled from 'styled-components'
 import LoginPage from './LoginPage'
 import RegisterPage from './RegisterPage'
-import Auth from '../hoc/auth'
+import Auth from '../Hoc/auth'
 
 const Container = styled.div`
     position: relative;

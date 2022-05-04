@@ -12,6 +12,7 @@ function userReducer(state = {}, action) {
         case types.LOGOUT_USER:
             return {
                 ...state,
+                userData: action.payload,
             }
 
         case types.REGISTER_USER:
