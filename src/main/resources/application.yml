@@ -19,4 +19,4 @@ spring:
     activate:
       on-profile: "local"
 
-connectionbaseUrl: ${connectionbaseUrl}
+connectionbaseurl: ${connectionbaseurl}

@@ -11,7 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 @RequiredArgsConstructor
 public class DetectConnection {
 
-    @Value("${connectionbaseUrl}")
+    @Value("${connectionbaseurl}")
     private String baseUrl;
     private final WebClient.Builder webClientBuild;
 
