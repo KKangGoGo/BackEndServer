@@ -9,7 +9,7 @@ import styles from './NestedRouting.module.css'
 const NestedRouting = () => {
     return (
         <div className={styles.container}>
-            <div className={styles.letSide}>
+            <div className={styles.leftSide}>
                 <Navbar />
             </div>
             <div className={styles.rightSide}>

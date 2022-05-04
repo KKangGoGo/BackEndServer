@@ -1,8 +1,5 @@
-.container {
-}
-
 .container .logo {
-    margin: 50px 0;
+    margin: 70px 0;
     width: 100%;
     display: flex;
     justify-content: center;
@@ -16,7 +13,7 @@
     align-items: center;
     border-radius: 50%;
     border: 3px solid #6969b4;
-    width: 150px;
+    width: 100px;
     overflow: hidden;
 }
 
@@ -25,11 +22,11 @@
     width: 100%;
     font-size: 1rem;
     text-align: center;
-    margin: 15px 0;
+    margin: 15px 0px 30px 0px;
 }
 
 .container .face img {
-    width: 150px;
+    width: 100px;
 }
 
 .container ul {
@@ -59,7 +56,7 @@
     padding: 3px;
     cursor: pointer;
     transition: all ease 0.3s 0s;
-    margin: 10px 0;
+    margin: 5px 0;
 }
 
 .container ul li .btn svg:nth-child(1) {
@@ -96,5 +93,5 @@
     border: none;
     border-radius: 10px;
     cursor: pointer;
-    margin: 40px 0px 0px 20px;
+    margin: 80px 0px 0px 20px;
 }

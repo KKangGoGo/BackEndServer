@@ -1,8 +1,11 @@
 .container {
     display: grid;
     grid-template-areas: 'left_side right_side';
-    grid-template-columns: 0.25fr 0.75fr;
-    min-height: 100vh;
+    grid-template-columns: 0.2fr 0.8fr;
+    /* min-height: 100vh; */
+    height: 100vh;
+    background: rgb(241, 240, 233);
+    background: linear-gradient(90deg, rgba(241, 240, 233, 1) 0%, rgba(241, 234, 246, 1) 100%);
 }
 
 .container .leftSide {
@@ -11,4 +14,5 @@
 
 .container .rightSide {
     grid-area: right_side;
+    overflow: scroll;
 }
