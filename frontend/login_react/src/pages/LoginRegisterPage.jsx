@@ -1,7 +1,9 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
+import {useSelector} from 'react-redux'
 import styled from 'styled-components'
 import LoginPage from './LoginPage'
 import RegisterPage from './RegisterPage'
+import Auth from '../hoc/auth'
 
 const Container = styled.div`
     position: relative;
@@ -128,4 +130,4 @@ const LoginRegisterPage = () => {
     )
 }
 
-export default LoginRegisterPage
+export default Auth(LoginRegisterPage, false)

@@ -1,4 +1,4 @@
-package com.kkanggogo.facealbum.album.web;
+package com.kkanggogo.facealbum.album;
 
 import com.amazonaws.util.IOUtils;
 import com.kkanggogo.facealbum.album.web.dto.ImageMultipartFileRequestDto;

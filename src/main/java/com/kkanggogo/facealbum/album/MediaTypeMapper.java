@@ -1,4 +1,4 @@
-package com.kkanggogo.facealbum.album.web;
+package com.kkanggogo.facealbum.album;
 
 import org.springframework.http.MediaType;
 

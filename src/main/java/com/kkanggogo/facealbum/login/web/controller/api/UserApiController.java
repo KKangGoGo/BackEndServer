@@ -1,14 +1,14 @@
 package com.kkanggogo.facealbum.login.web.controller.api;
 
-import com.kkanggogo.facealbum.album.web.ImageMultipartFileRequestDtoFactory;
+import com.kkanggogo.facealbum.album.ImageMultipartFileRequestDtoFactory;
 import com.kkanggogo.facealbum.error.CustomExpectationFailed;
 import com.kkanggogo.facealbum.login.config.auth.PrincipalDetails;
+import com.kkanggogo.facealbum.login.domain.User;
+import com.kkanggogo.facealbum.login.service.UserService;
 import com.kkanggogo.facealbum.login.web.dto.RequestSignUpDto;
 import com.kkanggogo.facealbum.login.web.dto.RequestUpdateUserInfoDto;
 import com.kkanggogo.facealbum.login.web.dto.ResponseAuthDto;
 import com.kkanggogo.facealbum.login.web.dto.ResponseDto;
-import com.kkanggogo.facealbum.login.domain.User;
-import com.kkanggogo.facealbum.login.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -99,12 +100,15 @@ public class UserApiController {
     @GetMapping("/api/user/auth")
     public ResponseAuthDto getAuth(HttpServletRequest request, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         if (principalDetails != null) {
+            String userPhoto = principalDetails.getUser().getPhoto();
+            String photo=userPhoto!=null?userService.getImageFullPath(userPhoto):null;
             ResponseAuthDto responseAuthDto = ResponseAuthDto
                     .builder()
                     .username(principalDetails.getUsername())
                     .password(principalDetails.getPassword())
                     .email(principalDetails.getUser().getEmail())
                     .role(principalDetails.getUser().getRole())
+                    .photo(photo)
                     .build();
             if (principalDetails.getUser().getPhoto() != null) {
                 responseAuthDto.setPhoto(principalDetails.getUser().getPhoto());

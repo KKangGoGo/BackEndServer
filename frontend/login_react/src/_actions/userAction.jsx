@@ -4,6 +4,9 @@ import * as types from './types'
 export const loginUser = async dataToSubmit => {
     const request = await axios.post('/api/login', dataToSubmit).then(res => {
         console.log(res)
+
+        localStorage.setItem('login-token', res.headers.access_token)
+
         return res.data
     })
 
@@ -14,7 +17,10 @@ export const loginUser = async dataToSubmit => {
 }
 
 export const logoutUser = async () => {
-    await axios.get('/api/users/logout').then(res => res.data)
+    await axios.get('/api/users/logout').then(res => {
+        localStorage.removeItem('login-token')
+        return res.data
+    })
     return {
         type: types.LOGOUT_USER,
     }
@@ -30,12 +36,23 @@ export const registerUser = async dataToSubmit => {
         return res.data
     })
 
-    // const request = await axios.post('/api/signup', dataToSubmit).then(res => {
-    //     return res.data
-    // })
-
     return {
         type: types.REGISTER_USER,
+        payload: request,
+    }
+}
+
+export const authUser = async token => {
+    const request = await axios({
+        method: 'get',
+        url: '/api/user/auth',
+        headers: {'Content-Type': 'application/json', access_token: token},
+    }).then(res => {
+        return res.data
+    })
+
+    return {
+        type: types.AUTH_USER,
         payload: request,
     }
 }
