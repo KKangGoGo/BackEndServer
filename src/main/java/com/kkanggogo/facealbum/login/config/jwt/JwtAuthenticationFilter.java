@@ -2,10 +2,10 @@ package com.kkanggogo.facealbum.login.config.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kkanggogo.facealbum.login.config.auth.PrincipalDetails;
-import com.kkanggogo.facealbum.login.domain.TokenDomain;
-import com.kkanggogo.facealbum.login.domain.repository.TokenDomainRepository;
 import com.kkanggogo.facealbum.login.web.dto.RequestLoginDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -38,7 +38,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtTokenProvider;
-    private final TokenDomainRepository tokenDomainRepository;
+    private final StringRedisTemplate stringRedisTemplate;
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
@@ -94,11 +94,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         System.out.println("refresh_token : " + refreshToken);
         System.out.println("----------");
 
-//        tokenDomainRepository.save(new TokenDomain().saveTokenToRedis(
-//                principalDetails.getUsername(),
-//                accessToken,
-//                refreshToken)
-//        );
+        ValueOperations<String, String> stringValueOperations = stringRedisTemplate.opsForValue();
+        stringValueOperations.set(principalDetails.getUsername(), refreshToken);
 
         //header에서 값 포함
         response.addHeader(jwtProperties.accessTokenHeader, jwtProperties.tokenPrefix + accessToken);
