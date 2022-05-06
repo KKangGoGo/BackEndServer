@@ -10,6 +10,7 @@ import com.kkanggogo.facealbum.login.domain.repository.UserRepository;
 import com.kkanggogo.facealbum.login.web.dto.RequestSignUpDto;
 import com.kkanggogo.facealbum.login.web.dto.RequestUpdateUserInfoDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +27,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     @Autowired
     private BCryptPasswordEncoder encoder;
@@ -96,5 +100,10 @@ public class UserService {
 
     public String getImageFullPath(String path){
         return userProfileAmazonS3Uploader.getPrefixPath(path);
+    }
+
+    @Transactional
+    public void logout(String username) {
+        stringRedisTemplate.delete(username);
     }
 }

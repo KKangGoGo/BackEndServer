@@ -15,17 +15,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
-
 
 @RestController
 @Slf4j
@@ -66,16 +61,13 @@ public class UserApiController {
 
     // 로그아웃
     @GetMapping("/api/logout")
-    public ResponseDto<Integer> logout(HttpServletRequest request, HttpServletResponse response,
-                                       @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public ResponseDto<Integer> logout(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         if (principalDetails.getUser() != null) {
-            new SecurityContextLogoutHandler().logout(
-                    request,
-                    response,
-                    SecurityContextHolder.getContext().getAuthentication());
-            return new ResponseDto<>(HttpStatus.OK.value(), 1);
+            userService.logout(principalDetails.getUsername());
+        }else {
+            throw new NullPointerException();
         }
-        throw new NullPointerException();
+        return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
     }
 
     // 회원 정보 수정
