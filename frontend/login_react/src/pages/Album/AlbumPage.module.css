@@ -1,8 +1,130 @@
 .container {
-    margin: 20px;
-    padding: 50px;
-    background-color: white;
+    background-color: #fff;
     min-height: 100%;
+    margin: 20px;
+}
+.text {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.container .header {
+    padding-top: 10px;
+    padding-bottom: 30px;
+    display: flex;
+}
+
+.container .header .search {
+    display: flex;
+    height: 30px;
+}
+
+.container .header .search input {
+    padding: 0px 10px;
+    width: 300px;
+    line-height: 25px;
+    border-radius: 10px;
+    border: 2px solid #898989;
+}
+
+.container .header .search button {
+    margin: 0px 20px 0px -35px;
+    height: 100%;
+    border-radius: 10px;
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+.container .header .search button svg {
+    margin-top: 4px;
+    width: 20px;
+    height: 20px;
+}
+
+.container .header .createAlbum button {
+    height: 100%;
+    border: none;
+    display: flex;
+    line-height: 30px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.container .header .createAlbum button svg {
+    width: 15px;
+    height: 100%;
+    margin-right: 5px;
+}
+
+/* =========================================== */
+
+.container .shortcut {
+    display: flex;
+    border-bottom: 1px solid #a6a6a9;
+}
+
+.container .shortcut a {
+    text-decoration: none;
+    display: flex;
+}
+
+.container .shortcut a div {
+    width: 100px;
+    font-size: 0.8rem;
+    margin: 10px 10px 20px 0;
+    padding: 10px;
+    border: 1px solid #a6a6a9;
+    border-radius: 10px;
+    display: flex;
+    color: black;
+}
+
+.container .shortcut a div svg {
+    font-size: 1.1rem;
+    margin-right: 15px;
+}
+
+.container .shortcut a div span {
+    margin-top: 2px;
+}
+
+/* =========================================== */
+
+.container .main {
+    padding: 30px 0;
+}
+
+.container .main ul {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.container .main ul li {
+    margin-right: 30px;
+    margin-top: 30px;
     border-radius: 20px;
-    box-shadow: 0 0 5px 1px grey;
+    overflow: hidden;
+    box-shadow: 5px 5px 5px 0px #898989;
+}
+
+.container .main ul li a {
+    color: #000;
+    text-decoration: none;
+    text-align: center;
+}
+
+.container .main ul li a div:nth-child(2) {
+    margin-top: 7px;
+}
+
+.container .main ul li a div:nth-child(3) {
+    color: #898989;
+    margin: 10px 0;
+    font-size: 0.8rem;
+}
+
+.container .main ul li a img {
+    width: 180px;
+    height: 200px;
 }

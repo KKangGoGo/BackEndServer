@@ -1,35 +1,12 @@
 .container {
     height: 100%;
 }
-.container .logo {
-    background-color: #6667ab;
-    width: 100%;
-    height: 10%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.container .logo svg {
-    color: #fff;
-    font-size: 1.8rem;
-}
-
-.container .logo img:nth-child(1) {
-    width: 50px;
-    margin-left: 10px;
-}
-
-.container .logo img:nth-child(2) {
-    width: 120px;
-    margin-right: 20px;
-}
 
 .container .nav {
     display: flex;
     flex-direction: row;
     width: 100%;
-    height: 80%;
+    height: 100%;
     background-color: #f3f3f5;
 }
 
@@ -60,6 +37,7 @@
 .container .nav .contents {
     background-color: #f3f3f5;
     flex: 3;
+    overflow-y: scroll;
 }
 
 .container .nav .contents .ContentsTabs {
@@ -113,38 +91,5 @@
 
 .container .nav .contents .storage button:hover {
     color: #6667ab;
-    cursor: pointer;
-}
-
-/* =================================================== */
-
-.container .footer {
-    height: 10%;
-    background-color: #f3f3f5;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    padding: 0px 20px;
-}
-
-.container .footer .img {
-    position: relative;
-    height: 70%;
-    overflow: hidden;
-}
-
-.container .footer .img img {
-    height: 50px;
-    border-radius: 50%;
-}
-
-.container .footer .logout button {
-    border: none;
-    background-color: #6667ab;
-    color: #f3f3f5;
-    border-radius: 20px;
-}
-
-.container .footer .logout button:hover {
     cursor: pointer;
 }
