@@ -8,6 +8,7 @@ import styles from './NestedRouting.module.css'
 import img from '../img/Face Album.png'
 import {useDispatch, useSelector} from 'react-redux'
 import {logoutUser} from '../_actions/userAction'
+import AlbumDetailPage from './Album/AlbumDetail/AlbumDetailPage'
 
 function NestedRouting() {
     const dispatch = useDispatch()
@@ -43,10 +44,6 @@ function NestedRouting() {
                             <div className={styles.logout}>
                                 <button onClick={logoutHandler}>logout</button>
                             </div>
-
-                            <div className={styles.logout}>
-                                <button onClick={logoutHandler}>logout</button>
-                            </div>
                         </div>
                     ) : (
                         <div className={styles.user}>
@@ -70,6 +67,7 @@ function NestedRouting() {
                 <Routes>
                     <Route path="main" element={<MainPage />} />
                     <Route path="album" element={<AlbumPage />} />
+                    <Route path="album/:albumId" element={<AlbumDetailPage />} />
                 </Routes>
             </div>
         </div>

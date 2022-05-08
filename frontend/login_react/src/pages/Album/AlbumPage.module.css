@@ -49,6 +49,7 @@
     line-height: 30px;
     border-radius: 10px;
     cursor: pointer;
+    outline: none;
 }
 
 .container .header .createAlbum button svg {

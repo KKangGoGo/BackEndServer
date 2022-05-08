@@ -3,8 +3,6 @@ import * as types from './types'
 
 export const loginUser = async dataToSubmit => {
     const request = await axios.post('/api/login', dataToSubmit).then(res => {
-        console.log(res)
-
         localStorage.setItem('login-token', res.headers.access_token)
 
         return res.data
