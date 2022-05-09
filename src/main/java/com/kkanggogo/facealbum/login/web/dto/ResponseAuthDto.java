@@ -18,4 +18,8 @@ public class ResponseAuthDto {
     public RoleType role;
 
     public String photo;
+
+    public String reAccessToken;
+
+    public String reRefreshToken;
 }

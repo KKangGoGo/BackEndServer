@@ -51,13 +51,17 @@ dependencies {
     // valid
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-
     // json
     implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+
 
     //webClient
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     
+
+    // redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
 }
 
 test {

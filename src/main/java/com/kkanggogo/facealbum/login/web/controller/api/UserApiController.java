@@ -15,17 +15,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
-
 
 @RestController
 @Slf4j
@@ -59,18 +54,20 @@ public class UserApiController {
         }
     }
 
+    @GetMapping("/exception")
+    public ResponseDto<Integer> exception(){
+        throw new CustomExpectationFailed();
+    }
+
     // 로그아웃
     @GetMapping("/api/logout")
-    public ResponseDto<Integer> logout(HttpServletRequest request, HttpServletResponse response,
-                                       @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public ResponseDto<Integer> logout(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         if (principalDetails.getUser() != null) {
-            new SecurityContextLogoutHandler().logout(
-                    request,
-                    response,
-                    SecurityContextHolder.getContext().getAuthentication());
-            return new ResponseDto<>(HttpStatus.OK.value(), 1);
+            userService.logout(principalDetails.getUsername());
+        }else {
+            throw new NullPointerException();
         }
-        throw new NullPointerException();
+        return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
     }
 
     // 회원 정보 수정
@@ -78,7 +75,6 @@ public class UserApiController {
     public ResponseDto<Integer> updateUser(@RequestPart(value = "photo", required = false) MultipartFile photo,
                                            @RequestPart(value = "updateInfo") RequestUpdateUserInfoDto requestUpdateUserInfoDto,
                                            @AuthenticationPrincipal PrincipalDetails principalDetails) {
-
         // ("[INFO]유저정보 update 시도");
         User user = userService.updateUserInfo(photo, requestUpdateUserInfoDto, principalDetails.getUser());
         if (user != null) {
@@ -94,7 +90,7 @@ public class UserApiController {
 
     // 회원 정보
     @GetMapping("/api/user/auth")
-    public ResponseAuthDto getAuth(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public ResponseAuthDto getAuth(HttpServletRequest request, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         if (principalDetails != null) {
             String userPhoto = principalDetails.getUser().getPhoto();
             String photo=userPhoto!=null?userService.getImageFullPath(userPhoto):null;
@@ -106,6 +102,14 @@ public class UserApiController {
                     .role(principalDetails.getUser().getRole())
                     .photo(photo)
                     .build();
+            if (principalDetails.getUser().getPhoto() != null) {
+                responseAuthDto.setPhoto(principalDetails.getUser().getPhoto());
+            }
+            if((request.getAttribute("re_access_token")!=null) &&
+                    (request.getAttribute("re_refresh_token")!=null)){
+                responseAuthDto.setReAccessToken((String)request.getAttribute("re_access_token"));
+                responseAuthDto.setReRefreshToken((String)request.getAttribute("re_refresh_token"));
+            }
             return responseAuthDto;
         }
         throw new CustomExpectationFailed();
