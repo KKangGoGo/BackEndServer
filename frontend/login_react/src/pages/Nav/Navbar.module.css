@@ -37,7 +37,7 @@
 .container .nav .contents {
     background-color: #f3f3f5;
     flex: 3;
-    overflow-y: scroll;
+    /* overflow-y: scroll; */
 }
 
 .container .nav .contents .ContentsTabs {

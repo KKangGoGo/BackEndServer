@@ -6,7 +6,6 @@ import {HiOutlineSearch, HiOutlineUpload} from 'react-icons/hi'
 import {IoAlbumsOutline} from 'react-icons/io5'
 import AlbumUploadModal from './AlbumUpload/AlbumUploadModal'
 import {useDispatch} from 'react-redux'
-import {useNavigate} from 'react-router-dom'
 import {getAlbums} from '../../_actions/albumAction'
 
 const AlbumPage = () => {
@@ -16,7 +15,6 @@ const AlbumPage = () => {
     const [Albums, setAlbums] = useState([])
 
     const dispatch = useDispatch()
-    const navigate = useNavigate()
 
     useEffect(() => {
         const token = localStorage.getItem('login-token')
@@ -30,7 +28,7 @@ const AlbumPage = () => {
 
     const RenderShortcut = Albums.map((album, index) => {
         return (
-            <a key={index} href="">
+            <a key={index} href={`album/${album.albumId}`}>
                 <div>
                     <IoAlbumsOutline />
                     <span>{album.title}</span>
@@ -73,59 +71,7 @@ const AlbumPage = () => {
 
             <div className={styles.main}>
                 <div className={styles.text}>앨범</div>
-                <ul>
-                    {RenderAlbum}
-                    {/* <li>
-                        <a href="">
-                            <img
-                                src="https://images.generated.photos/HGBpoZ-Lt2kjqYM-Fbt84-HIVsX6wIGosKWKQ3RAx_w/rs:fit:256:256/czM6Ly9pY29uczgu/Z3Bob3Rvcy1wcm9k/LnBob3Rvcy92M18w/ODU0NDU4LmpwZw.jpg"
-                                alt=""
-                            />
-                            <div>가족 앨범</div>
-                            <div>2022.05.08 생성</div>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="">
-                            <img
-                                src="https://images.generated.photos/LgRTka3d_IuqVbfykX-uZ79LDo5ja5AaRVwRsTOKnN4/rs:fit:256:256/czM6Ly9pY29uczgu/Z3Bob3Rvcy1wcm9k/LnBob3Rvcy92M18w/OTMyODE3LmpwZw.jpg"
-                                alt=""
-                            />
-                            <div>추억 앨범</div>
-                            <div>2022.05.08 생성</div>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="">
-                            <img
-                                src="https://images.generated.photos/S1ITjw8eVG_pfismlnVp_alsmeymnlENOY_fHva7TD0/rs:fit:256:256/czM6Ly9pY29uczgu/Z3Bob3Rvcy1wcm9k/LnBob3Rvcy92M18w/Njc0NjMzLmpwZw.jpg"
-                                alt=""
-                            />
-                            <div>연인 앨범</div>
-                            <div>2022.05.08 생성</div>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="">
-                            <img
-                                src="https://images.generated.photos/V0z89lqApCatKP9xzxSKA6lYAr2b8i-l5aT-T6lXeQw/rs:fit:256:256/czM6Ly9pY29uczgu/Z3Bob3Rvcy1wcm9k/LnBob3Rvcy92M18w/MzQwMTA2LmpwZw.jpg"
-                                alt=""
-                            />
-                            <div>친구 앨범</div>
-                            <div>2022.05.08 생성</div>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="">
-                            <img
-                                src="https://images.generated.photos/xd44DoYoYi8LTkG8IhV-ta_lSjKYMqa3eRwjIIkshb4/rs:fit:256:256/czM6Ly9pY29uczgu/Z3Bob3Rvcy1wcm9k/LnBob3Rvcy92M18w/Mjg3ODAwLmpwZw.jpg"
-                                alt=""
-                            />
-                            <div>기타 앨범</div>
-                            <div>2022.05.08 생성</div>
-                        </a>
-                    </li> */}
-                </ul>
+                <ul>{RenderAlbum}</ul>
             </div>
         </div>
     )

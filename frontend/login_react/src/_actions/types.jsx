@@ -5,5 +5,7 @@ export const LOGOUT_USER = 'LOGOUT_USER'
 export const AUTH_USER = 'AUTH_USER'
 
 // ====================앨범
-export const CREATE_ALBUM = 'CREATE_ALBUM'
-export const GET_ALBUMS = 'GET_ALBUMS'
+export const ALBUM_CREATE = 'ALBUM_CREATE'
+export const ALBUMS_GET = 'ALBUMS_GET'
+export const IMAGES_GET = 'IMAGES_GET'
+export const IMAGE_CREATE = 'IMAGES_CREATE'
