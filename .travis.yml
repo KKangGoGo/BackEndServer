@@ -17,7 +17,10 @@ cache:
     - '$HOME/.gradle'
 
 script:
-  - "pwd"
+  - "cd frontend/login_react"
+  - "npm install"
+  - "npm run build"
+  - "cd $HOME"
   - "./gradlew clean build"
 
 before_deploy:
