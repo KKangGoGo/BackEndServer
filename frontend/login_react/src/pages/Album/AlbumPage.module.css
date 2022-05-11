@@ -63,6 +63,19 @@
 .container .shortcut {
     display: flex;
     border-bottom: 1px solid #a6a6a9;
+    /* max-width: 100%; */
+    overflow-x: scroll;
+}
+
+.container .shortcut::-webkit-scrollbar {
+    height: 10px;
+}
+
+.container .shortcut::-webkit-scrollbar-thumb {
+    background-color: #a6a6a9;
+    border-radius: 10px;
+    background-clip: padding-box;
+    border: 2px solid transparent;
 }
 
 .container .shortcut a {
@@ -88,6 +101,9 @@
 
 .container .shortcut a div span {
     margin-top: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 /* =========================================== */
