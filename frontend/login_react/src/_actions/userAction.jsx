@@ -3,8 +3,6 @@ import * as types from './types'
 
 export const loginUser = async dataToSubmit => {
     const request = await axios.post('/api/login', dataToSubmit).then(res => {
-        console.log(res)
-
         localStorage.setItem('login-token', res.headers.access_token)
 
         return res.data
@@ -16,13 +14,17 @@ export const loginUser = async dataToSubmit => {
     }
 }
 
-export const logoutUser = async () => {
-    await axios.get('/api/users/logout').then(res => {
-        localStorage.removeItem('login-token')
+export const logoutUser = async token => {
+    const request = await axios({
+        method: 'get',
+        url: '/api/logout',
+        headers: {'Content-Type': 'application/json', access_token: token},
+    }).then(res => {
         return res.data
     })
     return {
         type: types.LOGOUT_USER,
+        payload: request,
     }
 }
 

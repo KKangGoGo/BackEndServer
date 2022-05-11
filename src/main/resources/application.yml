@@ -1,5 +1,4 @@
 spring:
-
   profiles:
     group:
       "prod": "prod-db,prod-cloud"
@@ -41,7 +40,7 @@ spring:
     serialization:
       fail-on-empty-beans: false
 
-
 logging:
   level:
     root: debug
+      on-profile: "local"
