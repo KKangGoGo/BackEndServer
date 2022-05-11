@@ -1,20 +1,9 @@
 import React, {useState} from 'react'
 import {useDispatch} from 'react-redux'
-import {registerUser} from '../../_actions/userAction'
+import {registerUser} from '../../../_actions/userAction'
 import {useNavigate} from 'react-router-dom'
 
-import styled from 'styled-components'
-
-const Input = styled.input`
-    line-height: 20px;
-    border: none;
-    border-bottom: 1px solid #848484;
-    margin-bottom: 20px;
-    &:focus {
-        outline: none;
-        border-bottom: 2px solid #704598;
-    }
-`
+import styles from './RegisterPage.module.css'
 
 function RegisterPage(props) {
     const [state, setState] = useState({
@@ -78,19 +67,39 @@ function RegisterPage(props) {
                 style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', color: '#848484'}}
             >
                 <label htmlFor="">Username</label>
-                <Input type="text" placeholder="username" name="username" value={username} onChange={handleInputChange} />
+                <input
+                    className={styles.input}
+                    type="text"
+                    placeholder="username"
+                    name="username"
+                    value={username}
+                    onChange={handleInputChange}
+                />
 
                 <label htmlFor="">Password</label>
-                <Input type="password" placeholder="password" name="password" value={password} onChange={handleInputChange} />
+                <input
+                    className={styles.input}
+                    type="password"
+                    placeholder="password"
+                    name="password"
+                    value={password}
+                    onChange={handleInputChange}
+                />
 
                 <label htmlFor="">ConfirmPassword</label>
-                <Input type="password" placeholder="confirm-password" value={ConfirmPassword} onChange={onConfirmPasswordHandler} />
+                <input
+                    className={styles.input}
+                    type="password"
+                    placeholder="confirm-password"
+                    value={ConfirmPassword}
+                    onChange={onConfirmPasswordHandler}
+                />
 
                 <label htmlFor="">Email</label>
-                <Input type="text" placeholder="email" name="email" value={email} onChange={handleInputChange} />
+                <input className={styles.input} type="text" placeholder="email" name="email" value={email} onChange={handleInputChange} />
 
                 <label htmlFor="">Image</label>
-                <Input type="file" name="image" multiple="multiple" />
+                <input className={styles.input} type="file" name="image" multiple="multiple" />
 
                 <button>sign up</button>
             </form>

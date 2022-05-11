@@ -1,20 +1,9 @@
 import React, {useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
-import {loginUser} from '../../_actions/userAction'
+import {loginUser} from '../../../_actions/userAction'
 import {useNavigate} from 'react-router-dom'
 
-import styled from 'styled-components'
-
-const Input = styled.input`
-    line-height: 20px;
-    border: none;
-    border-bottom: 1px solid #848484;
-    margin-bottom: 20px;
-    &:focus {
-        outline: none;
-        border-bottom: 2px solid #704598;
-    }
-`
+import styles from './LoginPage.module.css'
 
 function LoginPage(props) {
     const [state, setState] = useState({
@@ -51,8 +40,15 @@ function LoginPage(props) {
                 onSubmit={onSubmitHandler}
                 style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}
             >
-                <Input placeholder="username" name="username" value={username} onChange={handleInputChange} />
-                <Input placeholder="password" name="password" type="password" value={password} onChange={handleInputChange} />
+                <input className={styles.input} placeholder="username" name="username" value={username} onChange={handleInputChange} />
+                <input
+                    className={styles.input}
+                    placeholder="password"
+                    name="password"
+                    type="password"
+                    value={password}
+                    onChange={handleInputChange}
+                />
 
                 <button type="submit">LOGIN</button>
             </form>
