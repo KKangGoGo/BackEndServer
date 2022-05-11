@@ -1,6 +1,7 @@
 package com.kkanggogo.facealbum.login.web.dto;
 
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -12,6 +13,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class RequestUpdateUserInfoDto {
 
-    @NotBlank
     private String password;
+
+    private String email;
 }

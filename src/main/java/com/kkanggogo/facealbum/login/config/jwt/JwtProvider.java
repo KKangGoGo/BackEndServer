@@ -2,6 +2,7 @@ package com.kkanggogo.facealbum.login.config.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.kkanggogo.facealbum.login.config.auth.PrincipalDetails;
 import com.kkanggogo.facealbum.login.domain.User;
 import com.kkanggogo.facealbum.login.domain.repository.UserRepository;
@@ -21,24 +22,26 @@ public class JwtProvider {
     private final JwtProperties properties;
     private final UserRepository userRepository;
 
-    private String secretKey, headerString, tokenPrefix;
-    private int tokenExpirationTime;
+    private String secretKey, accessTokenHeader, refreshTokenHeader, tokenPrefix;
+    private int accessTokenExpirationTime, refreshTokenExpirationTime;
 
     @PostConstruct
     protected void init() {
         secretKey = properties.secret;
-        headerString = properties.headerString;
-        tokenExpirationTime = properties.expireAccessTokenTime;
+        accessTokenHeader = properties.accessTokenHeader;
+        refreshTokenHeader = properties.refreshTokenHeader;
+        accessTokenExpirationTime = properties.expireAccessTokenTime;
+        refreshTokenExpirationTime = properties.expireRefreshTokenTime;
         tokenPrefix = properties.tokenPrefix;
         //secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
     //HMAC512
     //token을 만들 때 id와 username포함
-    public String createToken(PrincipalDetails principalDetails) {
+    public String createAccessToken(PrincipalDetails principalDetails) {
         String jwtAccessToken = JWT.create()
                 .withSubject("token") //아무거나 써도 됨.
-                .withExpiresAt(new Date(System.currentTimeMillis() + (tokenExpirationTime)))
+                .withExpiresAt(new Date(System.currentTimeMillis() + (accessTokenExpirationTime)))
                 .withClaim("id", principalDetails.getUser().getId()) // 발행 유저정보 저장
                 .withClaim("username", principalDetails.getUser().getUsername())
                 .withClaim("role", principalDetails.getUser().getRole().toString())
@@ -47,8 +50,24 @@ public class JwtProvider {
         return jwtAccessToken;
     }
 
-    public String resolveJwtToken(HttpServletRequest request) {
-        return request.getHeader(headerString);
+    public String createRefreshToken(PrincipalDetails principalDetails) {
+        String jwtAccessToken = JWT.create()
+                .withSubject("token") //아무거나 써도 됨.
+                .withExpiresAt(new Date(System.currentTimeMillis() + (refreshTokenExpirationTime)))
+                .withClaim("id", principalDetails.getUser().getId()) // 발행 유저정보 저장
+                .withClaim("username", principalDetails.getUser().getUsername())
+                .withClaim("role", principalDetails.getUser().getRole().toString())
+                .sign(Algorithm.HMAC512(secretKey)); //고윳값
+
+        return jwtAccessToken;
+    }
+
+    public String resolveAccessToken(HttpServletRequest request) {
+        return request.getHeader(accessTokenHeader);
+    }
+
+    public String resolveRefreshToken(HttpServletRequest request) {
+        return request.getHeader(refreshTokenHeader);
     }
 
     public Authentication getAuthentication(String token) {
@@ -67,10 +86,23 @@ public class JwtProvider {
         return null;
     }
 
+    public PrincipalDetails getPrincipalDetails(String token) {
+        String username = getUsername(token);
+        if (username != null) {
+            User user = userRepository.searchUsername(username);
+            return new PrincipalDetails(user);
+        }
+        return null;
+    }
+
     public String getUsername(String token) {
         token = token.replace(tokenPrefix, "");
-        return JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token).
-                getClaim("username").asString();
+        try {
+            return JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token).
+                    getClaim("username").asString();
+        }catch (TokenExpiredException e){
+            return null;
+        }
     }
 
     public Jws<Claims> getClaimsFromJwtToken(String jwtToken) throws JwtException {
@@ -79,10 +111,8 @@ public class JwtProvider {
 
     public boolean isTokenValid(String token) {
         token = token.replace(tokenPrefix, "");
-
         String username = getUsername(token);
-        if(username != null) return true;
-
+        if (username != null) return true;
         return false;
     }
 
