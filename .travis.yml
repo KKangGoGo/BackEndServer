@@ -16,7 +16,11 @@ cache:
     - '$HOME/.m2/repository'
     - '$HOME/.gradle'
 
-before_script: "node --version"
+before_script:
+  - "npm install n"
+  - "npm install npm"
+  - "npm -v"
+  - "node"
 
 script: "./gradlew clean build"
 
