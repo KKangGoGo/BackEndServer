@@ -2,6 +2,18 @@ plugins {
     id 'org.springframework.boot' version '2.6.5'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
+    id "com.github.node-gradle.node" version "3.2.1"
+}
+
+node {
+    version = '14.15.4'
+    npmVersion = '8.5.0'
+    yarnVersion = '1.22.17'
+    distBaseUrl = "https://nodejs.org/dist"
+    workDir = file("${project.projectDir}/src/frontend/login_react")
+    npmWorkDir = file("${project.projectDir}/src/frontend/login_react")
+    nodeProjectDir = file("${project.projectDir}/src/frontend/login_react")
+    npmInstallCommand = "install"
 }
 
 group = 'com.kkanggogo'
@@ -34,6 +46,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
 
+
     // mysql, jpa
     implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.22'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '2.4.2'
@@ -49,10 +62,11 @@ dependencies {
     // valid
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-
     // json
     implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
-    
+
+    // redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 }
 
 test {
@@ -72,3 +86,29 @@ task integrationTest(type: Test, group: 'verification') {
 task wholeTest(type: Test, group: 'verification') {
     useJUnitPlatform()
 }
+
+task deleteReactArtifact(type: Delete) {
+    description 'Delete previous React artifact'
+    delete 'src/main/resource/static'
+}
+
+//npmInstall {
+//    workingDir = file("${project.projectDir}/frontend/login_react")
+//}
+
+task npm_install(type: NpmTask) {
+    description = "Npm install"
+    workingDir = file("${project.projectDir}/frontend/login_react")
+    dependsOn('deleteReactArtifact')
+    args = ['install']
+}
+
+
+task buildFrontend(type: NpmTask) {
+    description = "npm run build"
+    workingDir = file("${project.projectDir}/frontend/login_react")
+    dependsOn("npm_install")
+    args = ["run", "build"]
+}
+
+processResources.dependsOn 'buildFrontend'

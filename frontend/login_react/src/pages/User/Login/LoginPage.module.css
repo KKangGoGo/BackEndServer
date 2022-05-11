@@ -1,0 +1,34 @@
+.input {
+    line-height: 20px;
+    border: none;
+    border-bottom: 1px solid #848484;
+    margin-bottom: 20px;
+}
+
+.input:focus {
+    outline: none;
+    border-bottom: 2px solid #704598;
+}
+
+.feedback {
+    font-size: 0.8rem;
+    color: red;
+    margin-top: -10px;
+    margin-bottom: 10px;
+}
+
+.errMessage {
+    color: #ff0000bf;
+    font-size: 0.7rem;
+    border: 1px solid;
+    padding: 0.5rem;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.login {
+    padding: 0 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
