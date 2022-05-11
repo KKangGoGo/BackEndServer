@@ -15,6 +15,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
@@ -30,8 +32,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } else {
             try {
-                String accessToken = jwtProvider.resolveAccessToken(request);
-                String refreshToken = jwtProvider.resolveRefreshToken(request);
+                Optional<String> optionalAccessToken = jwtProvider.resolveAccessToken(request);
+                Optional<String> optionalRefreshToken = jwtProvider.resolveRefreshToken(request);
+                String accessToken = optionalAccessToken.get();
+                String refreshToken = optionalRefreshToken.get();
 
                 if (accessToken != null && refreshToken != null) {
                     boolean accessTokenValid = jwtProvider.isTokenValid(accessToken);
@@ -53,7 +57,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                     } else if (!accessTokenValid && !refreshTokenValid) {
                         // 토큰 두개 다 만료되었을 경우 -> 재로그인
                         throw new TokenExpiredException("토큰이 만료되어 재 로그인이 필요합니다.");
-                    } else {
+                    }else if(accessToken == null || refreshToken==null){
+                        request.setAttribute("exception", HttpStatus.UNAUTHORIZED);
+                    }
+                    else {
                         // access token은 만료되지 않았는데, refresh token이 만료되었을 경우(서버에 이상이 생긴것임)
                         throw new TokenExpiredException("토큰이 만료되어 재 로그인이 필요합니다.");
                     }
@@ -75,6 +82,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 request.setAttribute("exception", HttpStatus.UNAUTHORIZED);
             } catch (IllegalStateException e) {
                 System.out.println("ex : 코드상에 문제 발생");
+                request.setAttribute("exception", HttpStatus.UNAUTHORIZED);
+            }catch (NoSuchElementException e) {
+                System.out.println("ex : token Null");
                 request.setAttribute("exception", HttpStatus.UNAUTHORIZED);
             }
             filterChain.doFilter(request, response);

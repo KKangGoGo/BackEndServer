@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -62,12 +63,12 @@ public class JwtProvider {
         return jwtAccessToken;
     }
 
-    public String resolveAccessToken(HttpServletRequest request) {
-        return request.getHeader(accessTokenHeader);
+    public Optional<String> resolveAccessToken(HttpServletRequest request) {
+        return Optional.ofNullable(request.getHeader(accessTokenHeader));
     }
 
-    public String resolveRefreshToken(HttpServletRequest request) {
-        return request.getHeader(refreshTokenHeader);
+    public Optional<String> resolveRefreshToken(HttpServletRequest request) {
+        return Optional.ofNullable(request.getHeader(refreshTokenHeader));
     }
 
     public Authentication getAuthentication(String token) {
