@@ -17,6 +17,7 @@ cache:
     - '$HOME/.gradle'
 
 before_script:
+  - "cd frontend/login_react"
   - "npm install n"
   - "npm install npm"
   - "npm -v"
