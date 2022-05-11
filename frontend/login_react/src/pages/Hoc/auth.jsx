@@ -27,7 +27,7 @@ function auth(SpecificComponent, option, adminRoute = null) {
                     navigate('/loginRegister')
                 }
             }
-        }, [])
+        }, [navigate, token, dispatch])
         return <SpecificComponent />
     }
     return AuthenticationCheck

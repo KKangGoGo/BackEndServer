@@ -24,7 +24,7 @@ const AlbumDetailPage = () => {
                 setImages(res.payload.images)
             })
             .catch(e => console.log(e.message))
-    }, [])
+    }, [albumId, dispatch])
 
     const RenderImages = Images.map((image, index) => {
         return (
