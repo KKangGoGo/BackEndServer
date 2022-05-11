@@ -13,32 +13,22 @@ import java.io.IOException;
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException{
 
-        Object exception = request.getAttribute("exception");
+        String exception = request.getAttribute("exception").toString();
 
-        if (exception == null) {
-            setResponse(response, HttpStatus.INTERNAL_SERVER_ERROR, "필터에서 예외 처리가 되지 않은 예외가 발생했습니다.");
-            return;
-        } else {
-            exception = exception.toString();
-        }
+        System.out.println("에러 발생");
 
         // 401
-        if (exception.equals(HttpStatus.UNAUTHORIZED.toString())) {
+        if(exception.equals(HttpStatus.UNAUTHORIZED.toString())){
             setResponse(response, HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다.");
         }
 
         // 500
-        if (exception.equals(HttpStatus.INTERNAL_SERVER_ERROR.toString())) {
+        if(exception.equals(HttpStatus.INTERNAL_SERVER_ERROR.toString())){
             setResponse(response, HttpStatus.INTERNAL_SERVER_ERROR, "토큰에서 사용자를 찾을 수 없습니다.");
         }
-
-        if (exception.equals(HttpStatus.EXPECTATION_FAILED.toString())) {
-            setResponse(response, HttpStatus.EXPECTATION_FAILED, "잘못된 입력입니다.");
-        }
     }
-
     private void setResponse(HttpServletResponse response, HttpStatus errorCode, String errorMessage) throws IOException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("Error Code", errorCode);

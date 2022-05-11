@@ -1,10 +1,7 @@
 package com.kkanggogo.facealbum.album.service;
 
-import com.kkanggogo.facealbum.album.AmazonS3Uploader;
 import com.kkanggogo.facealbum.album.domain.Album;
 import com.kkanggogo.facealbum.album.domain.repository.AlbumRepository;
-import com.kkanggogo.facealbum.album.web.dto.AlbumListEntityResponseDto;
-import com.kkanggogo.facealbum.album.web.dto.AlbumListResponseDto;
 import com.kkanggogo.facealbum.login.domain.User;
 import com.kkanggogo.facealbum.login.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,9 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -24,8 +19,6 @@ public class AlbumService {
     private final AlbumRepository albumRepository;
 
     private final UserRepository userRepository;
-
-    private final AmazonS3Uploader userAlbumAmazonS3Uploader;
 
 
 
@@ -61,23 +54,6 @@ public class AlbumService {
         Album album1 = album.get();
         user1.isItUserAlbum(album1);
         return album1;
-    }
-
-    @Transactional
-    public AlbumListResponseDto findUserAlbum(User paramUser) {
-        Optional<User> optionalUser = userRepository.findById(paramUser.getId());
-        optionalUser.orElseThrow(()->new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-        User user = optionalUser.get();
-
-        List<AlbumListEntityResponseDto> collect =user.getAlbumList().stream().map(element->{
-            AlbumListEntityResponseDto albumListEntityResponseDto = new AlbumListEntityResponseDto();
-            albumListEntityResponseDto.setAlbumListEntityResponseDto(element,userAlbumAmazonS3Uploader);
-            return albumListEntityResponseDto;
-        }).collect(Collectors.toList());
-
-        AlbumListResponseDto albumListResponseDto=new AlbumListResponseDto();
-        albumListResponseDto.setAlbumlist(collect);
-        return albumListResponseDto;
     }
 
     @Transactional

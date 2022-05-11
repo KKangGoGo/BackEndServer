@@ -14,8 +14,7 @@ import javax.persistence.*;
 @Slf4j
 public class AlbumImageMappingTable {
 
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue
     @Column(name = "albumImageMapId")
     private Long id;
 
