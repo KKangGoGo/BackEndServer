@@ -18,10 +18,11 @@ cache:
 
 before_script:
   - "cd frontend/login_react"
-  - "npm install n"
   - "npm install npm"
+  - "npm install n"
   - "npm -v"
   - "node --version"
+  - "cd $HOME"
 
 script: "./gradlew clean build"
 
