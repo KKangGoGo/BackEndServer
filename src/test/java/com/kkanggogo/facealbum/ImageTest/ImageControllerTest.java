@@ -3,11 +3,8 @@ package com.kkanggogo.facealbum.ImageTest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kkanggogo.facealbum.album.domain.Album;
 import com.kkanggogo.facealbum.album.service.ImageService;
-import com.kkanggogo.facealbum.album.service.AlbumImageFacade;
-import com.kkanggogo.facealbum.album.web.dto.AlbumImagesResponseDto;
 import com.kkanggogo.facealbum.album.web.dto.ImageJsonRequestDto;
 import com.kkanggogo.facealbum.login.config.auth.PrincipalDetails;
-import com.kkanggogo.facealbum.login.config.jwt.JwtProperties;
 import com.kkanggogo.facealbum.login.config.jwt.JwtProvider;
 import com.kkanggogo.facealbum.login.domain.RoleType;
 import com.kkanggogo.facealbum.login.domain.User;
@@ -33,12 +30,10 @@ import org.springframework.web.context.WebApplicationContext;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -55,9 +50,6 @@ public class ImageControllerTest {
     @Autowired
     private JwtProvider jwtProvider;
 
-    @Autowired
-    private JwtProperties jwtProperties;
-
     @MockBean
     private UserRepository userRepository;
 
@@ -65,9 +57,6 @@ public class ImageControllerTest {
 
     @MockBean
     private ImageService imageService;
-
-    @MockBean
-    private AlbumImageFacade albumImageFacade;
 
 
     private User user;
@@ -90,7 +79,6 @@ public class ImageControllerTest {
                 .password("1234")
                 .email("ksb@gm")
                 .role(RoleType.USER)
-                .albumList(new ArrayList<>())
                 .build();
 
         Album responseAlbum = new Album();
@@ -106,7 +94,7 @@ public class ImageControllerTest {
     public String getAuthorizedUserToken(User saveUser){
         PrincipalDetails principalDetails = new PrincipalDetails(saveUser);
 
-        String testToken = jwtProvider.createAccessToken(principalDetails);
+        String testToken = jwtProvider.createToken(principalDetails);
 
         // 사용자를 SecurityContestHolder에 강제 저장
         if (testToken != null && jwtProvider.isTokenValid(testToken)) {
@@ -127,7 +115,7 @@ public class ImageControllerTest {
 
         MockMultipartFile mockMultipartFile = getMockMultipartFile(fileName,contentType,path);
         //when
-        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/user/album/images")
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/user/album-list")
                 .file(mockMultipartFile).header("access_token",authorizedUserToken))
                 //then
                 .andExpect(status().is(202));
@@ -144,7 +132,7 @@ public class ImageControllerTest {
         MockMultipartFile mockMultipartFile = getMockMultipartFile(fileName,contentType,path);
         MockMultipartFile mockMultipartFile2 = getMockMultipartFile(fileName,contentType,path);
         //when
-        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/user/album/images")
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/user/album-list")
                 .file(mockMultipartFile)
                 .file(mockMultipartFile2).header("access_token",authorizedUserToken))
                 //then
@@ -192,24 +180,6 @@ public class ImageControllerTest {
                 //then
                 .andExpect(status().is(202));
 
-    }
-
-    @Test
-    void 앨범내부_이미지_불러오기() throws Exception {
-        //given
-        AlbumImagesResponseDto responseDto=new AlbumImagesResponseDto();
-        responseDto.getImages().add("https://s3.ap-northeast-2.amazonaws.com/com.kkanggogo.facealbum.testbukit/ksb/82647bf0-9061-4213-b623-e1bce614f0050.jpg");
-        responseDto.getImages().add("https://s3.ap-northeast-2.amazonaws.com/com.kkanggogo.facealbum.testbukit/ksb/82647bf0-9061-4213-b623-e1bce614f0050.jpg");
-        responseDto.getImages().add("https://s3.ap-northeast-2.amazonaws.com/com.kkanggogo.facealbum.testbukit/ksb/82647bf0-9061-4213-b623-e1bce614f0050.jpg");
-        when(albumImageFacade.getAlbumImage(any(User.class),anyLong())).thenReturn(responseDto);
-        String response = objectMapper.writeValueAsString(responseDto);
-
-        //when
-        mockMvc.perform(get("/api/user/album/images?albumId=1")
-                .header("access_token",authorizedUserToken)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().string(response));
     }
 
     private MockMultipartFile getMockMultipartFile(String fileName,String contentType, String path) throws IOException {

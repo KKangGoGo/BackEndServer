@@ -3,8 +3,7 @@ import * as types from './types'
 
 export const loginUser = async dataToSubmit => {
     const request = await axios.post('/api/login', dataToSubmit).then(res => {
-        localStorage.setItem('login-token', res.headers.access_token)
-
+        console.log(res)
         return res.data
     })
 
@@ -14,17 +13,10 @@ export const loginUser = async dataToSubmit => {
     }
 }
 
-export const logoutUser = async token => {
-    const request = await axios({
-        method: 'get',
-        url: '/api/logout',
-        headers: {'Content-Type': 'application/json', access_token: token},
-    }).then(res => {
-        return res.data
-    })
+export const logoutUser = async () => {
+    await axios.get('/api/users/logout').then(res => res.data)
     return {
         type: types.LOGOUT_USER,
-        payload: request,
     }
 }
 
@@ -38,23 +30,12 @@ export const registerUser = async dataToSubmit => {
         return res.data
     })
 
+    // const request = await axios.post('/api/signup', dataToSubmit).then(res => {
+    //     return res.data
+    // })
+
     return {
         type: types.REGISTER_USER,
-        payload: request,
-    }
-}
-
-export const authUser = async token => {
-    const request = await axios({
-        method: 'get',
-        url: '/api/user/auth',
-        headers: {'Content-Type': 'application/json', access_token: token},
-    }).then(res => {
-        return res.data
-    })
-
-    return {
-        type: types.AUTH_USER,
         payload: request,
     }
 }
