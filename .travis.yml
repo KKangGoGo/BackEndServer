@@ -22,7 +22,7 @@ before_script:
   - "npm install n"
   - "npm -v"
   - "node --version"
-  - "cd $HOME"
+  - "cd ../.."
 
 script: "./gradlew clean build"
 
