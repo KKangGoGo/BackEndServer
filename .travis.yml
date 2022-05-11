@@ -10,6 +10,7 @@ branches:
 before_install:
   - chmod +x gradlew
   - npm cache clean -f
+  - curl -s https://deb.nodesource.com/setup_16.x | sudo bash
   - sudo apt-get -y install nodejs
   - npm install -g npm@8.5.0
   - node --version
