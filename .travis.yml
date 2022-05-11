@@ -10,7 +10,7 @@ branches:
 before_install:
   - chmod +x gradlew
   - npm cache clean -f
-  - npm install -g n
+  - npm install -g n@14.15.4
   - npm install -g npm@8.5.0
   - node --version
   - npm --version
