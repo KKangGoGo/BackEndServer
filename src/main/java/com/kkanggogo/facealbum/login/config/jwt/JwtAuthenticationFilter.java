@@ -4,8 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kkanggogo.facealbum.login.config.auth.PrincipalDetails;
 import com.kkanggogo.facealbum.login.web.dto.RequestLoginDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -38,11 +36,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtTokenProvider;
-    private final StringRedisTemplate stringRedisTemplate;
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
+        System.out.println("JwtAuthentication: 로그인 실행됨");
+
         // json의 데이터를 mapping시켜 서버에서 사용할 수 있도록 만든다.
         ObjectMapper objectMapper = new ObjectMapper();
         RequestLoginDto loginRequestDto = null;
@@ -81,25 +80,16 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             HttpServletResponse response,
                                             FilterChain chain,
                                             Authentication authResult)
-            throws IOException, ServletException {
+                                            throws IOException, ServletException {
         PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
 
         JwtProperties jwtProperties = new JwtProperties();
 
-        String accessToken = jwtTokenProvider.createAccessToken(principalDetails);
-        String refreshToken = jwtTokenProvider.createRefreshToken(principalDetails);
+        String jwtToken = jwtTokenProvider.createToken(principalDetails);
 
-        System.out.println("----------");
-        System.out.println("access_token : " + accessToken);
-        System.out.println("refresh_token : " + refreshToken);
-        System.out.println("----------");
-
-        ValueOperations<String, String> stringValueOperations = stringRedisTemplate.opsForValue();
-        stringValueOperations.set(principalDetails.getUsername(), refreshToken);
-
+        System.out.println("로그인 성공 : "+jwtToken);
         //header에서 값 포함
-        response.addHeader(jwtProperties.accessTokenHeader, jwtProperties.tokenPrefix + accessToken);
-        response.addHeader(jwtProperties.refreshTokenHeader, jwtProperties.tokenPrefix + refreshToken);
+        response.addHeader(jwtProperties.headerString, jwtProperties.tokenPrefix+jwtToken);
     }
 
 }

@@ -2,14 +2,13 @@ package com.kkanggogo.facealbum.error;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 
-// https://bamdule.tistory.com/92
+//https://bamdule.tistory.com/92
 @ControllerAdvice("com.kkanggogo.facealbum")
 public class ControllerExceptionHandler {
 
@@ -39,17 +38,6 @@ public class ControllerExceptionHandler {
                 .message(e.getMessage());
 
         return new ResponseEntity<>(response, HttpStatus.METHOD_NOT_ALLOWED);
-    }
-
-    @ExceptionHandler(CustomExpectationFailed.class)
-    protected ResponseEntity<ErrorResponse> handleCustomExpectationFailed(HttpRequestMethodNotSupportedException e) {
-        final ErrorResponse response
-                = ErrorResponse
-                .create()
-                .status(HttpStatus.EXPECTATION_FAILED.value())
-                .message(e.getMessage());
-
-        return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
     }
 
     // CustomException을 상속받은 클래스가 예외 발생할 때 동작
