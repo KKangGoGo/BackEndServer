@@ -13,6 +13,7 @@ before_install:
   - curl -s https://deb.nodesource.com/setup_16.x | sudo bash
   - sudo apt-get -y install nodejs
   - npm install -g nvm
+  - nvm install 16
   - nvm use 16
   - npm install -g npm@8.5.0
   - node --version
