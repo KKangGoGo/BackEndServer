@@ -15,14 +15,14 @@ cache:
   directories:
     - '$HOME/.m2/repository'
     - '$HOME/.gradle'
-
-before_script:
-  - "cd frontend/login_react"
-  - "npm install npm"
-  - "npm install n"
-  - "npm -v"
-  - "node --version"
-  - "cd ../.."
+#
+#before_script:
+#  - "cd frontend/login_react"
+#  - "npm install npm"
+#  - "npm install n"
+#  - "npm -v"
+#  - "node --version"
+#  - "cd ../.."
 
 script: "./gradlew clean build"
 

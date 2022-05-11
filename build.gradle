@@ -96,10 +96,15 @@ task deleteReactArtifact(type: Delete) {
 //    workingDir = file("${project.projectDir}/frontend/login_react")
 //}
 
-task npm_install(type: NpmTask) {
-    description = "Npm install"
-    workingDir = file("${project.projectDir}/frontend/login_react")
+task installNpmVersion(type: NpmTask) {
     dependsOn('deleteReactArtifact')
+    args = ['install', 'npm@8.3.0']
+}
+
+task npm_install(type: NpmTask) {
+    description = "npm install"
+    workingDir = file("${project.projectDir}/frontend/login_react")
+    dependsOn('installNpmVersion')
     args = ['install']
 }
 
