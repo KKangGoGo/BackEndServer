@@ -1,6 +1,9 @@
 package com.kkanggogo.facealbum.login.config.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kkanggogo.facealbum.error.ErrorCode;
+import com.kkanggogo.facealbum.error.ErrorResponse;
+import com.kkanggogo.facealbum.error.ErrorStatues;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -24,12 +27,9 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
                                         AuthenticationException exception) throws IOException, ServletException {
 
         if (exception instanceof BadCredentialsException) {
-            Map<String,String> responseMap=new HashMap<>();
             response.setCharacterEncoding("utf-8");
-            responseMap.put("code", String.valueOf(UNAUTHORIZED.value()));
-            responseMap.put("error",UNAUTHORIZED.name());
-            responseMap.put("message", "아이디 또는 비밀번호가 틀렸습니다.");
-            String s = objectMapper.writeValueAsString(responseMap);
+            ErrorResponse build =new ErrorResponse(ErrorStatues.findByErrorCode(ErrorCode.E4011),ErrorCode.E4011);
+            String s = objectMapper.writeValueAsString(build);
             response.setContentType("application/json");
             response.setStatus(UNAUTHORIZED.value());
             response.getWriter().write(s);
