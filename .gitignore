@@ -8,6 +8,8 @@ src/main/resources/application-prod-cloud.yml
 src/main/resources/application-prod-db.yml
 src/main/resources/application-prod-oauth.yml
 
+frontend/face_album/npm-v8.5.0
+src/main/resources/static
 
 ### STS ###
 .apt_generated
