@@ -10,9 +10,9 @@ node {
     npmVersion = '8.5.0'
     yarnVersion = '1.22.17'
     distBaseUrl = "https://nodejs.org/dist"
-    workDir = file("${project.projectDir}/src/frontend/login_react")
-    npmWorkDir = file("${project.projectDir}/src/frontend/login_react")
-    nodeProjectDir = file("${project.projectDir}/src/frontend/login_react")
+    workDir = file("${project.projectDir}/src/frontend/face_album")
+    npmWorkDir = file("${project.projectDir}/src/frontend/face_album")
+    nodeProjectDir = file("${project.projectDir}/src/frontend/face_album")
     npmInstallCommand = "install"
 }
 
@@ -94,7 +94,7 @@ task deleteReactArtifact(type: Delete) {
 
 task npm_install(type: NpmTask) {
     description = "npm install"
-    workingDir = file("${project.projectDir}/frontend/login_react")
+    workingDir = file("${project.projectDir}/frontend/face_album")
     dependsOn('deleteReactArtifact')
     args = ['install']
 }
@@ -102,7 +102,7 @@ task npm_install(type: NpmTask) {
 
 task buildFrontend(type: NpmTask) {
     description = "npm run build"
-    workingDir = file("${project.projectDir}/frontend/login_react")
+    workingDir = file("${project.projectDir}/frontend/face_album")
     dependsOn("npm_install")
     args = ["run", "build"]
 }
