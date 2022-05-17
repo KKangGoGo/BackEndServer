@@ -1,0 +1,74 @@
+.container {
+    display: grid;
+    grid-template-areas:
+        'header header'
+        'left_side right_side';
+    grid-template-columns: 0.2fr 0.8fr;
+    grid-template-rows: 1fr 9fr;
+    height: 100vh;
+}
+
+.container .header {
+    grid-area: header;
+}
+
+.container .header .logo {
+    background-color: #6667ab;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.container .header .logo svg {
+    color: #fff;
+    font-size: 1.8rem;
+}
+
+.container .header .logo img:nth-child(1) {
+    width: 50px;
+    margin-left: 20px;
+}
+
+.container .header .logo img:nth-child(2) {
+    width: 120px;
+    margin-right: 20px;
+}
+
+.container .header .logo .user {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container .header .logo .user .img {
+    position: relative;
+    overflow: hidden;
+}
+
+.container .header .logo .user .img img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin: 0 10px 0 0;
+}
+
+.container .header .logo .user .logout button {
+    border: none;
+    margin-right: 10px;
+    background-color: #6667ab;
+    color: #f3f3f5;
+    font-size: 0.8rem;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.container .leftSide {
+    grid-area: left_side;
+}
+
+.container .rightSide {
+    grid-area: right_side;
+    overflow-y: scroll;
+}

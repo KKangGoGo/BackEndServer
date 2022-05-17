@@ -11,11 +11,14 @@ import promiseMiddleware from 'redux-promise'
 import rootReducer from './_reducers/rootReducer'
 import {Provider} from 'react-redux'
 import axios from 'axios'
+import ReactModal from 'react-modal'
 
 const middlewares = [ReduxThunk]
 if (process.env.NODE_ENV === 'development') {
     middlewares.push(logger)
 }
+
+ReactModal.setAppElement('#root')
 
 // const store = createStore(rootReducer, applyMiddleware(...middlewares))
 const store = applyMiddleware(promiseMiddleware, ...middlewares)(createStore)
