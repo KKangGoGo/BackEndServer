@@ -3,8 +3,11 @@ package com.kkanggogo.facealbum.login.config.jwt;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.kkanggogo.facealbum.error.*;
 import com.kkanggogo.facealbum.login.config.auth.PrincipalDetails;
 import io.jsonwebtoken.MalformedJwtException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.expression.ExpressionException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,8 +18,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 
+@Slf4j
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private JwtProvider jwtProvider;
 
@@ -30,8 +36,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } else {
             try {
-                String accessToken = jwtProvider.resolveAccessToken(request);
-                String refreshToken = jwtProvider.resolveRefreshToken(request);
+                Optional<String> optionalAccessToken = jwtProvider.resolveAccessToken(request);
+                Optional<String> optionalRefreshToken = jwtProvider.resolveRefreshToken(request);
+                optionalAccessToken.orElseThrow(()->new AccessTokenExpiredException("만료된 Access Token 입니다."));
+                optionalRefreshToken.orElseThrow(()->new RefreshTokenExpiredException("만료된 Refresh Token 입니다."));
+                String accessToken = optionalAccessToken.get();
+                String refreshToken = optionalRefreshToken.get();
 
                 if (accessToken != null && refreshToken != null) {
                     boolean accessTokenValid = jwtProvider.isTokenValid(accessToken);
@@ -52,13 +62,27 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                         request.setAttribute("re_refresh_token", reRefreshToken);
                     } else if (!accessTokenValid && !refreshTokenValid) {
                         // 토큰 두개 다 만료되었을 경우 -> 재로그인
-                        throw new TokenExpiredException("토큰이 만료되어 재 로그인이 필요합니다.");
-                    } else {
+                        throw new AccessTokenExpiredException("토큰이 만료되어 재 로그인이 필요합니다.");
+                    }else if(accessToken == null || refreshToken==null){
+                        request.setAttribute("exception", HttpStatus.UNAUTHORIZED);
+                    }
+                    else {
                         // access token은 만료되지 않았는데, refresh token이 만료되었을 경우(서버에 이상이 생긴것임)
-                        throw new TokenExpiredException("토큰이 만료되어 재 로그인이 필요합니다.");
+                        throw new RefreshTokenExpiredException("토큰이 만료되어 재 로그인이 필요합니다.");
                     }
                 }
-            } catch (TokenExpiredException e) {
+            }
+            catch (AccessTokenExpiredException e){
+                log.debug("Access Token 오류");
+                ErrorCode e4012 = ErrorCode.E4012;
+                request.setAttribute("exception", new ErrorResponse(ErrorStatues.findByErrorCode(e4012),e4012));
+            }
+            catch (RefreshTokenExpiredException e){
+                log.debug("Refresh Token 오류");
+                ErrorCode e4013 = ErrorCode.E4013;
+                request.setAttribute("exception",new ErrorResponse(ErrorStatues.findByErrorCode(e4013),e4013));
+            }
+            catch (TokenExpiredException e) {
                 System.out.println("ex : 만료된 토큰");
                 request.setAttribute("exception", HttpStatus.UNAUTHORIZED);
             } catch (MalformedJwtException e) {
@@ -72,7 +96,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 request.setAttribute("exception", HttpStatus.UNAUTHORIZED);
             } catch (SignatureVerificationException e) {
                 System.out.println("ex : 잘못만들어진 토큰");
-                request.setAttribute("exception", HttpStatus.UNAUTHORIZED);
+                ErrorCode e4012 = ErrorCode.E4012;
+                request.setAttribute("exception", new ErrorResponse(ErrorStatues.findByErrorCode(e4012),e4012));
             } catch (IllegalStateException e) {
                 System.out.println("ex : 코드상에 문제 발생");
                 request.setAttribute("exception", HttpStatus.UNAUTHORIZED);

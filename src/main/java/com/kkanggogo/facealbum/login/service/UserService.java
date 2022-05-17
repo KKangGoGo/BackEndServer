@@ -4,6 +4,7 @@ import com.kkanggogo.facealbum.album.AmazonS3Uploader;
 import com.kkanggogo.facealbum.album.ImageMultipartFileRequestDtoFactory;
 import com.kkanggogo.facealbum.album.domain.Image;
 import com.kkanggogo.facealbum.album.web.dto.ImageMultipartFileRequestDto;
+import com.kkanggogo.facealbum.error.CustomUserDuplicatedException;
 import com.kkanggogo.facealbum.login.domain.RoleType;
 import com.kkanggogo.facealbum.login.domain.User;
 import com.kkanggogo.facealbum.login.domain.repository.UserRepository;
@@ -55,6 +56,9 @@ public class UserService {
     }
 
     private User getUser(RequestSignUpDto requestSignUpDto) {
+
+        userRepository.findByUsername(requestSignUpDto.getUsername())
+                .ifPresent(m->{throw new CustomUserDuplicatedException("중복된 회원 입니다.");});
         //회원 가입
         String rawPassword = requestSignUpDto.getPassword(); // 입력한 password
         String encPassword = encoder.encode(rawPassword); // 해싱한 password

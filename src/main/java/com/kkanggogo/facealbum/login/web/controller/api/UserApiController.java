@@ -1,7 +1,6 @@
 package com.kkanggogo.facealbum.login.web.controller.api;
 
 import com.kkanggogo.facealbum.album.ImageMultipartFileRequestDtoFactory;
-import com.kkanggogo.facealbum.error.CustomExpectationFailed;
 import com.kkanggogo.facealbum.login.config.auth.PrincipalDetails;
 import com.kkanggogo.facealbum.login.domain.User;
 import com.kkanggogo.facealbum.login.service.UserService;
@@ -12,8 +11,8 @@ import com.kkanggogo.facealbum.login.web.dto.ResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,30 +32,19 @@ public class UserApiController {
     AuthenticationManager authenticationManager;
 
     // 회원 가입
+
     @PostMapping("/api/signup")
-    public ResponseEntity<ResponseDto<Integer>> signUp(@Valid @RequestPart(value = "photo", required = false) MultipartFile photo,
+    public ResponseDto<Integer> signUp(@Valid @RequestPart(value = "photo", required = false) MultipartFile photo,
                                                        @Valid @RequestPart(value = "signupInfo") RequestSignUpDto requestSignUpDto) {
-        User checkSignUp;
         log.debug("photos:{}", photo);
         if (photo == null) {
-            checkSignUp = userService.signUp(requestSignUpDto);
+            userService.signUp(requestSignUpDto);
         } else {
-            checkSignUp = userService.signUp(requestSignUpDto, ImageMultipartFileRequestDtoFactory
+            userService.signUp(requestSignUpDto, ImageMultipartFileRequestDtoFactory
                     .makeMultipartFileRequestDto(List.of(photo)));
         }
 
-        if (checkSignUp != null) {
-            // ("[INFO]회원가입 완료");
-            return new ResponseEntity<>(new ResponseDto<>(HttpStatus.OK.value(), 1), HttpStatus.OK);
-        } else {
-            // ("[ERROR]회원가입 실패");
-            return new ResponseEntity<>(new ResponseDto<>(HttpStatus.NO_CONTENT.value(), 0), HttpStatus.NO_CONTENT);
-        }
-    }
-
-    @GetMapping("/exception")
-    public ResponseDto<Integer> exception(){
-        throw new CustomExpectationFailed();
+        return new ResponseDto<>(HttpStatus.OK.value(), 1);
     }
 
     // 로그아웃
@@ -102,9 +90,6 @@ public class UserApiController {
                     .role(principalDetails.getUser().getRole())
                     .photo(photo)
                     .build();
-            if (principalDetails.getUser().getPhoto() != null) {
-                responseAuthDto.setPhoto(principalDetails.getUser().getPhoto());
-            }
             if((request.getAttribute("re_access_token")!=null) &&
                     (request.getAttribute("re_refresh_token")!=null)){
                 responseAuthDto.setReAccessToken((String)request.getAttribute("re_access_token"));
@@ -112,6 +97,6 @@ public class UserApiController {
             }
             return responseAuthDto;
         }
-        throw new CustomExpectationFailed();
+        throw new BadCredentialsException("인증된 사용자가 아닙니다.");
     }
 }
