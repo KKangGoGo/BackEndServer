@@ -16,10 +16,12 @@ function NestedRouting() {
     const user = useSelector(state => state.user)
 
     const logoutHandler = e => {
-        const token = localStorage.getItem('login-token')
-        localStorage.removeItem('login-token')
+        const Atoken = localStorage.getItem('access-token')
+        const Rtoken = localStorage.getItem('refresh-token')
+        localStorage.removeItem('access-token')
+        localStorage.removeItem('refresh-token')
         try {
-            dispatch(logoutUser(token)).then(res => {
+            dispatch(logoutUser(Atoken, Rtoken)).then(res => {
                 navigate('/loginRegister')
             })
         } catch (error) {
@@ -31,7 +33,9 @@ function NestedRouting() {
         <div className={styles.container}>
             <div className={styles.header}>
                 <div className={styles.logo}>
-                    <img src="https://cdn-icons-png.flaticon.com/128/2793/2793754.png" alt="" />
+                    <a href="/user/album">
+                        <img src="https://cdn-icons-png.flaticon.com/128/2005/2005140.png" alt="" />
+                    </a>
                     <img src={img} alt="logo" />
                     {user.userData ? (
                         <div className={styles.user}>

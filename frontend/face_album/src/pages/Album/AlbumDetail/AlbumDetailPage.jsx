@@ -17,14 +17,15 @@ const AlbumDetailPage = () => {
     const [Images, setImages] = useState([])
 
     useEffect(() => {
-        const token = localStorage.getItem('login-token')
-        dispatch(getImages(albumId, token))
+        const Atoken = localStorage.getItem('access-token')
+        const Rtoken = localStorage.getItem('refresh-token')
+        dispatch(getImages(albumId, Atoken, Rtoken))
             .then(res => {
                 console.log(res.payload.images)
                 setImages(res.payload.images)
             })
             .catch(e => console.log(e.message))
-    }, [albumId, dispatch])
+    }, [])
 
     const RenderImages = Images.map((image, index) => {
         return (

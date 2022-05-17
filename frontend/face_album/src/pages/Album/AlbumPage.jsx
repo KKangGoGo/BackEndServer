@@ -17,14 +17,15 @@ const AlbumPage = () => {
     const dispatch = useDispatch()
 
     useEffect(() => {
-        const token = localStorage.getItem('login-token')
-        dispatch(getAlbums(token))
+        const Atoken = localStorage.getItem('access-token')
+        const Rtoken = localStorage.getItem('refresh-token')
+        dispatch(getAlbums(Atoken, Rtoken))
             .then(res => {
                 console.log(res)
                 setAlbums(res.payload.albumlist)
             })
             .catch(e => console.log(e.message))
-    }, [dispatch])
+    }, [])
 
     const RenderShortcut = Albums.map((album, index) => {
         return (

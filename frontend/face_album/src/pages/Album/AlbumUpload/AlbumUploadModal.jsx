@@ -20,9 +20,10 @@ const AlbumUploadModal = ({isOpen, onRequestClose, onSubmit, onCancel}) => {
 
     const handleSubmit = e => {
         e.preventDefault()
-        const token = localStorage.getItem('login-token')
+        const Atoken = localStorage.getItem('access-token')
+        const Rtoken = localStorage.getItem('refresh-token')
 
-        dispatch(createAlbum(state, token))
+        dispatch(createAlbum(state, Atoken, Rtoken))
             .then(res => {
                 // state 초기화
                 setState({...state, title: ''})

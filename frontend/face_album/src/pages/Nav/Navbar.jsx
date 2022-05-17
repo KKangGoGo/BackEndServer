@@ -27,7 +27,6 @@ import {
 
 function Navbar() {
     const navigate = useNavigate()
-    const dispatch = useDispatch()
 
     const [hoverHome, setHoverHome] = useState(0)
     const [hoverPhoto, setHoverPhoto] = useState(0)

@@ -1,8 +1,34 @@
-.input {
+.login {
+    padding: 0 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.login div {
+    font-size: 1.5rem;
+    margin-left: 20px;
+    margin-bottom: 50px;
+}
+
+.login form .input {
+    width: 70%;
     line-height: 20px;
     border: none;
     border-bottom: 1px solid #848484;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
+}
+
+.login form button {
+    width: 45%;
+    height: 35px;
+    border: none;
+    outline: none;
+    background: #6969b4;
+    color: white;
+    font-size: 1.2rem;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
 .input:focus {
@@ -10,25 +36,18 @@
     border-bottom: 2px solid #704598;
 }
 
-.feedback {
+.login form .feedback {
     font-size: 0.8rem;
     color: red;
     margin-top: -10px;
     margin-bottom: 10px;
 }
 
-.errMessage {
+.login form label .errMessage {
     color: #ff0000bf;
     font-size: 0.7rem;
     border: 1px solid;
     padding: 0.5rem;
     border-radius: 10px;
     margin-bottom: 10px;
-}
-
-.login {
-    padding: 0 30px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
 }

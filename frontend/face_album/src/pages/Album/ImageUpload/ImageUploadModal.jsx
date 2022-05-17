@@ -1,6 +1,6 @@
-import React, {useState} from 'react'
+import React from 'react'
 import Modal from 'react-modal'
-import {useDispatch, useSelector} from 'react-redux'
+import {useDispatch} from 'react-redux'
 
 import {BiImageAdd} from 'react-icons/bi'
 
@@ -16,14 +16,15 @@ const ImageUploadModal = ({isOpen, onRequestClose, onCancel, albumId}) => {
 
     const onSubmitHandler = async e => {
         e.preventDefault()
-        const token = localStorage.getItem('login-token')
+        const Atoken = localStorage.getItem('access-token')
+        const Rtoken = localStorage.getItem('refresh-token')
 
         let formData = new FormData()
 
         let files = e.target.image.files
         formData.append('images', files[0])
 
-        dispatch(createImage(formData, albumId, token)).then(res => {
+        dispatch(createImage(formData, albumId, Atoken, Rtoken)).then(res => {
             console.log(res)
             onCancel()
         })
