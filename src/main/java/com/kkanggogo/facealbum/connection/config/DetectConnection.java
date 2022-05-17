@@ -1,4 +1,4 @@
-package com.kkanggogo.facealbum.connection.web;
+package com.kkanggogo.facealbum.connection.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

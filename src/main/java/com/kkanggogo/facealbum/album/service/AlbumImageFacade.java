@@ -3,9 +3,10 @@ package com.kkanggogo.facealbum.album.service;
 import com.kkanggogo.facealbum.album.domain.Album;
 import com.kkanggogo.facealbum.album.web.dto.AlbumImagesResponseDto;
 import com.kkanggogo.facealbum.album.web.dto.ImageRequestDto;
-import com.kkanggogo.facealbum.connection.web.DetectConnection;
+import com.kkanggogo.facealbum.connection.dto.DetectMqRequestDto;
 import com.kkanggogo.facealbum.login.config.auth.PrincipalDetails;
 import com.kkanggogo.facealbum.login.domain.User;
+import com.kkanggogo.facealbum.scheduler.DetectPoolingScheduler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -23,6 +24,7 @@ public class AlbumImageFacade {
 
     private final AlbumService albumService;
     private final ImageService imageService;
+    private final DetectPoolingScheduler detectPoolingScheduler;
     private final WebClient webClient;
 
 
@@ -33,11 +35,15 @@ public class AlbumImageFacade {
         imageService.upload(files, principalDetails.getUser(), album);
 
         List<String> albumImagePaths = imageService.getAlbumImagePaths(album);
-        AlbumImagesResponseDto albumImagesResponseDto=new AlbumImagesResponseDto();
-        albumImagesResponseDto.setImages(albumImagePaths);
+        DetectMqRequestDto detectMqRequestDto=new DetectMqRequestDto();
+        detectMqRequestDto.setAlbum_id(album.getId());
+        detectMqRequestDto.setImg_urls(albumImagePaths);
 
-//        Mono<String> stringMono = webClient.post().uri("/request/detect").bodyValue(albumImagesResponseDto).retrieve().bodyToMono(String.class);
-//        stringMono.subscribe(i-> log.debug("connection 확인:{}",i));
+        Mono<String> stringMono = webClient.post().uri("/request/detect").bodyValue(detectMqRequestDto).retrieve().bodyToMono(String.class);
+        stringMono.subscribe(i-> {
+            log.debug("connection 확인:{}",i);
+            detectPoolingScheduler.add(i);
+        });
     }
 
     @Transactional
