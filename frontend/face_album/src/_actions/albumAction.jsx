@@ -1,12 +1,12 @@
 import axios from 'axios'
 import * as types from './types'
 
-export const createAlbum = async (dataToSubmit, token) => {
+export const createAlbum = async (dataToSubmit, Atoken, Rtoken) => {
     const request = await axios({
         method: 'post',
         url: '/api/user/album/create',
         data: dataToSubmit,
-        headers: {'Content-Type': 'application/json', access_token: token},
+        headers: {'Content-Type': 'application/json', access_token: Atoken, refresh_token: Rtoken},
     }).then(res => {
         return res.data
     })
@@ -17,11 +17,11 @@ export const createAlbum = async (dataToSubmit, token) => {
     }
 }
 
-export const getAlbums = async token => {
+export const getAlbums = async (Atoken, Rtoken) => {
     const request = await axios({
         method: 'get',
         url: '/api/user/album-list',
-        headers: {'Content-Type': 'application/json', access_token: token},
+        headers: {'Content-Type': 'application/json', access_token: Atoken, refresh_token: Rtoken},
     }).then(res => {
         return res.data
     })
@@ -32,11 +32,11 @@ export const getAlbums = async token => {
     }
 }
 
-export const getImages = async (id, token) => {
+export const getImages = async (id, Atoken, Rtoken) => {
     const request = await axios({
         method: 'get',
         url: `/api/user/album/images?albumId=${id}`,
-        headers: {'Content-Type': 'application/json', access_token: token},
+        headers: {'Content-Type': 'application/json', access_token: Atoken, refresh_token: Rtoken},
     }).then(res => {
         return res.data
     })
@@ -47,12 +47,12 @@ export const getImages = async (id, token) => {
     }
 }
 
-export const createImage = async (dataToSubmit, albumId, token) => {
+export const createImage = async (dataToSubmit, albumId, Atoken, Rtoken) => {
     const request = await axios({
         method: 'post',
         url: `/api/user/album/images/${albumId}`,
         data: dataToSubmit,
-        headers: {'Content-Type': 'multipart/form-data', access_token: token},
+        headers: {'Content-Type': 'multipart/form-data', access_token: Atoken, refresh_token: Rtoken},
     }).then(res => {
         return res.data
     })

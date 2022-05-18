@@ -27,7 +27,6 @@ import {
 
 function Navbar() {
     const navigate = useNavigate()
-    const dispatch = useDispatch()
 
     const [hoverHome, setHoverHome] = useState(0)
     const [hoverPhoto, setHoverPhoto] = useState(0)
@@ -46,7 +45,7 @@ function Navbar() {
                     <li>
                         <button
                             className={styles.btn}
-                            onClick={() => navigate('/user/main')}
+                            onClick={() => navigate('/user/')}
                             onMouseOver={() => setHoverHome(1)}
                             onMouseOut={() => setHoverHome(0)}
                         >

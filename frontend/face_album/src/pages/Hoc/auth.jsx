@@ -9,13 +9,14 @@ function auth(SpecificComponent, option, adminRoute = null) {
     // true 로그인한 유저만 출입 가능
     // false 로그인한 유저는 출입 불강
     function AuthenticationCheck(props) {
-        const token = localStorage.getItem('login-token')
+        const Atoken = localStorage.getItem('access-token')
+        const Rtoken = localStorage.getItem('refresh-token')
         const navigate = useNavigate()
         const dispatch = useDispatch()
 
         useEffect(() => {
-            if (token) {
-                dispatch(authUser(token)).then(res => {
+            if (Atoken) {
+                dispatch(authUser(Atoken, Rtoken)).then(res => {
                     if (res) {
                         if (option === false) {
                             navigate('/')
@@ -27,7 +28,7 @@ function auth(SpecificComponent, option, adminRoute = null) {
                     navigate('/loginRegister')
                 }
             }
-        }, [navigate, token, dispatch])
+        }, [])
         return <SpecificComponent />
     }
     return AuthenticationCheck

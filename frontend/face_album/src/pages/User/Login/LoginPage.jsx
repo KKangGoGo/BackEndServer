@@ -20,7 +20,7 @@ function LoginPage(props) {
                 password: '',
             }}
             validationSchema={Yup.object().shape({
-                username: Yup.string().min(4, 'Password must be at least 4 characters').required('username is required'),
+                username: Yup.string().min(4, 'username must be at least 4 characters').required('username is required'),
                 password: Yup.string().min(4, 'Password must be at least 4 characters').required('Password is required'),
             })}
             onSubmit={(values, {setSubmitting}) => {
@@ -33,7 +33,7 @@ function LoginPage(props) {
                     console.log(dataToSubmit)
                     dispatch(loginUser(dataToSubmit))
                         .then(res => {
-                            navigate('/user/main')
+                            navigate('/user/')
                         })
                         .catch(e => {
                             setFormErrorMessage('Check out your Account or Password again')
@@ -78,7 +78,7 @@ function LoginPage(props) {
                                 </label>
                             )}
                             <button type="submit" className="login_button" disabled={isSubmitting} onSubmit={handleSubmit}>
-                                LOGIN
+                                SIGN IN
                             </button>
                         </form>
                     </div>

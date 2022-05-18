@@ -1,11 +1,14 @@
 import React, {useState} from 'react'
 import {useDispatch} from 'react-redux'
 import {registerUser} from '../../../_actions/userAction'
-import {useNavigate} from 'react-router-dom'
+
+import {Formik} from 'formik'
+import * as Yup from 'yup'
 
 import styles from './RegisterPage.module.css'
 
 function RegisterPage(props) {
+    const [formErrorMessage, setFormErrorMessage] = useState('')
     const [state, setState] = useState({
         username: '',
         password: '',
@@ -16,7 +19,6 @@ function RegisterPage(props) {
 
     const [ConfirmPassword, setConfirmPassword] = useState('')
 
-    const navigate = useNavigate()
     const dispatch = useDispatch()
 
     const handleInputChange = e => {
@@ -36,16 +38,6 @@ function RegisterPage(props) {
         formData.append('photo', files[0])
         formData.append('signupInfo', new Blob([JSON.stringify(state)], {type: 'application/json'}))
 
-        // FormData의 key 확인
-        console.log(formData)
-        for (let value of formData.keys()) {
-            console.log(value)
-        }
-        // FormData의 value 확인
-        for (let value of formData.values()) {
-            console.log(value)
-        }
-
         if (password !== ConfirmPassword) {
             return alert('비밀번호가 일치하지 않습니다.')
         }
@@ -62,7 +54,9 @@ function RegisterPage(props) {
 
     return (
         <>
+            <div className={styles.text}>SIGN UP</div>
             <form
+                className={styles.form}
                 onSubmit={onSubmitHandler}
                 style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', color: '#848484'}}
             >
@@ -98,10 +92,10 @@ function RegisterPage(props) {
                 <label htmlFor="">Email</label>
                 <input className={styles.input} type="text" placeholder="email" name="email" value={email} onChange={handleInputChange} />
 
-                <label htmlFor="">Image</label>
-                <input className={styles.input} type="file" name="image" multiple="multiple" />
+                <label htmlFor="file">Image</label>
+                <input className={`${styles.input} ${styles.file}`} type="file" name="image" multiple="multiple" />
 
-                <button>sign up</button>
+                <button>SIGN UP</button>
             </form>
         </>
     )
