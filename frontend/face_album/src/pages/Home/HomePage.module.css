@@ -1,0 +1,97 @@
+.container {
+    height: 100%;
+    display: grid;
+    grid-template-areas:
+        'user alarm'
+        'album friend';
+
+    grid-template-columns: 0.5fr 0.5fr;
+    grid-template-rows: 0.5fr 0.5fr;
+}
+
+/* ========================user===================== */
+
+.container .user {
+    grid-area: user;
+    display: flex;
+    margin-top: 30px;
+    justify-content: center;
+}
+
+.container .user ul {
+    width: 55%;
+    height: 100%;
+    box-shadow: 0 0 10px gray;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+.container .user ul li:nth-child(1) {
+    height: 80%;
+    background-color: #eeedf7;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.container .user ul li:nth-child(1) img {
+    width: 220px;
+    height: 220px;
+    border-radius: 20px;
+}
+
+.container .user ul li:nth-child(2) {
+    height: 20%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.container .user ul li:nth-child(2) .username {
+    width: 60%;
+    height: 30px;
+    font-size: 1.8rem;
+    background: #eeedf7;
+    text-align: center;
+    line-height: 30px;
+    margin-top: -20px;
+    border: 5px solid #bbbadd;
+    border-radius: 5px;
+}
+
+.container .user ul li:nth-child(2) div:nth-child(2) {
+    margin-top: 10px;
+    font-size: 0.8rem;
+    color: gray;
+}
+
+.container .user ul li:nth-child(2) div:nth-child(3) {
+    font-size: 0.8rem;
+    color: gray;
+}
+
+/* ========================alarm===================== */
+.container .alarm {
+    grid-area: alarm;
+}
+
+/* ========================album===================== */
+.container .album {
+    grid-area: album;
+    padding: 30px;
+}
+
+.container .album > div {
+    font-size: 1.3rem;
+    font-weight: 600;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #9999cc;
+}
+
+.container .album ul {
+}
+
+.container .friend {
+    grid-area: friend;
+}

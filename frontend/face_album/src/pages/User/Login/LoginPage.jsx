@@ -33,7 +33,7 @@ function LoginPage(props) {
                     console.log(dataToSubmit)
                     dispatch(loginUser(dataToSubmit))
                         .then(res => {
-                            navigate('/user/main')
+                            navigate('/user/')
                         })
                         .catch(e => {
                             setFormErrorMessage('Check out your Account or Password again')

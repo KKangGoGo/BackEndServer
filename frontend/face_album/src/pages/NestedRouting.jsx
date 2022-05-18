@@ -1,8 +1,8 @@
 import React from 'react'
 import {Route, Routes, useNavigate} from 'react-router-dom'
 import AlbumPage from './Album/AlbumPage'
-import MainPage from './Main/MainPage'
 import Navbar from './Nav/Navbar'
+import HomePage from './Home/HomePage'
 
 import styles from './NestedRouting.module.css'
 import img from '../img/Face Album.png'
@@ -69,7 +69,7 @@ function NestedRouting() {
             </div>
             <div className={styles.rightSide}>
                 <Routes>
-                    <Route path="main" element={<MainPage />} />
+                    <Route path="/" element={<HomePage />} />
                     <Route path="album" element={<AlbumPage />} />
                     <Route path="album/:albumId" element={<AlbumDetailPage />} />
                 </Routes>
