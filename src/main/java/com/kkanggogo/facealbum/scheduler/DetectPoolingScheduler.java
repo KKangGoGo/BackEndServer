@@ -1,29 +1,50 @@
 package com.kkanggogo.facealbum.scheduler;
 
+import com.kkanggogo.facealbum.album.service.AlbumImageFacade;
+import com.kkanggogo.facealbum.connection.dto.TeskIdListDto;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class DetectPoolingScheduler {
 
-    private List<String> arrayList= Collections.synchronizedList(new ArrayList<>());
+    @Value("${connectionbaseurl}")
+    private String baseUrl;
+    private final RestTemplate restTemplate;
+    private final TeskIdListDto teskIdListDto;
+    private final AlbumImageFacade albumImageFacade;
+
 
     @Scheduled(fixedDelay = 1000)
-    public void pooling(){
-        for(int i=0;i<arrayList.size();i++){
-            log.debug("스케줄러실행 값:{}",arrayList.get(0));
-            arrayList.remove(0);
+    public void pooling() {
+        List<String> teskKeyList = teskIdListDto.getTeskKeyList();
+        for(int i=0;i<teskKeyList.size();i++){
+            String teskKey = teskKeyList.get(i);
+            String url=baseUrl+"/"+teskKey;
+            ResponseEntity<String> exchange = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
+            log.debug(exchange.getBody());
+
+            if(!exchange.getBody().equals("PENDING")){
+                JSONObject jsonObject= (JSONObject) JSONValue.parse(exchange.getBody());
+                teskIdListDto.remove(i);
+                JSONObject result = (JSONObject)jsonObject.get("result");
+                albumImageFacade.sharingImage(result);
+            }
         }
     }
 
-    public void add(String string){
-        arrayList.add(string);
-    }
+
 
 }

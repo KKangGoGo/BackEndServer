@@ -4,16 +4,20 @@ import com.kkanggogo.facealbum.album.domain.Album;
 import com.kkanggogo.facealbum.album.web.dto.AlbumImagesResponseDto;
 import com.kkanggogo.facealbum.album.web.dto.ImageRequestDto;
 import com.kkanggogo.facealbum.connection.dto.DetectMqRequestDto;
+import com.kkanggogo.facealbum.connection.dto.TeskIdListDto;
 import com.kkanggogo.facealbum.login.config.auth.PrincipalDetails;
 import com.kkanggogo.facealbum.login.domain.User;
-import com.kkanggogo.facealbum.scheduler.DetectPoolingScheduler;
+import com.kkanggogo.facealbum.login.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.simple.JSONObject;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -24,7 +28,8 @@ public class AlbumImageFacade {
 
     private final AlbumService albumService;
     private final ImageService imageService;
-    private final DetectPoolingScheduler detectPoolingScheduler;
+    private final UserRepository userRepository;
+    private final TeskIdListDto teskIdListDto;
     private final WebClient webClient;
 
 
@@ -40,9 +45,8 @@ public class AlbumImageFacade {
         detectMqRequestDto.setImg_urls(albumImagePaths);
 
         Mono<String> stringMono = webClient.post().uri("/request/detect").bodyValue(detectMqRequestDto).retrieve().bodyToMono(String.class);
-        stringMono.subscribe(i-> {
-            log.debug("connection 확인:{}",i);
-            detectPoolingScheduler.add(i);
+        stringMono.subscribe(i->{
+            teskIdListDto.add(i);
         });
     }
 
@@ -61,5 +65,18 @@ public class AlbumImageFacade {
         AlbumImagesResponseDto albumImagesResponseDto=new AlbumImagesResponseDto();
         albumImagesResponseDto.setImages(albumImagePaths);
         return albumImagesResponseDto;
+    }
+
+    @Async
+    @Transactional
+    public void sharingImage(JSONObject jsonObject){
+        for(Object key:jsonObject.keySet()){
+            Album album = albumService.makeAlbum(userRepository.findByUsername((String) key).get());
+            ArrayList<String> imagePathList = (ArrayList<String>)jsonObject.get((String) key);
+            imagePathList.stream().forEach(i->{
+                imageService.sharingImage(i,album);
+            });
+
+        }
     }
 }
