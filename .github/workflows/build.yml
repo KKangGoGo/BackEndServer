@@ -5,6 +5,9 @@ on:
   pull_request:
     branches: [github-action-test]
 
+permissions:
+  contents: read
+
 jobs:
   build:
 
