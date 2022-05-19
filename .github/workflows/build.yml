@@ -6,7 +6,7 @@ on:
     branches: [github-action-test]
 
 jobs:
-  Build:
+  build:
     runs-on: ubuntu-latest
 
     steps:
