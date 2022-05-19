@@ -12,7 +12,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: server
+        working-directory: ./
 
     steps:
       - uses: actions/checkout@v3
@@ -37,7 +37,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: client
+        working-directory: frontend/face_album
 
     strategy:
       matrix:
