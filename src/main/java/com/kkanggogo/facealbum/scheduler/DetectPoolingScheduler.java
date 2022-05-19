@@ -27,24 +27,20 @@ public class DetectPoolingScheduler {
     private final AlbumImageFacade albumImageFacade;
 
 
-    @Scheduled(fixedDelay = 1000)
+    @Scheduled(fixedDelay = 60000)
     public void pooling() {
         List<String> teskKeyList = teskIdListDto.getTeskKeyList();
-        for(int i=0;i<teskKeyList.size();i++){
-            String teskKey = teskKeyList.get(i);
+        for(String teskKey:teskKeyList){
             String url=baseUrl+"/"+teskKey;
             ResponseEntity<String> exchange = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
             log.debug(exchange.getBody());
 
             if(!exchange.getBody().equals("PENDING")){
                 JSONObject jsonObject= (JSONObject) JSONValue.parse(exchange.getBody());
-                teskIdListDto.remove(i);
+                teskIdListDto.remove(teskKey);
                 JSONObject result = (JSONObject)jsonObject.get("result");
                 albumImageFacade.sharingImage(result);
             }
         }
     }
-
-
-
 }

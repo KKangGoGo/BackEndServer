@@ -21,7 +21,7 @@ public class TeskIdListDto {
         return cloneList;
     }
 
-    public void remove(int i) {
-        teskKeyList.remove(i);
+    public void remove(String teskKey) {
+        teskKeyList.remove(teskKey);
     }
 }
