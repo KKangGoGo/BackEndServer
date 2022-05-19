@@ -27,7 +27,7 @@ public class DetectPoolingScheduler {
     private final AlbumImageFacade albumImageFacade;
 
 
-    @Scheduled(fixedDelay = 60000)
+    @Scheduled(fixedDelay = 5000)
     public void pooling() {
         List<String> teskKeyList = teskIdListDto.getTeskKeyList();
         for(String teskKey:teskKeyList){

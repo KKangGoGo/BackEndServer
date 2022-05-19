@@ -32,29 +32,29 @@ public class AlbumImageFacade {
     private final TeskIdListDto teskIdListDto;
     private final WebClient webClient;
 
-
     @Transactional
     public void upload(ImageRequestDto files, PrincipalDetails principalDetails) {
-        Album album = albumService.makeAlbum(principalDetails.getUser());
+        User user = principalDetails.getUser();
+        Album album = albumService.makeAlbum(user);
         album.getAlbumImageMappingTableList().size();
         imageService.upload(files, principalDetails.getUser(), album);
 
         List<String> albumImagePaths = imageService.getAlbumImagePaths(album);
-        DetectMqRequestDto detectMqRequestDto=new DetectMqRequestDto();
-        detectMqRequestDto.setAlbum_id(album.getId());
-        detectMqRequestDto.setImg_urls(albumImagePaths);
-
-        Mono<String> stringMono = webClient.post().uri("/request/detect").bodyValue(detectMqRequestDto).retrieve().bodyToMono(String.class);
-        stringMono.subscribe(i->{
-            teskIdListDto.add(i);
-        });
+        if(user.getPhoto()!=null){
+            sendDetectMq(album.getId(), albumImagePaths);
+        }
     }
 
     @Transactional
     public void upload(ImageRequestDto files, PrincipalDetails principalDetails, Long albumId) {
-        Album album = albumService.findAlbum(albumId, principalDetails.getUser());
+        User user = principalDetails.getUser();
+        Album album = albumService.findAlbum(albumId,user);
         album.getAlbumImageMappingTableList().size();
-        imageService.upload(files, principalDetails.getUser(), album);
+        List<String> albumImagePaths = imageService.upload(files, principalDetails.getUser(), album);
+
+        if(user.getPhoto()!=null){
+            sendDetectMq(album.getId(), albumImagePaths);
+        }
     }
 
     @Transactional
@@ -76,7 +76,18 @@ public class AlbumImageFacade {
             imagePathList.stream().forEach(i->{
                 imageService.sharingImage(i,album);
             });
-
         }
     }
+
+    private void sendDetectMq(Long albumId, List<String> imagePaths) {
+        DetectMqRequestDto detectMqRequestDto = new DetectMqRequestDto();
+        detectMqRequestDto.setAlbum_id(albumId);
+        detectMqRequestDto.setImg_urls(imagePaths);
+
+        Mono<String> stringMono = webClient.post().uri("/request/detect").bodyValue(detectMqRequestDto).retrieve().bodyToMono(String.class);
+        stringMono.subscribe(i -> {
+            teskIdListDto.add(i);
+        });
+    }
+
 }

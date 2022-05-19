@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Album {
+public class Album extends BaseTimeEntity{
 
     @Id @GeneratedValue
     @Column(name = "albumId")
@@ -44,7 +44,7 @@ public class Album {
     @PrePersist
     public void title(){
         if(this.title==null){
-            this.title= "제목없음";
+            this.title="제목없음";
         }
     }
 

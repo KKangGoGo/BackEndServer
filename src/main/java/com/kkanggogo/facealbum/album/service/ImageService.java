@@ -29,7 +29,7 @@ public class ImageService {
 
 
     @Transactional
-    public void upload(ImageRequestDto imageRequestDto, User user,Album album){
+    public List<String> upload(ImageRequestDto imageRequestDto, User user,Album album){
         List<AlbumImageMappingTable> albumImageMappingTableList =new ArrayList<>();
         List<Image> images = imageRequestDto.toImageEntity(user.getUsername());
 
@@ -44,6 +44,7 @@ public class ImageService {
         imageRepository.saveAll(images);
         albumImageMapRepository.saveAll(albumImageMappingTableList);
         log.debug("imageService 저장 실행");
+        return images.stream().map(image-> image.getImagePath()).collect(Collectors.toList());
     }
 
 
