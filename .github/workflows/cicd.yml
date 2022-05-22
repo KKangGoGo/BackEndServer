@@ -49,6 +49,6 @@ jobs:
           aws-region: ap-northeast-2
 
       - name: Upload to AWS S3
-        run: aws s3 cp --region ap-northeast --acl private deploy/facealbum-springboot-server.zip s3://faceablum-springboot-build/
+        run: aws s3 cp --region ap-northeast --recursive deploy/facealbum-springboot-server.zip s3://faceablum-springboot-build
 
 
