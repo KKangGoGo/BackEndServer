@@ -41,11 +41,14 @@ jobs:
           cd ../ && mkdir -p deploy
           mv before-deploy/before-deploy.zip deploy/facealbum-springboot-server.zip
 
-      - name: Deploy to AWS S3
+      - name: AWS config
         uses: aws-actions/configure-aws-credentials@v1
-        env:
+        with:
           AWS_ACCESS_KEY_ID: ${{ secret.AWS_ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secret.AWS_SECRET_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: Upload to AWS S3
         run: aws s3 cp --region ap-northeast --acl private deploy/facealbum-springboot-server.zip s3://faceablum-springboot-build/
 
 
