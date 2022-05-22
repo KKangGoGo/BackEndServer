@@ -50,4 +50,6 @@ jobs:
       - name: Upload to AWS S3
         run: aws s3 cp deploy/facealbum-springboot-server.zip s3://faceablum-springboot-build
 
+      - name: Codedeploy
+        run: aws deploy create-deployment --application-name facealbum-springboot-server --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name facealbum-springboot-server --s3-location bucket=facealbum-springboot-build,bundleType=zip,key=facealbum-springboot-server.zip
 
