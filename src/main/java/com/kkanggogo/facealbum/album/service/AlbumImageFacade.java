@@ -71,7 +71,16 @@ public class AlbumImageFacade {
     @Transactional
     public void sharingImage(JSONObject jsonObject){
         for(Object key:jsonObject.keySet()){
-            Album album = albumService.makeAlbum(userRepository.findByUsername((String) key).get());
+            User user = userRepository.findByUsername((String) key).get();
+            user.getAlbumList().size();
+            Album album;
+            if(user.isUserHaveSharingAlbum()){
+                album = user.getSharingAlbum();
+            }
+            else{
+                album=albumService.makeSharingAlbum(user);
+                album.setTitle("공유 앨범");
+            }
             ArrayList<String> imagePathList = (ArrayList<String>)jsonObject.get((String) key);
             imagePathList.stream().forEach(i->{
                 imageService.sharingImage(i,album);

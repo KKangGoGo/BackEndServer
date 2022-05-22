@@ -22,16 +22,17 @@ public class DetectPoolingScheduler {
 
     @Value("${connectionbaseurl}")
     private String baseUrl;
+    private final String prefixUrl="/check/";
     private final RestTemplate restTemplate;
     private final TeskIdListDto teskIdListDto;
     private final AlbumImageFacade albumImageFacade;
 
 
-    @Scheduled(fixedDelay = 5000)
+    @Scheduled(fixedDelay = 60000)
     public void pooling() {
         List<String> teskKeyList = teskIdListDto.getTeskKeyList();
         for(String teskKey:teskKeyList){
-            String url=baseUrl+"/"+teskKey;
+            String url=baseUrl+prefixUrl+teskKey;
             ResponseEntity<String> exchange = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
             log.debug(exchange.getBody());
 
