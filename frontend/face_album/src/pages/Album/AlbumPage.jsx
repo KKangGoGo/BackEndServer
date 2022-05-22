@@ -25,7 +25,7 @@ const AlbumPage = () => {
                 setAlbums(res.payload.albumlist)
             })
             .catch(e => console.log(e.message))
-    }, [])
+    }, [dispatch])
 
     const RenderShortcut = Albums.map((album, index) => {
         return (
