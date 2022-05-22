@@ -51,9 +51,5 @@ jobs:
         run: aws s3 cp deploy/facealbum-springboot-server.zip s3://faceablum-springboot-build
 
       - name: Codedeploy
-        run: aws deploy create-deployment \
-        --application-name facealbum-springboot-server \
-        --deployment-group-name facealbum-springboot-server-group \
-        --s3-location bucket=faceablum-springboot-build,bundleType=zip,key=facealbum-springboot-server.zip \
-        --region ap-northeast-2
+        run: aws deploy create-deployment --application-name facealbum-springboot-server --deployment-group-name facealbum-springboot-server-group --s3-location bucket=faceablum-springboot-build,bundleType=zip,key=facealbum-springboot-server.zip
 
