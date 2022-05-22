@@ -1,0 +1,51 @@
+name: CI/CD
+on:
+  push:
+    branches: [github-action-test]
+  pull_request:
+    branches: [github-action-test]
+
+jobs:
+  CICD:
+    name: CI/CD with Gradle
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
+        with:
+          arguments: build
+
+      - name: Before deply
+        run: |
+          mkdir -p before-deploy
+          cp script/*.sh before-deploy/
+          cp appspec.yml before-deploy/
+          cp build/libs/*SNAPSHOT.jar before-deploy/
+          cd before-deploy && zip -r before-deploy *
+          cd ../ && mkdir -p deploy
+          mv before-deploy/before-deploy.zip deploy/facealbum-springboot-server.zip
+
+      - name: Deploy to AWS S3
+        uses: aws-actions/configure-aws-credentials@v1
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secret.AWS_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secret.AWS_SECRET_KEY }}
+        run: aws s3 cp --region ap-northeast --acl private deploy/facealbum-springboot-server.zip s3://faceablum-springboot-build/
+
+
