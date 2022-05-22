@@ -63,6 +63,7 @@ public class AlbumImageFacade {
         album.getAlbumImageMappingTableList().size();
         List<String> albumImagePaths = imageService.getAlbumImagePaths(album);
         AlbumImagesResponseDto albumImagesResponseDto=new AlbumImagesResponseDto();
+        albumImagesResponseDto.setAlbumTitle(album.getTitle());
         albumImagesResponseDto.setImages(albumImagePaths);
         return albumImagesResponseDto;
     }

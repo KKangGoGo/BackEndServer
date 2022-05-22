@@ -12,6 +12,7 @@ public class AlbumListEntityResponseDto {
     private String albumId;
     private String title;
     private String image;
+    private String creatDate;
 
 
     public void setAlbumListEntityResponseDto(Album album, AmazonS3Uploader amazonS3Uploader) {
@@ -22,5 +23,6 @@ public class AlbumListEntityResponseDto {
         }
         Image image = album.getAlbumImageMappingTableList().get(0).getImage();
         this.image=amazonS3Uploader.getPrefixPath(image.getImagePath());
+        this.creatDate=album.getCreatedDate().toString();
     }
 }

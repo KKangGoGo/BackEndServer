@@ -7,5 +7,6 @@ import java.util.List;
 
 @Data
 public class AlbumImagesResponseDto {
+    String albumTitle;
     List<String> images=new ArrayList<>();
 }
