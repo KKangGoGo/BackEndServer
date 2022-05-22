@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User,Long> {
+
+    Optional<User> findByUsername(String username);
+
     @Query(value = "SELECT * FROM User WHERE username= ?1", nativeQuery = true)
     User searchUsername(String username);
 

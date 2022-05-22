@@ -1,12 +1,11 @@
 package com.kkanggogo.facealbum.login.config;
 
+import com.kkanggogo.facealbum.login.config.auth.CustomAuthenticationFailureHandler;
 import com.kkanggogo.facealbum.login.config.jwt.*;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -45,13 +44,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin().disable() //form태그로 정보를 넘겨받아 로그인을 하지 않는다. jwt기본
                 .httpBasic().disable()
                 .addFilterBefore(new JwtAuthorizationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
-                .addFilter(jwtAuthenticationFilter())
+                .addFilterAt(jwtAuthenticationFilter(),UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers("/api/user/**")
                 .access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
                 .antMatchers("/api/admin/**")
                 .access("hasRole('ROLE_ADMIN')")
-                .anyRequest().permitAll()
+                .anyRequest()
+                .permitAll()
 
                 .and()
                 .exceptionHandling()
@@ -63,7 +63,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         JwtAuthenticationFilter jwtAuthenticationFilter =
                 new JwtAuthenticationFilter(authenticationManager(), jwtProvider, stringRedisTemplate);
         jwtAuthenticationFilter.setFilterProcessesUrl("/api/login");
+        jwtAuthenticationFilter.setAuthenticationFailureHandler(new CustomAuthenticationFailureHandler());
         return jwtAuthenticationFilter;
 
     }
+
+
 }

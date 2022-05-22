@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserProfileAmazonS3Uploader extends AmazonS3Uploader{
 
-    @Value("${cloud.aws.s3.profile-bucket}")
+    @Value("${cloud.aws.s3.profilebucket}")
     public String bucket;
 
     @Override

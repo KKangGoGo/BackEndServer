@@ -4,17 +4,19 @@ import lombok.Getter;
 
 @Getter
 public enum ErrorCode {
-    INVALID_PARAMETER(400, null, "Invalid Request Data"),
-    PHOTO_NULL(500, null, "사진이 등록되지 않은 사용자 입니다."),
-    EXPECTATION_FAILED(417, null, "잘못된 입력입니다.");
+    E4001("E4001","잘못된 접근입니다."),
+    E4011("E4011","아이디 또는 비밀번호가 틀렸습니다."),
+    E4012("E4012","Access Token 값 오류"),
+    E4013("E4013","Refresh Token 값 오류"),
+    E4031("E4031","권한이 없습니다."),
+    E4091("E4091","중복된 아이디 입니다."),
+    E5001("5001","서버에러");
 
-    private final String code;
-    private final String message;
-    private final int status;
+    private String errorCode;
+    private String message;
 
-    ErrorCode(final int status, final String code, final String message) {
-        this.status = status;
+    ErrorCode(String errorCode, String message) {
+        this.errorCode = errorCode;
         this.message = message;
-        this.code = code;
     }
 }

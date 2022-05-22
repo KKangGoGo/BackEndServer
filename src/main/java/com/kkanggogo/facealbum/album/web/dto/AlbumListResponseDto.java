@@ -10,10 +10,10 @@ import java.util.List;
 @Setter
 public class AlbumListResponseDto {
 
+    private List<AlbumListEntityResponseDto> albumlist=new ArrayList<>();
+
     public void add(AlbumListEntityResponseDto albumListEntityResponseDto) {
         albumlist.add(albumListEntityResponseDto);
     }
-
-    private List<AlbumListEntityResponseDto> albumlist=new ArrayList<>();
 
 }
