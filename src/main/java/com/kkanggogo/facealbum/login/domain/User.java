@@ -2,18 +2,16 @@ package com.kkanggogo.facealbum.login.domain;
 
 
 import com.kkanggogo.facealbum.album.domain.Album;
-
+import com.kkanggogo.facealbum.album.domain.SharingAlbum;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-
 import java.util.ArrayList;
 import java.util.List;
-
-
+import java.util.stream.Collectors;
 
 
 @Entity
@@ -52,6 +50,14 @@ public class User {
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<Album> albumList=new ArrayList<>();
+
+    public boolean isUserHaveSharingAlbum(){
+        return albumList.stream().anyMatch(a->a instanceof SharingAlbum);
+    }
+
+    public Album getSharingAlbum(){
+        return albumList.stream().filter(a->a instanceof SharingAlbum).collect(Collectors.toList()).get(0);
+    }
 
     public void isItUserAlbum(Album album) throws IllegalArgumentException{
         boolean contains = albumList.contains(album);

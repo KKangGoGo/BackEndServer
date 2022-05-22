@@ -10,12 +10,12 @@ import com.kkanggogo.facealbum.album.web.dto.ImageRequestDto;
 import com.kkanggogo.facealbum.login.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,7 +29,7 @@ public class ImageService {
 
 
     @Transactional
-    public void upload(ImageRequestDto imageRequestDto, User user,Album album){
+    public List<String> upload(ImageRequestDto imageRequestDto, User user,Album album){
         List<AlbumImageMappingTable> albumImageMappingTableList =new ArrayList<>();
         List<Image> images = imageRequestDto.toImageEntity(user.getUsername());
 
@@ -44,6 +44,19 @@ public class ImageService {
         imageRepository.saveAll(images);
         albumImageMapRepository.saveAll(albumImageMappingTableList);
         log.debug("imageService 저장 실행");
+        return images.stream().map(image-> image.getImagePath()).collect(Collectors.toList());
+    }
+
+
+    @Transactional
+    public void sharingImage(String imagePath,Album album){
+        Optional<Image> byImagePath = imageRepository.findByImagePath(imagePath);
+        Image image = byImagePath.get();
+        AlbumImageMappingTable albumImageMappingTable =new AlbumImageMappingTable();
+        albumImageMappingTable.setImage(image);
+        album.addAlbumImageMappingTable(albumImageMappingTable);
+
+        albumImageMapRepository.save(albumImageMappingTable);
     }
 
     public List<String> getAlbumImagePaths(Album album) {

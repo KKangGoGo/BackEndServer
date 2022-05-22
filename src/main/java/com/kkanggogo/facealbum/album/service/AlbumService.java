@@ -2,6 +2,7 @@ package com.kkanggogo.facealbum.album.service;
 
 import com.kkanggogo.facealbum.album.AmazonS3Uploader;
 import com.kkanggogo.facealbum.album.domain.Album;
+import com.kkanggogo.facealbum.album.domain.SharingAlbum;
 import com.kkanggogo.facealbum.album.domain.repository.AlbumRepository;
 import com.kkanggogo.facealbum.album.web.dto.AlbumListEntityResponseDto;
 import com.kkanggogo.facealbum.album.web.dto.AlbumListResponseDto;
@@ -85,5 +86,14 @@ public class AlbumService {
         Album album = findAlbum(albumId, user);
         album.setTitle(title);
         return album;
+    }
+
+    public Album makeSharingAlbum(User findUser) {
+        SharingAlbum album=new SharingAlbum();
+        Optional<User> user = userRepository.searchId(findUser.getId());
+        user.orElseThrow(()->new IllegalArgumentException("사용자가 없습니다."));
+        album.setUser(user.get());
+        Album save=albumRepository.save(album);
+        return save;
     }
 }
