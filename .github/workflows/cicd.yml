@@ -1,9 +1,9 @@
 name: CI/CD
 on:
   push:
-    branches: [github-action-test]
+    branches: [main]
   pull_request:
-    branches: [github-action-test]
+    branches: [main]
 
 jobs:
   CICD:
