@@ -39,7 +39,7 @@ public class AlbumImageFacade {
         album.getAlbumImageMappingTableList().size();
         imageService.upload(files, principalDetails.getUser(), album);
 
-        List<String> albumImagePaths = imageService.getAlbumImagePaths(album);
+        List<String> albumImagePaths = imageService.getImagePathList(album);
         if(user.getPhoto()!=null){
             sendDetectMq(album.getId(), albumImagePaths);
         }
@@ -94,8 +94,10 @@ public class AlbumImageFacade {
         detectMqRequestDto.setAlbum_id(albumId);
         detectMqRequestDto.setImg_urls(imagePaths);
 
+
         Mono<String> stringMono = webClient.post().uri("/request/detect").bodyValue(detectMqRequestDto).retrieve().bodyToMono(String.class);
         stringMono.subscribe(i -> {
+            log.debug("teskKey:{}",i);
             teskIdListDto.add(i);
         });
     }

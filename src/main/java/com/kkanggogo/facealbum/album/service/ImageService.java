@@ -50,7 +50,7 @@ public class ImageService {
 
     @Transactional
     public void sharingImage(String imagePath,Album album){
-        Optional<Image> byImagePath = imageRepository.findByImagePath(imagePath);
+        Optional<Image> byImagePath = imageRepository.findByImagePath(imagePath.replace("https://kkanggogo-face-bucket.s3.ap-northeast-2.amazonaws.com/",""));
         Image image = byImagePath.get();
         AlbumImageMappingTable albumImageMappingTable =new AlbumImageMappingTable();
         albumImageMappingTable.setImage(image);
@@ -61,5 +61,9 @@ public class ImageService {
 
     public List<String> getAlbumImagePaths(Album album) {
         return album.getAlbumImageMappingTableList().stream().map(element -> userAlbumAmazonS3Uploader.getPrefixPath(element.getImage().getImagePath())).collect(Collectors.toList());
+    }
+
+    public List<String> getImagePathList(Album album) {
+        return album.getAlbumImageMappingTableList().stream().map(element -> element.getImage().getImagePath()).collect(Collectors.toList());
     }
 }
