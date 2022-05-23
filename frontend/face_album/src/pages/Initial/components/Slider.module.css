@@ -30,6 +30,9 @@
 
 .slider__title {
     text-align: center;
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
 }
 
 @media screen and (max-width: 800px) {

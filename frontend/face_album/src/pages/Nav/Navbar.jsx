@@ -45,7 +45,7 @@ function Navbar() {
                     <li>
                         <button
                             className={styles.btn}
-                            onClick={() => navigate('/user/')}
+                            onClick={() => navigate('/user/home')}
                             onMouseOver={() => setHoverHome(1)}
                             onMouseOut={() => setHoverHome(0)}
                         >
@@ -79,7 +79,7 @@ function Navbar() {
                     <li>
                         <button
                             className={styles.btn}
-                            onClick={() => navigate('/user/album')}
+                            onClick={() => navigate('/user/member')}
                             onMouseOver={() => setHoverMembers(1)}
                             onMouseOut={() => setHoverMembers(0)}
                         >

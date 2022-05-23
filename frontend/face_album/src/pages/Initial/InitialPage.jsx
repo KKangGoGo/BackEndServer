@@ -10,7 +10,7 @@ import share3 from './assets/share3.jpg'
 
 const InitialPage = () => {
     const navbarLinks = [
-        {url: 'user/album', title: 'Home'},
+        {url: 'user/home', title: 'Home'},
         {url: '/loginRegister', title: 'Sign'},
     ]
 
