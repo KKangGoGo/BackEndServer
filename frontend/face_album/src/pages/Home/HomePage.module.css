@@ -14,24 +14,27 @@
 .container .user {
     grid-area: user;
     display: flex;
-    margin-top: 30px;
+    /* margin-top: 30px; */
     justify-content: center;
+    align-items: center;
 }
 
 .container .user ul {
-    width: 55%;
-    height: 100%;
+    width: 90%;
+    height: 80%;
     box-shadow: 0 0 10px gray;
+    border-radius: 5px;
     display: flex;
     justify-content: center;
-    flex-direction: column;
+    /* flex-direction: column; */
 }
 .container .user ul li:nth-child(1) {
-    height: 80%;
+    /* height: 80%; */
+    width: 60%;
     background-color: #eeedf7;
     display: flex;
     justify-content: center;
-    align-items: flex-end;
+    align-items: center;
 }
 
 .container .user ul li:nth-child(1) img {
@@ -41,10 +44,12 @@
 }
 
 .container .user ul li:nth-child(2) {
-    height: 20%;
+    width: 40%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
 }
 
 .container .user ul li:nth-child(2) .username {
@@ -55,7 +60,7 @@
     text-align: center;
     line-height: 30px;
     margin-top: -20px;
-    border: 5px solid #bbbadd;
+    border: 3px solid #bbbadd;
     border-radius: 5px;
 }
 
@@ -73,6 +78,24 @@
 /* ========================alarm===================== */
 .container .alarm {
     grid-area: alarm;
+    padding: 30px;
+}
+
+.container .alarm > div {
+    font-size: 1.3rem;
+    font-weight: 600;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #9999cc;
+}
+
+.container .alarm ul li {
+    padding: 20px 10px;
+    margin-bottom: 5px;
+    background-color: #eeedf7;
+    border-radius: 5px;
+    /* color: ; */
+    font-size: 0.9rem;
 }
 
 /* ========================album===================== */
@@ -89,9 +112,42 @@
     border-bottom: 2px solid #9999cc;
 }
 
-.container .album ul {
+.container .album ul li {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    margin-bottom: 5px;
+    border-bottom: 1px dotted lightgray;
 }
+
+.container .album ul li div:nth-child(2) {
+    font-size: 0.9rem;
+    color: gray;
+}
+
+/* ========================friend===================== */
 
 .container .friend {
     grid-area: friend;
+    padding: 30px;
+}
+
+.container .friend > div {
+    font-size: 1.3rem;
+    font-weight: 600;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #9999cc;
+}
+
+.container .friend ul li {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    margin-bottom: 5px;
+    align-items: center;
+}
+
+.container .friend ul li svg {
+    cursor: pointer;
 }
