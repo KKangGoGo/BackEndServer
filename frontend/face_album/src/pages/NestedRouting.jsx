@@ -9,6 +9,7 @@ import img from '../img/Face Album.png'
 import {useDispatch, useSelector} from 'react-redux'
 import {logoutUser} from '../_actions/userAction'
 import AlbumDetailPage from './Album/AlbumDetail/AlbumDetailPage'
+import MemberPage from './Member/MemberPage'
 
 function NestedRouting() {
     const dispatch = useDispatch()
@@ -72,6 +73,7 @@ function NestedRouting() {
                     <Route path="home" element={<HomePage />} />
                     <Route path="album" element={<AlbumPage />} />
                     <Route path="album/:albumId" element={<AlbumDetailPage />} />
+                    <Route path="member" element={<MemberPage />} />
                 </Routes>
             </div>
         </div>
