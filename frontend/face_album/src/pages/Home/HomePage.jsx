@@ -34,7 +34,7 @@ const HomePage = () => {
                     </li>
                     <li>
                         {/* <div className={styles.username}>{user.userData.username}</div> */}
-                        <div className={styles.username}>Kang</div>
+                        <div className={styles.username}>KANG</div>
                         {/* <div>{user.userData.email}</div> */}
                         <div>Kang@naver.com</div>
                         {/* <div>{user.userData.role}</div> */}
