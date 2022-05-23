@@ -8,6 +8,7 @@ import com.kkanggogo.facealbum.login.domain.User;
 import com.kkanggogo.facealbum.login.domain.repository.UserRepository;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,7 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtProvider {
     private final JwtProperties properties;
     private final UserRepository userRepository;
@@ -64,6 +66,8 @@ public class JwtProvider {
     }
 
     public Optional<String> resolveAccessToken(HttpServletRequest request) {
+        log.info("access_token:{}",request.getHeader("access_token"));
+        log.info("accessTokenHeader:{}",request.getHeader(accessTokenHeader));
         return Optional.ofNullable(request.getHeader(accessTokenHeader));
     }
 
