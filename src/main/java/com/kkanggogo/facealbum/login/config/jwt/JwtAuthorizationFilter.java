@@ -73,33 +73,33 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 }
             }
             catch (AccessTokenExpiredException e){
-                log.debug("Access Token 오류");
+                log.error("Access Token 오류");
                 ErrorCode e4012 = ErrorCode.E4012;
                 request.setAttribute("exception", new ErrorResponse(ErrorStatues.findByErrorCode(e4012),e4012));
             }
             catch (RefreshTokenExpiredException e){
-                log.debug("Refresh Token 오류");
+                log.error("Refresh Token 오류");
                 ErrorCode e4013 = ErrorCode.E4013;
                 request.setAttribute("exception",new ErrorResponse(ErrorStatues.findByErrorCode(e4013),e4013));
             }
             catch (TokenExpiredException e) {
-                System.out.println("ex : 만료된 토큰");
+                log.error("ex : 만료된 토큰");
                 request.setAttribute("exception", HttpStatus.UNAUTHORIZED);
             } catch (MalformedJwtException e) {
-                System.out.println("ex : 이상한 토큰");
+                log.error("ex : 이상한 토큰");
                 request.setAttribute("exception", HttpStatus.UNAUTHORIZED);
             } catch (JWTDecodeException e) {
-                System.out.println("ex : 디코딩할 수 없는 토큰");
+                log.error("ex : 디코딩할 수 없는 토큰");
                 request.setAttribute("exception", HttpStatus.UNAUTHORIZED);
             } catch (IllegalArgumentException e) {
-                System.out.println("ex : 인자가 잘못된 토큰");
+                log.error("ex : 인자가 잘못된 토큰");
                 request.setAttribute("exception", HttpStatus.UNAUTHORIZED);
             } catch (SignatureVerificationException e) {
-                System.out.println("ex : 잘못만들어진 토큰");
+                log.error("ex : 잘못만들어진 토큰");
                 ErrorCode e4012 = ErrorCode.E4012;
                 request.setAttribute("exception", new ErrorResponse(ErrorStatues.findByErrorCode(e4012),e4012));
             } catch (IllegalStateException e) {
-                System.out.println("ex : 코드상에 문제 발생");
+                log.error("ex : 코드상에 문제 발생");
                 request.setAttribute("exception", HttpStatus.UNAUTHORIZED);
             }
             filterChain.doFilter(request, response);
