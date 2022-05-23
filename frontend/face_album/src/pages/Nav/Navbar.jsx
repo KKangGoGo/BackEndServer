@@ -45,7 +45,7 @@ function Navbar() {
                     <li>
                         <button
                             className={styles.btn}
-                            onClick={() => navigate('/user/')}
+                            onClick={() => navigate('/user/home')}
                             onMouseOver={() => setHoverHome(1)}
                             onMouseOut={() => setHoverHome(0)}
                         >

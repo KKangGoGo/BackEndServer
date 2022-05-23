@@ -69,7 +69,7 @@ function NestedRouting() {
             </div>
             <div className={styles.rightSide}>
                 <Routes>
-                    <Route path="/" element={<HomePage />} />
+                    <Route path="home" element={<HomePage />} />
                     <Route path="album" element={<AlbumPage />} />
                     <Route path="album/:albumId" element={<AlbumDetailPage />} />
                 </Routes>
