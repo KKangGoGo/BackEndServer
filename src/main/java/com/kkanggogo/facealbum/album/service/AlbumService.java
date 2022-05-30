@@ -29,12 +29,11 @@ public class AlbumService {
     private final AmazonS3Uploader userAlbumAmazonS3Uploader;
 
 
-
     @Transactional
-    public Album makeAlbum(User findUser, String title){
-        Album album=new Album();
+    public Album makeAlbum(User findUser, String title) {
+        Album album = new Album();
         Optional<User> user = userRepository.searchId(findUser.getId());
-        user.orElseThrow(()->new IllegalArgumentException("사용자가 없습니다."));
+        user.orElseThrow(() -> new IllegalArgumentException("사용자가 없습니다."));
         album.setTitle(title);
         album.setUser(user.get());
         Album save = albumRepository.save(album);
@@ -43,21 +42,20 @@ public class AlbumService {
     }
 
     @Transactional
-    public Album makeAlbum(User findUser){
-        Album album=new Album();
+    public Album makeAlbum(User findUser) {
+        Album album = new Album();
         Optional<User> user = userRepository.searchId(findUser.getId());
-        user.orElseThrow(()->new IllegalArgumentException("사용자가 없습니다."));
+        user.orElseThrow(() -> new IllegalArgumentException("사용자가 없습니다."));
         album.setUser(user.get());
-        Album save=albumRepository.save(album);
-        return save;
+        return albumRepository.save(album);
     }
 
     @Transactional
-    public Album findAlbum(Long albumId,User user){
+    public Album findAlbum(Long albumId, User user) {
         Optional<Album> album = albumRepository.findById(albumId);
         Optional<User> findUser = userRepository.findById(user.getId());
-        album.orElseThrow(()->new IllegalArgumentException("앨범을 찾을 수 없습니다."));
-        findUser.orElseThrow(()->new IllegalArgumentException("사용자가 없습니다."));
+        album.orElseThrow(() -> new IllegalArgumentException("앨범을 찾을 수 없습니다."));
+        findUser.orElseThrow(() -> new IllegalArgumentException("사용자가 없습니다."));
         User user1 = findUser.get();
         Album album1 = album.get();
         user1.isItUserAlbum(album1);
@@ -67,33 +65,32 @@ public class AlbumService {
     @Transactional
     public AlbumListResponseDto findUserAlbum(User paramUser) {
         Optional<User> optionalUser = userRepository.findById(paramUser.getId());
-        optionalUser.orElseThrow(()->new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+        optionalUser.orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
         User user = optionalUser.get();
 
-        List<AlbumListEntityResponseDto> collect =user.getAlbumList().stream().map(element->{
+        List<AlbumListEntityResponseDto> collect = user.getAlbumList().stream().map(element -> {
             AlbumListEntityResponseDto albumListEntityResponseDto = new AlbumListEntityResponseDto();
-            albumListEntityResponseDto.setAlbumListEntityResponseDto(element,userAlbumAmazonS3Uploader);
+            albumListEntityResponseDto.setAlbumListEntityResponseDto(element, userAlbumAmazonS3Uploader);
             return albumListEntityResponseDto;
         }).collect(Collectors.toList());
 
-        AlbumListResponseDto albumListResponseDto=new AlbumListResponseDto();
+        AlbumListResponseDto albumListResponseDto = new AlbumListResponseDto();
         albumListResponseDto.setAlbumlist(collect);
         return albumListResponseDto;
     }
 
     @Transactional
-    public Album updateAlbumInfo(Long albumId,User user,String title) {
+    public Album updateAlbumInfo(Long albumId, User user, String title) {
         Album album = findAlbum(albumId, user);
         album.setTitle(title);
         return album;
     }
 
     public Album makeSharingAlbum(User findUser) {
-        SharingAlbum album=new SharingAlbum();
+        SharingAlbum album = new SharingAlbum();
         Optional<User> user = userRepository.searchId(findUser.getId());
-        user.orElseThrow(()->new IllegalArgumentException("사용자가 없습니다."));
+        user.orElseThrow(() -> new IllegalArgumentException("사용자가 없습니다."));
         album.setUser(user.get());
-        Album save=albumRepository.save(album);
-        return save;
+        return albumRepository.save(album);
     }
 }

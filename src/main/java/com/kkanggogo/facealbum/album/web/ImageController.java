@@ -24,29 +24,36 @@ public class ImageController {
     @GetMapping("/api/user/album/images")
     public AlbumImagesResponseDto getAlbumImages(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
-            @RequestParam Long albumId){
-        return albumImageFacade.getAlbumImage(principalDetails.getUser(),albumId);
+            @RequestParam Long albumId) {
+        return albumImageFacade.getAlbumImage(principalDetails.getUser(), albumId);
     }
 
     @PostMapping("/api/user/album/images")
     @ResponseStatus(code = HttpStatus.ACCEPTED)
     public void uploadImage(@RequestParam("images") List<MultipartFile> files,
-                            @AuthenticationPrincipal PrincipalDetails principalDetails){
+                            @AuthenticationPrincipal PrincipalDetails principalDetails) {
         albumImageFacade.upload(ImageMultipartFileRequestDtoFactory.makeMultipartFileRequestDto(files), principalDetails);
     }
 
+    /**
+     * 앨범에 사진 업로드 요청
+     *
+     * @param files
+     * @param albumId
+     * @param principalDetails
+     */
     @PostMapping("/api/user/album/images/{album-id}")
     @ResponseStatus(code = HttpStatus.ACCEPTED)
     public void uploadImage(@RequestParam("images") List<MultipartFile> files,
                             @PathVariable("album-id") Long albumId,
-                            @AuthenticationPrincipal PrincipalDetails principalDetails){
-        albumImageFacade.upload(ImageMultipartFileRequestDtoFactory.makeMultipartFileRequestDto(files), principalDetails,albumId);
+                            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        albumImageFacade.upload(ImageMultipartFileRequestDtoFactory.makeMultipartFileRequestDto(files), principalDetails, albumId);
     }
 
     @PostMapping("api/imageupload/jsondata")
     @ResponseStatus(code = HttpStatus.ACCEPTED)
     public void uploadImageForJson(@RequestBody ImageJsonRequestDto imageJsonRequestDto,
-                                   @AuthenticationPrincipal PrincipalDetails principalDetails){
-        albumImageFacade.upload(imageJsonRequestDto,principalDetails);
+                                   @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        albumImageFacade.upload(imageJsonRequestDto, principalDetails);
     }
 }

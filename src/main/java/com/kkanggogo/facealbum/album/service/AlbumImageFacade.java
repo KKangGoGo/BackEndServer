@@ -4,7 +4,7 @@ import com.kkanggogo.facealbum.album.domain.Album;
 import com.kkanggogo.facealbum.album.web.dto.AlbumImagesResponseDto;
 import com.kkanggogo.facealbum.album.web.dto.ImageRequestDto;
 import com.kkanggogo.facealbum.connection.dto.DetectMqRequestDto;
-import com.kkanggogo.facealbum.connection.dto.TeskIdListDto;
+import com.kkanggogo.facealbum.connection.dto.TaskIdListDto;
 import com.kkanggogo.facealbum.login.config.auth.PrincipalDetails;
 import com.kkanggogo.facealbum.login.domain.User;
 import com.kkanggogo.facealbum.login.domain.repository.UserRepository;
@@ -29,7 +29,7 @@ public class AlbumImageFacade {
     private final AlbumService albumService;
     private final ImageService imageService;
     private final UserRepository userRepository;
-    private final TeskIdListDto teskIdListDto;
+    private final TaskIdListDto teskIdListDto;
     private final WebClient webClient;
 
     @Transactional
@@ -40,7 +40,7 @@ public class AlbumImageFacade {
         imageService.upload(files, principalDetails.getUser(), album);
 
         List<String> albumImagePaths = imageService.getImagePathList(album);
-        if(user.getPhoto()!=null){
+        if (user.getPhoto() != null) {
             sendDetectMq(album.getId(), albumImagePaths);
         }
     }
@@ -48,13 +48,13 @@ public class AlbumImageFacade {
     @Transactional
     public void upload(ImageRequestDto files, PrincipalDetails principalDetails, Long albumId) {
         User user = principalDetails.getUser();
-        Album album = albumService.findAlbum(albumId,user);
+        Album album = albumService.findAlbum(albumId, user);
         album.getAlbumImageMappingTableList().size();
         List<String> albumImagePaths = imageService.upload(files, principalDetails.getUser(), album);
 
-        if(user.getPhoto()!=null){
-            sendDetectMq(album.getId(), albumImagePaths);
-        }
+//        if (user.getPhoto() != null) {
+//            sendDetectMq(album.getId(), albumImagePaths);
+//        }
     }
 
     @Transactional
@@ -62,7 +62,7 @@ public class AlbumImageFacade {
         Album album = albumService.findAlbum(albumId, user);
         album.getAlbumImageMappingTableList().size();
         List<String> albumImagePaths = imageService.getAlbumImagePaths(album);
-        AlbumImagesResponseDto albumImagesResponseDto=new AlbumImagesResponseDto();
+        AlbumImagesResponseDto albumImagesResponseDto = new AlbumImagesResponseDto();
         albumImagesResponseDto.setAlbumTitle(album.getTitle());
         albumImagesResponseDto.setImages(albumImagePaths);
         return albumImagesResponseDto;
@@ -70,22 +70,19 @@ public class AlbumImageFacade {
 
     @Async
     @Transactional
-    public void sharingImage(JSONObject jsonObject){
-        for(Object key:jsonObject.keySet()){
+    public void sharingImage(JSONObject jsonObject) {
+        for (Object key : jsonObject.keySet()) {
             User user = userRepository.findByUsername((String) key).get();
             user.getAlbumList().size();
             Album album;
-            if(user.isUserHaveSharingAlbum()){
+            if (user.isUserHaveSharingAlbum()) {
                 album = user.getSharingAlbum();
-            }
-            else{
-                album=albumService.makeSharingAlbum(user);
+            } else {
+                album = albumService.makeSharingAlbum(user);
                 album.setTitle("공유 앨범");
             }
-            ArrayList<String> imagePathList = (ArrayList<String>)jsonObject.get((String) key);
-            imagePathList.stream().forEach(i->{
-                imageService.sharingImage(i,album);
-            });
+            ArrayList<String> imagePathList = (ArrayList<String>) jsonObject.get((String) key);
+            imagePathList.forEach(i -> imageService.sharingImage(i, album));
         }
     }
 
@@ -97,7 +94,7 @@ public class AlbumImageFacade {
 
         Mono<String> stringMono = webClient.post().uri("/request/detect").bodyValue(detectMqRequestDto).retrieve().bodyToMono(String.class);
         stringMono.subscribe(i -> {
-            log.debug("teskKey:{}",i);
+            log.debug("taskKey:{}", i);
             teskIdListDto.add(i);
         });
     }
