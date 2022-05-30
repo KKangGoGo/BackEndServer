@@ -1,7 +1,6 @@
 import React, {useState} from 'react'
 import Modal from 'react-modal'
 import {useDispatch, useSelector} from 'react-redux'
-import {useNavigate} from 'react-router-dom'
 import {createAlbum} from '../../../_actions/albumAction'
 
 import {BiImageAdd} from 'react-icons/bi'
@@ -14,7 +13,6 @@ const AlbumUploadModal = ({isOpen, onRequestClose, onSubmit, onCancel}) => {
     })
 
     const dispatch = useDispatch()
-    const navigate = useNavigate()
 
     const {title} = state
 
@@ -25,9 +23,9 @@ const AlbumUploadModal = ({isOpen, onRequestClose, onSubmit, onCancel}) => {
 
         dispatch(createAlbum(state, Atoken, Rtoken))
             .then(res => {
-                // state 초기화
                 setState({...state, title: ''})
                 onSubmit()
+                window.location.replace(`/user/album`)
             })
             .catch(e => console.log(e.message))
     }

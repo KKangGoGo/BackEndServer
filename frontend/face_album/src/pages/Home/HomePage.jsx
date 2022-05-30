@@ -20,7 +20,7 @@ const HomePage = () => {
                 setAlbums(res.payload.albumlist)
             })
             .catch(e => console.log(e.message))
-    }, [dispatch])
+    }, [])
 
     const userInfo = (
         <>
@@ -88,6 +88,10 @@ const HomePage = () => {
                     </li>
                     <li>
                         jun(jun@naver.com)
+                        <BsPlusCircle />
+                    </li>
+                    <li>
+                        jjj(jjj@naver.com)
                         <BsPlusCircle />
                     </li>
                 </ul>
