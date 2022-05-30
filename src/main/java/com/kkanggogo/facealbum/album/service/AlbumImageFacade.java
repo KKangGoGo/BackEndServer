@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,13 +88,17 @@ public class AlbumImageFacade {
         for (Object key : jsonObject.keySet()) {
             User user = userRepository.findByUsername((String) key).get();
             user.getAlbumList().size();
-            Album album;
-            if (user.isUserHaveSharingAlbum()) {
-                album = user.getSharingAlbum();
-            } else {
-                album = albumService.makeSharingAlbum(user);
-                album.setTitle("공유 앨범");
-            }
+//            Album album;
+//            if (user.isUserHaveSharingAlbum()) {
+//                album = user.getSharingAlbum();
+//            } else {
+//                album = albumService.makeSharingAlbum(user);
+//                album.setTitle("공유 앨범");
+//            }
+
+            Album album = albumService.makeAlbum(user);
+            album.setTitle(album.getModifiedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) + " 공유 앨범");
+
             ArrayList<String> imagePathList = (ArrayList<String>) jsonObject.get((String) key);
             imagePathList.forEach(i -> imageService.sharingImage(i, album));
         }
