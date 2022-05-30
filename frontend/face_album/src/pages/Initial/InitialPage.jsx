@@ -19,7 +19,6 @@ const InitialPage = () => {
     const navbarUserLinks = [{url: 'user/home', title: 'Home'}]
 
     const user = useSelector(state => state.user)
-    console.log(user)
 
     return (
         <div className="App">
