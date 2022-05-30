@@ -1,7 +1,7 @@
 package com.kkanggogo.facealbum.scheduler;
 
 import com.kkanggogo.facealbum.album.service.AlbumImageFacade;
-import com.kkanggogo.facealbum.connection.dto.TeskIdListDto;
+import com.kkanggogo.facealbum.connection.dto.TaskIdListDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
@@ -22,24 +22,24 @@ public class DetectPoolingScheduler {
 
     @Value("${connectionbaseurl}")
     private String baseUrl;
-    private final String prefixUrl="/check/";
+    private final String prefixUrl = "/check/";
     private final RestTemplate restTemplate;
-    private final TeskIdListDto teskIdListDto;
+    private final TaskIdListDto taskIdListDto;
     private final AlbumImageFacade albumImageFacade;
 
 
     @Scheduled(fixedDelay = 20000)
     public void pooling() {
-        List<String> teskKeyList = teskIdListDto.getTeskKeyList();
-        for(String teskKey:teskKeyList){
-            String url=baseUrl+prefixUrl+teskKey;
+        List<String> taskKeyList = taskIdListDto.getTaskKeyList();
+        for (String taskKey : taskKeyList) {
+            String url = baseUrl + prefixUrl + taskKey;
             ResponseEntity<String> exchange = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
-            log.debug("mqResponse:{}",exchange.getBody());
+            log.debug("mqResponse:{}", exchange.getBody());
 
-            if(!exchange.getBody().equals("PENDING")){
-                JSONObject jsonObject= (JSONObject) JSONValue.parse(exchange.getBody().replace("'","\""));
-                teskIdListDto.remove(teskKey);
-                JSONObject result = (JSONObject)jsonObject.get("result");
+            if (!exchange.getBody().equals("PENDING")) {
+                JSONObject jsonObject = (JSONObject) JSONValue.parse(exchange.getBody().replace("'", "\""));
+                taskIdListDto.remove(taskKey);
+                JSONObject result = (JSONObject) jsonObject.get("result");
                 albumImageFacade.sharingImage(result);
             }
         }
