@@ -10,7 +10,6 @@ import {useNavigate} from 'react-router-dom'
 
 const ImageUploadModal = ({isOpen, onRequestClose, onCancel, albumId}) => {
     const dispatch = useDispatch()
-    const navigate = useNavigate()
 
     const handleCancel = () => {
         onCancel()
@@ -24,7 +23,10 @@ const ImageUploadModal = ({isOpen, onRequestClose, onCancel, albumId}) => {
         let formData = new FormData()
 
         let files = e.target.image.files
-        formData.append('images', files[0])
+
+        for (let i = 0; i < e.target.image.files.length; i++) {
+            formData.append('images', files[i])
+        }
 
         dispatch(createImage(formData, albumId, Atoken, Rtoken)).then(res => {
             console.log(res)
