@@ -29,7 +29,7 @@ public class AlbumImageFacade {
     private final AlbumService albumService;
     private final ImageService imageService;
     private final UserRepository userRepository;
-    private final TaskIdListDto teskIdListDto;
+    private final TaskIdListDto taskIdListDto;
     private final WebClient webClient;
 
     @Transactional
@@ -56,6 +56,19 @@ public class AlbumImageFacade {
 //            sendDetectMq(album.getId(), albumImagePaths);
 //        }
     }
+
+    @Transactional
+    public void shareAlbumImages(User user, Long albumId) {
+        Album album = albumService.findAlbum(albumId, user);
+        album.getAlbumImageMappingTableList().size();
+
+        List<String> imagePaths = imageService.getAlbumImagePaths(album);
+
+        if (user.getPhoto() != null) {
+            sendDetectMq(albumId, imagePaths);
+        }
+    }
+
 
     @Transactional
     public AlbumImagesResponseDto getAlbumImage(User user, Long albumId) {
@@ -95,7 +108,7 @@ public class AlbumImageFacade {
         Mono<String> stringMono = webClient.post().uri("/request/detect").bodyValue(detectMqRequestDto).retrieve().bodyToMono(String.class);
         stringMono.subscribe(i -> {
             log.debug("taskKey:{}", i);
-            teskIdListDto.add(i);
+            taskIdListDto.add(i);
         });
     }
 
