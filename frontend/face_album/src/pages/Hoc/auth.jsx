@@ -11,8 +11,8 @@ function auth(SpecificComponent, option, adminRoute = null) {
     function AuthenticationCheck(props) {
         const Atoken = localStorage.getItem('access-token')
         const Rtoken = localStorage.getItem('refresh-token')
-        console.log('Atoken: ' + Atoken)
-        console.log('Rtoken: ' + Rtoken)
+        // console.log('Atoken: ' + Atoken)
+        // console.log('Rtoken: ' + Rtoken)
         const navigate = useNavigate()
         const dispatch = useDispatch()
 
