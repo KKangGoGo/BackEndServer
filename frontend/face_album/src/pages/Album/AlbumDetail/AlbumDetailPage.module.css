@@ -40,12 +40,12 @@
 .container ul li {
     box-sizing: content-box;
     width: 25%;
-    height: 200px;
+    /* height: 200px; */
     /* padding: 5px; */
 }
 
 .container ul li img {
     padding: 5%;
     width: 95%;
-    height: 95%;
+    /* height: 95%; */
 }
