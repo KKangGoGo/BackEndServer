@@ -50,11 +50,10 @@ public class AlbumController {
         return album.toAlbumResponseDto();
     }
 
-    @PostMapping("/api/user/album/{album-id}")
+    @PostMapping("/api/user/album/{album-id}/share")
     @ResponseStatus(code = HttpStatus.ACCEPTED)
     public void shareAlbum(@PathVariable("album-id") Long albumId,
                            @AuthenticationPrincipal PrincipalDetails principalDetails) {
         albumImageFacade.shareAlbumImages(principalDetails.getUser(), albumId);
-
     }
 }

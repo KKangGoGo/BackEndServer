@@ -63,7 +63,8 @@ public class AlbumImageFacade {
         Album album = albumService.findAlbum(albumId, user);
         album.getAlbumImageMappingTableList().size();
 
-        List<String> imagePaths = imageService.getAlbumImagePaths(album);
+        List<String> imagePaths = imageService.getImagePathList(album);
+        log.debug(imagePaths.toString());
 
         if (user.getPhoto() != null) {
             sendDetectMq(albumId, imagePaths);
