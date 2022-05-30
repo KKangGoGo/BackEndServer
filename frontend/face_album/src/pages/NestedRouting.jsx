@@ -38,7 +38,9 @@ function NestedRouting() {
                         <img src="https://cdn-icons-png.flaticon.com/128/2005/2005140.png" alt="" />
                         {/* <img src={user.userData.photo} alt="" /> */}
                     </a>
-                    <img src={img} alt="logo" />
+                    <a href="/">
+                        <img src={img} alt="logo" />
+                    </a>
                     {user.userData ? (
                         <div className={styles.user}>
                             <div className={styles.img}>

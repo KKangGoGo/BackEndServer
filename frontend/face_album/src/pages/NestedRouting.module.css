@@ -26,12 +26,12 @@
     font-size: 1.8rem;
 }
 
-.container .header .logo a img {
+.container .header .logo a:nth-child(1) img {
     width: 50px;
     margin-left: 20px;
 }
 
-.container .header .logo img {
+.container .header .logo a:nth-child(2) img {
     width: 120px;
     margin-right: 20px;
 }
