@@ -5,7 +5,7 @@ import styles from './AlbumPage.module.css'
 import {HiOutlineSearch, HiOutlineUpload} from 'react-icons/hi'
 import {IoAlbumsOutline} from 'react-icons/io5'
 import AlbumUploadModal from './AlbumUpload/AlbumUploadModal'
-import {useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {getAlbums} from '../../_actions/albumAction'
 
 const AlbumPage = () => {

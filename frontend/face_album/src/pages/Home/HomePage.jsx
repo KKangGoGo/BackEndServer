@@ -51,16 +51,19 @@ const HomePage = () => {
 
     return (
         <div className={styles.container}>
-            <div className={styles.user}>{userInfo}</div>
+            <div className={styles.user}>
+                <div></div>
+                <div className={styles.userData}>
+                    {userInfo}
 
-            <div className={styles.alarm}>
-                <div>알림</div>
-                <ul>
-                    <li>Ko님의 사진을 공유하였습니다.</li>
-                    <li>Ko님이 친구요청을 허락하였습니다.</li>
-                    <li>Ji님이 친구요청을 허락하였습니다.</li>
-                    <li>Dae님의 사진을 공유하였습니다.</li>
-                </ul>
+                    <div className={styles.alarm}>
+                        <ul>
+                            <li>Ko님의 사진을 공유하였습니다.</li>
+                            <li>Ko님이 친구요청을 허락하였습니다.</li>
+                            <li>Ji님이 친구요청을 허락하였습니다.</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
 
             <div className={styles.album}>
