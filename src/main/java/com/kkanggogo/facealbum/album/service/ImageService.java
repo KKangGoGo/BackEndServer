@@ -29,13 +29,13 @@ public class ImageService {
 
 
     @Transactional
-    public List<String> upload(ImageRequestDto imageRequestDto, User user,Album album){
-        List<AlbumImageMappingTable> albumImageMappingTableList =new ArrayList<>();
+    public List<String> upload(ImageRequestDto imageRequestDto, User user, Album album) {
+        List<AlbumImageMappingTable> albumImageMappingTableList = new ArrayList<>();
         List<Image> images = imageRequestDto.toImageEntity(user.getUsername());
 
-        for(Image image:images){
+        for (Image image : images) {
             userAlbumAmazonS3Uploader.s3Upload(image);
-            AlbumImageMappingTable albumImageMappingTable =new AlbumImageMappingTable();
+            AlbumImageMappingTable albumImageMappingTable = new AlbumImageMappingTable();
             albumImageMappingTable.setImage(image);
             album.addAlbumImageMappingTable(albumImageMappingTable);
             albumImageMappingTableList.add(albumImageMappingTable);
@@ -44,15 +44,15 @@ public class ImageService {
         imageRepository.saveAll(images);
         albumImageMapRepository.saveAll(albumImageMappingTableList);
         log.debug("imageService 저장 실행");
-        return images.stream().map(image-> image.getImagePath()).collect(Collectors.toList());
+        return images.stream().map(Image::getImagePath).collect(Collectors.toList());
     }
 
 
     @Transactional
-    public void sharingImage(String imagePath,Album album){
-        Optional<Image> byImagePath = imageRepository.findByImagePath(imagePath.replace("https://kkanggogo-face-bucket.s3.ap-northeast-2.amazonaws.com/",""));
+    public void sharingImage(String imagePath, Album album) {
+        Optional<Image> byImagePath = imageRepository.findByImagePath(imagePath.replace("https://kkanggogo-face-bucket.s3.ap-northeast-2.amazonaws.com/", ""));
         Image image = byImagePath.get();
-        AlbumImageMappingTable albumImageMappingTable =new AlbumImageMappingTable();
+        AlbumImageMappingTable albumImageMappingTable = new AlbumImageMappingTable();
         albumImageMappingTable.setImage(image);
         album.addAlbumImageMappingTable(albumImageMappingTable);
 

@@ -92,51 +92,51 @@ public class AlbumServiceTest {
     }
 
     @Test
-    public void  앨범_찾기(){
+    public void 앨범_찾기() {
         //given
-        Long albumId=1L;
+        Long albumId = 1L;
         foundUser.getAlbumList().add(responseAlbum);
         Optional<User> user = Optional.of(foundUser);
         when(userRepository.findById(anyLong())).thenReturn(user);
         when(albumRepository.findById(anyLong())).thenReturn(Optional.of(responseAlbum));
         //when
-        Album album = albumService.findAlbum(albumId,requestUser);
+        Album album = albumService.findAlbum(albumId, requestUser);
         //then
-        assertThat(album.getId(),is(responseAlbum.getId()));
-        assertThat(album.getTitle(),is(responseAlbum.getTitle()));
+        assertThat(album.getId(), is(responseAlbum.getId()));
+        assertThat(album.getTitle(), is(responseAlbum.getTitle()));
     }
 
     @Test
-    public void  유저앨범_리스트_가져오기(){
+    public void 유저앨범_리스트_가져오기() {
 
         //given
-        User user=new User();
+        User user = new User();
         user.setId(1L);
 
-        Album album=new Album();
+        Album album = new Album();
         album.setUser(user);
         album.title();
         album.setId(1L);
 
-        Image image=new Image();
+        Image image = new Image();
         image.setImagePath("/ksb/82647bf0-9061-4213-b623-e1bce614f0050.jpg");
 
 
         AlbumImageMappingTable albumImageMappingTable = new AlbumImageMappingTable();
-        albumImageMappingTable.addAlbumAndImage(album,image);
+        albumImageMappingTable.addAlbumAndImage(album, image);
 
         when(amazonS3Uploader.getPrefixPath(anyString())).thenReturn("https://s3.ap-northeast-2.amazonaws.com/com.kkanggogo.facealbum.testbukit/ksb/82647bf0-9061-4213-b623-e1bce614f0050.jpg");
-        AlbumListEntityResponseDto albumListEntityResponseDto=new AlbumListEntityResponseDto();
-        albumListEntityResponseDto.setAlbumListEntityResponseDto(album,amazonS3Uploader);
+        AlbumListEntityResponseDto albumListEntityResponseDto = new AlbumListEntityResponseDto();
+        albumListEntityResponseDto.setAlbumListEntityResponseDto(album, amazonS3Uploader);
 
         when(userRepository.findById(eq(1L))).thenReturn(Optional.of(user));
 
         //when
         AlbumListResponseDto userAlbum = albumService.findUserAlbum(user);
 
-        assertThat(userAlbum.getAlbumlist().get(0).getAlbumId(),is(albumListEntityResponseDto.getAlbumId()));
-        assertThat(userAlbum.getAlbumlist().get(0).getTitle(),is(albumListEntityResponseDto.getTitle()));
-        assertThat(userAlbum.getAlbumlist().get(0).getImage(),is(albumListEntityResponseDto.getImage()));
+        assertThat(userAlbum.getAlbumlist().get(0).getAlbumId(), is(albumListEntityResponseDto.getAlbumId()));
+        assertThat(userAlbum.getAlbumlist().get(0).getTitle(), is(albumListEntityResponseDto.getTitle()));
+        assertThat(userAlbum.getAlbumlist().get(0).getImage(), is(albumListEntityResponseDto.getImage()));
         System.out.println("albumListEntityResponseDto.getImage() = " + albumListEntityResponseDto.getImage());
     }
 
@@ -151,5 +151,4 @@ public class AlbumServiceTest {
                 = assertThrows(IllegalArgumentException.class, () -> albumService.makeAlbum(requestUser, "aaaaaa"));
         assertThat(illegalArgumentException.getMessage(), is("사용자가 없습니다."));
     }
-
 }
