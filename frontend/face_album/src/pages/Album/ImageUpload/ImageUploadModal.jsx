@@ -6,6 +6,7 @@ import {BiImageAdd} from 'react-icons/bi'
 
 import styles from './ImageModal.module.css'
 import {createImage} from '../../../_actions/albumAction'
+import {useNavigate} from 'react-router-dom'
 
 const ImageUploadModal = ({isOpen, onRequestClose, onCancel, albumId}) => {
     const dispatch = useDispatch()
@@ -22,11 +23,15 @@ const ImageUploadModal = ({isOpen, onRequestClose, onCancel, albumId}) => {
         let formData = new FormData()
 
         let files = e.target.image.files
-        formData.append('images', files[0])
+
+        for (let i = 0; i < e.target.image.files.length; i++) {
+            formData.append('images', files[i])
+        }
 
         dispatch(createImage(formData, albumId, Atoken, Rtoken)).then(res => {
             console.log(res)
             onCancel()
+            window.location.replace(`/user/album/${albumId}`)
         })
     }
 
