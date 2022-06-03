@@ -6,12 +6,34 @@ on:
     branches: [main]
 
 jobs:
+  FrontEndBuild:
+    name: Build Frontend
+    runs-on: ubuntu-latest
+    env:
+      working-directory: ./frontend/face_album
+    strategy:
+      matrix:
+        node-version: [ 14.15.x ]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Build
+        run: npm ci
+        working-directory: ${{ env.working-directory }}
+
   CICD:
     name: CI/CD with Gradle
     runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash
+    needs: FrontEndBuild
 
     steps:
       - uses: actions/checkout@v3

@@ -94,6 +94,7 @@ task wholeTest(type: Test, group: 'verification') {
     useJUnitPlatform()
 }
 
+// front end build
 task deleteReactArtifact(type: Delete) {
     description 'Delete previous React artifact'
     delete 'src/main/resource/static'
@@ -114,4 +115,4 @@ task buildFrontend(type: NpmTask) {
     args = ["run", "build"]
 }
 
-processResources.dependsOn 'buildFrontend'
+//processResources.dependsOn 'buildFrontend'
