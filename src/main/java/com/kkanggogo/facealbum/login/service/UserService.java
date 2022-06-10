@@ -24,7 +24,7 @@ import java.util.Optional;
 public class UserService {
 
     @Autowired
-    AmazonS3Uploader userProfileAmazonS3Uploader;
+    private AmazonS3Uploader userProfileAmazonS3Uploader;
 
     @Autowired
     private UserRepository userRepository;
