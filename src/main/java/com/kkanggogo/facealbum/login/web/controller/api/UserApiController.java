@@ -31,7 +31,7 @@ import java.util.Map;
 @Slf4j
 public class UserApiController {
 
-    @Value("${profileApiBaseUrl}")
+    @Value("${profileapibaseurl}")
     private String profileApiBaseUrl;
 
     @Autowired
