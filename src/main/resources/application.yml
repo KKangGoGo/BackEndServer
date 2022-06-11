@@ -22,5 +22,5 @@ spring:
       on-profile: "local"
       
 connectionbaseurl: ${connectionbaseurl}
-profileApiBaseUrl: ${profileApiBaseUrl}
+profileapibaseurl: ${profileapibaseurl}
 
