@@ -10,20 +10,29 @@ import com.kkanggogo.facealbum.login.web.dto.ResponseAuthDto;
 import com.kkanggogo.facealbum.login.web.dto.ResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Slf4j
 public class UserApiController {
+
+    @Value("${profileApiBaseUrl}")
+    private String profileApiBaseUrl;
 
     @Autowired
     UserService userService;
@@ -31,17 +40,25 @@ public class UserApiController {
     @Autowired
     AuthenticationManager authenticationManager;
 
+    @Autowired
+    private RestTemplate restTemplate;
+
     // 회원 가입
 
     @PostMapping("/api/signup")
     public ResponseDto<Integer> signUp(@Valid @RequestPart(value = "photo", required = false) MultipartFile photo,
-                                                       @Valid @RequestPart(value = "signupInfo") RequestSignUpDto requestSignUpDto) {
+                                                       @Valid @RequestPart(value = "signupInfo") RequestSignUpDto requestSignUpDto) throws URISyntaxException {
         log.debug("photos:{}", photo);
         if (photo == null) {
             userService.signUp(requestSignUpDto);
         } else {
-            userService.signUp(requestSignUpDto, ImageMultipartFileRequestDtoFactory
+            User user = userService.signUp(requestSignUpDto, ImageMultipartFileRequestDtoFactory
                     .makeMultipartFileRequestDto(List.of(photo)));
+            Map<String,String> requestMap=new HashMap<>();
+            requestMap.put("profile_img_url",user.getPhoto());
+            URI uri = new URI(String.format("%s%s", profileApiBaseUrl, "/api/profile"));
+            String s = restTemplate.postForObject(uri, requestMap, String.class);
+            log.debug("signUp log:{}",s);
         }
 
         return new ResponseDto<>(HttpStatus.OK.value(), 1);
