@@ -3,9 +3,11 @@ import {useDispatch, useSelector} from 'react-redux'
 import {useParams} from 'react-router-dom'
 import {getImages} from '../../../_actions/albumAction'
 import {HiOutlineSearch, HiOutlineUpload} from 'react-icons/hi'
+import {AiOutlineShareAlt} from 'react-icons/ai'
 
 import styles from './AlbumDetailPage.module.css'
 import ImageUploadModal from '../ImageUpload/ImageUploadModal'
+import axios from 'axios'
 
 const AlbumDetailPage = () => {
     const [isOpen, setIsOpen] = useState(false)
@@ -15,6 +17,13 @@ const AlbumDetailPage = () => {
     const {albumId} = useParams()
 
     const [Images, setImages] = useState([])
+
+    const shareImg = () => {
+        axios.post(`/api/user/album/${albumId}/share`).then(res => {
+            console.log(res)
+            alert('공유되었습니다.')
+        })
+    }
 
     useEffect(() => {
         const Atoken = localStorage.getItem('access-token')
@@ -38,6 +47,10 @@ const AlbumDetailPage = () => {
         <div className={styles.container}>
             <div>
                 <h1>앨범 &#62; 앨범이름</h1>
+                <button onClick={shareImg}>
+                    <AiOutlineShareAlt />
+                    사진 공유
+                </button>
                 <button onClick={modalToggle}>
                     <HiOutlineUpload />
                     사진 추가
